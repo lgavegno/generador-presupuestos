@@ -1,0 +1,8 @@
+{
+  "website_types": {
+    "landing": {"name": "Landing Page", "price_ars": 180000},
+    "simple": {"name": "Sitio Simple", "price_ars": 200000},
+    "portfolio": {"name": "Portfolio", "price_ars": 300000},
+    "ecommerce": {"name": "E-Commerce", "price_ars": 500000}
+  }
+}

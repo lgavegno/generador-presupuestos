@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Presupuestos Minimalista</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #1f4e79;
+            --color-secondary: #1f7950;
+            --color-accent: #ff6b35;
+            --color-light: #f9f9f9;
+            --color-white: #ffffff;
+            --color-text: #333333;
+            --color-border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: var(--color-text);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--color-white);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative; /* For the back button */
+        }
+
+        /* Back Button */
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--color-accent);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px; /* Space for back button */
+            padding-bottom: 20px;
+            border-bottom: 2px transparent; /* No hard bottom border as requested explicitly, using gradient text or full background */
+        }
+
+        /* Header Gradient Text (or background if preferred, but gradient text is usually cleaner here) 
+           Request says: "Gradiente azul/verde (#1f4e79 a #1f7950)" for Header. Let's make the whole header area have the gradient to strictly follow "Header con fondo gradiente", wait, the request asks for "Header: Gradiente azul/verde".
+           Let's apply it just to the text for a cleaner look, or wait. If it meant background, let's keep it similar to index-home.html if needed.
+           Actually, the prompt says "Header: Gradiente azul/verde (#1f4e79 a #1f7950)". I'll apply it to the h1 text for a modern look, or to the entire header block if we want it like a true header. Let's make the text gradient.
+        */
+        header h1 {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .form-section {
+            margin: 30px 0;
+            padding: 24px;
+            background: var(--color-light);
+            border-left: 5px solid var(--color-secondary);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .form-section h2 {
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 3px rgba(31, 121, 80, 0.1);
+        }
+
+        /* Checkboxes Grid */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--color-secondary);
+            background: #f0f7f4;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 3px;
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--color-secondary);
+            cursor: pointer;
+        }
+        
+        .checkbox-item span {
+            font-size: 1rem;
+            color: #444;
+            user-select: none;
+        }
+
+        /* Presupuesto Card */
+        .presupuesto-card {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(31, 78, 121, 0.25);
+        }
+
+        .presupuesto-card h3 {
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 15px;
+        }
+
+        .p-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .p-row .value {
+            font-weight: bold;
+            font-size: 1.15em;
+        }
+
+        .p-separator {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 15px 0;
+        }
+
+        .p-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0 5px 0;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .p-total-usd {
+            text-align: right;
+            font-size: 1em;
+            color: rgba(255,255,255,0.9);
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* Botón Enviar */
+        .submit-area {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .btn-submit {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #e55b25;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Spinner (mantenido del original) */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #loading-spinner {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        #loading-spinner p { color: var(--color-primary); font-weight: bold; margin-top: 10px; }
+
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; }
+            header h1 { font-size: 2.2em; }
+            .presupuesto-card { padding: 20px; }
+            .p-total { font-size: 1.25em; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- LINK VOLVER -->
+        <a href="../" class="back-link">← Volver</a>
+
+        <header>
+            <h1>💰 Generador de Presupuestos</h1>
+            <p>Especifica tu sitio web y obtén una cotización al instante</p>
+        </header>
+
+        <form id="presupuesto-form">
+            <!-- 1. TIPO DE SITIO -->
+            <section class="form-section">
+                <h2>1. Selecciona el Tipo de Sitio Web</h2>
+                <div class="form-group">
+                    <select id="website_type" name="website_type" required onchange="updatePresupuesto()">
+                        <option value="">-- Elige una opción --</option>
+                        <option value="landing">Landing Page (1 página) - $180,000 ARS</option>
+                        <option value="simple">Sitio Simple (3-5 páginas) - $200,000 ARS</option>
+                        <option value="portfolio">Portfolio - $300,000 ARS</option>
+                        <option value="ecommerce">E-Commerce - $500,000 ARS</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- 2. SECCIONES -->
+            <section class="form-section">
+                <h2>2. Secciones del Sitio ($40,000 c/u)</h2>
+                <div class="form-group">
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="hero" onchange="updatePresupuesto()"><span>Hero/Header</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="about" onchange="updatePresupuesto()"><span>Acerca de</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="products" onchange="updatePresupuesto()"><span>Productos/Servicios</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="gallery" onchange="updatePresupuesto()"><span>Galería</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="testimonials" onchange="updatePresupuesto()"><span>Testimonios</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="faq" onchange="updatePresupuesto()"><span>FAQ</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="blog" onchange="updatePresupuesto()"><span>Blog</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="contact" onchange="updatePresupuesto()"><span>Contacto</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="newsletter" onchange="updatePresupuesto()"><span>Newsletter</span></label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. FUNCIONALIDADES -->
+            <section class="form-section">
+                <h2>3. Funcionalidades Premium ($50,000 c/u)</h2>
+                <div class="form-group">
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="tiendanube" onchange="updatePresupuesto()"><span>Integración Tienda Nube</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="cart" onchange="updatePresupuesto()"><span>Carrito de compras</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="search" onchange="updatePresupuesto()"><span>Búsqueda avanzada</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="filters" onchange="updatePresupuesto()"><span>Sistema de filtros</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="multilingual" onchange="updatePresupuesto()"><span>Múltiples idiomas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="seo" onchange="updatePresupuesto()"><span>Optimización SEO</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="analytics" onchange="updatePresupuesto()"><span>Analytics</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="booking" onchange="updatePresupuesto()"><span>Sistema de reservas</span></label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. PRESUPUESTO EN TIEMPO REAL -->
+            <section class="presupuesto-card">
+                <h3>Resumen de Inversión</h3>
+                
+                <div class="p-row">
+                    <span>Precio Base Sitio:</span>
+                    <span class="value" id="precio-base">$0</span>
+                </div>
+                
+                <div class="p-row">
+                    <span>Adicional Secciones (<span id="count-sections">0</span>):</span>
+                    <span class="value" id="precio-secciones">$0</span>
+                </div>
+                
+                <div class="p-row">
+                    <span>Adicional Funcionalidades (<span id="count-features">0</span>):</span>
+                    <span class="value" id="precio-features">$0</span>
+                </div>
+                
+                <div class="p-separator"></div>
+                
+                <div class="p-row">
+                    <span>Subtotal:</span>
+                    <span class="value" id="subtotal">$0</span>
+                </div>
+                
+                <div class="p-row">
+                    <span>IVA (21%):</span>
+                    <span class="value" id="impuesto">$0</span>
+                </div>
+                
+                <div class="p-separator"></div>
+                
+                <div class="p-total">
+                    <span>TOTAL ESTIMADO:</span>
+                    <span id="total">$0 ARS</span>
+                </div>
+                <div class="p-total-usd">
+                    ~ <span id="total-usd">0</span> USD
+                </div>
+            </section>
+
+            <!-- 5. INFORMACIÓN DE CONTACTO -->
+            <section class="form-section">
+                <h2>4. Tus Datos de Contacto</h2>
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo *</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail *</label>
+                    <input type="email" id="email" name="email" placeholder="Ingresa tu correo principal" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono">Teléfono / WhatsApp (Opcional)</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="+54 9 ...">
+                </div>
+            </section>
+
+            <!-- BOTÓN ENVIAR -->
+            <div class="submit-area">
+                <button type="button" id="submit-btn" onclick="submitForm()" class="btn-submit">
+                    📧 Enviar Cotización
+                </button>
+            </div>
+            
+            <div id="loading-spinner">
+                <div class="spinner"></div>
+                <p>Procesando cotización...</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- SCRIPTS CORE -->
+    <script src="../js/main.js"></script>
+    <script src="../js/calculator.js"></script>
+    <script src="../js/form-handler.js"></script>
+    <script src="../js/email-handler.js"></script>
+    
+    <script>
+        // Adjust the Google Sheets submission URL if needed since we are in a subfolder.
+        // The script variables might look at the global scope correctly because we imported them.
+        
+        // Minor patch: Update main.js references to look for exact IDs used locally if they differ.
+        // Our IDs match exactly what updateUI() in calculator.js expects:
+        // 'precio-base', 'count-sections', 'precio-secciones', 'count-features', 'precio-features', 'subtotal', 'impuesto', 'total', 'total-usd'
+        // And form-handler.js expects:
+        // 'nombre', 'email', 'telefono', 'website_type', 'presupuesto-form', 'submit-btn', 'loading-spinner'
+    </script>
+</body>
+
+</html>
