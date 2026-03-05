@@ -1,94 +1,77 @@
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // FORM-HANDLER.JS - MANEJO DEL FORMULARIO
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 
 function collectFormData() {
     return {
         timestamp: new Date().toISOString(),
-        
-        // Datos personales
-        nombre: document.getElementById('nombre').value,
-        email: document.getElementById('email').value,
-        telefono: document.getElementById('telefono').value,
-        
-        // Sitio web
-        tipo_sitio: document.getElementById('website_type').value,
+        nombre: document.getElementById('nombre')?.value || '',
+        email: document.getElementById('email')?.value || '',
+        telefono: document.getElementById('telefono')?.value || '',
+        tipo_sitio: document.getElementById('website_type')?.value || '',
         secciones_elegidas: state.sections,
         funcionalidades: state.features,
-        
-        // Presupuesto
         presupuesto: state.presupuesto,
-        
-        // Metadata
         user_agent: navigator.userAgent
     };
 }
 
 function validateForm() {
-    const nombre = document.getElementById('nombre').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const tipo = document.getElementById('website_type').value;
-    
+    const nombre = document.getElementById('nombre')?.value.trim();
+    const email = document.getElementById('email')?.value.trim();
+    const tipo = document.getElementById('website_type')?.value;
+
     if (!nombre) {
         showError('Por favor ingresa tu nombre');
         return false;
     }
-    
+
     if (!email || !isValidEmail(email)) {
         showError('Por favor ingresa un email válido');
         return false;
     }
-    
+
     if (!tipo) {
         showError('Por favor selecciona un tipo de sitio');
         return false;
     }
-    
+
     return true;
 }
 
 function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+\$/;
     return re.test(email);
 }
 
 async function submitForm() {
-    // Validar
-    if (!validateForm()) {
-        return;
-    }
-    
-    // Recopilar datos
+    if (!validateForm()) return;
+
     const formData = collectFormData();
-    
-    // Mostrar loading
     showLoadingIndicator(true);
-    
-    // Enviar a Google
+
     const success = await sendToGoogleSheets(formData);
-    
+
     if (success) {
-        // Limpiar form
         document.getElementById('presupuesto-form').reset();
-        state.presupuesto = {};
-        updateUI();
+        resetPresupuesto();
     }
-    
+
     showLoadingIndicator(false);
 }
 
 function showLoadingIndicator(show) {
     const btn = document.getElementById('submit-btn');
     const spinner = document.getElementById('loading-spinner');
-    
+
     if (show) {
-        btn.disabled = true;
-        btn.textContent = 'Enviando...';
-        spinner.style.display = 'block';
+        if (btn) btn.disabled = true;
+        if (btn) btn.textContent = 'Enviando...';
+        if (spinner) spinner.style.display = 'block';
     } else {
-        btn.disabled = false;
-        btn.textContent = 'Enviar Cotización';
-        spinner.style.display = 'none';
+        if (btn) btn.disabled = false;
+        if (btn) btn.textContent = 'Enviar Cotización';
+        if (spinner) spinner.style.display = 'none';
     }
 }
 
@@ -107,7 +90,6 @@ function showError(message) {
     `;
     notification.textContent = '❌ ' + message;
     document.body.appendChild(notification);
-    
     setTimeout(() => notification.remove(), 5000);
 }
 
@@ -126,6 +108,5 @@ function showSuccess(message) {
     `;
     notification.textContent = '✓ ' + message;
     document.body.appendChild(notification);
-    
     setTimeout(() => notification.remove(), 5000);
 }

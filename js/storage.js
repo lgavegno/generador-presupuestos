@@ -1,2 +1,2 @@
-// Archivo para gestión de localStorage
+// Gestión localStorage
 console.log('✓ storage.js cargado');
