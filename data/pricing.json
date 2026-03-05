@@ -1,0 +1,59 @@
+{
+  "website_types": {
+    "landing": {
+      "name": "Landing Page (1 página)",
+      "price_ars": 180000,
+      "description": "Página enfocada en conversión"
+    },
+    "simple": {
+      "name": "Sitio Simple (3-5 páginas)",
+      "price_ars": 200000,
+      "description": "Sitio informativo completo"
+    },
+    "portfolio": {
+      "name": "Portfolio",
+      "price_ars": 300000,
+      "description": "Showcase de trabajos/productos"
+    },
+    "ecommerce": {
+      "name": "E-Commerce",
+      "price_ars": 500000,
+      "description": "Tienda online funcional"
+    }
+  },
+  "sections": {
+    "price_per_section": 40000,
+    "available": [
+      "hero",
+      "about",
+      "products",
+      "gallery",
+      "testimonials",
+      "faq",
+      "blog",
+      "contact"
+    ]
+  },
+  "features": {
+    "price_per_feature": 50000,
+    "available": [
+      "tiendanube",
+      "cart",
+      "search",
+      "filters",
+      "multilingual",
+      "seo",
+      "analytics",
+      "booking"
+    ]
+  },
+  "tax": {
+    "rate": 0.21,
+    "name": "IVA"
+  },
+  "currency": {
+    "code": "ARS",
+    "name": "Peso Argentino",
+    "exchange_rate_to_usd": 360
+  }
+}

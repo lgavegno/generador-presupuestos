@@ -1,0 +1,53 @@
+# WINDSURF/CASCADE IDE CONFIGURATION
+# Generador de Presupuestos - SDD Methodology
+
+## PROJECT CONTEXT
+- Language: HTML5 + CSS3 + JavaScript ES6+
+- Methodology: SDD (Spec-Driven Development)
+- Framework: None (Vanilla)
+- Database: Google Sheets
+- Backend: Google Apps Script
+
+## IMPORTANT FILES
+- docs/ - All SDD documentation (MOD + PLAN files)
+- index.html - Main form
+- js/main.js - Orchestrator
+- js/calculator.js - Pricing logic
+- js/form-handler.js - Form submission
+- js/email-handler.js - Google Sheets integration
+
+## NAMING CONVENTIONS
+- MOD-XX.md = Permanent specifications
+- PLAN-XXX.md = Temporary implementation plans
+- SETUP-XXX.md = Practical guides
+
+## CODE STANDARDS
+- No frameworks, no build tools
+- Vanilla JavaScript ES6+
+- Inline CSS/JS only
+- Comments in Spanish + English
+- One file, multiple responsibilities minimized
+
+## BEFORE YOU CODE
+1. Read PROJECT_CONSTITUTION.md
+2. Read relevant MOD file
+3. Check PLAN-XXX.md for timeline
+4. Update PLAN when making changes
+
+## GIT WORKFLOW
+- Commit messages in Spanish
+- Format: "feat: descripción" or "fix: descripción"
+- Keep history clean
+- One logical change per commit
+
+## DEPLOYMENT
+- Frontend: GitHub Pages
+- Backend: Google Apps Script
+- Data: Google Sheets
+- All FREE tier
+
+## CRITICAL
+- Never hardcode SHEET_ID or webhook URL in index.html
+- Keep Google Script URL in js/email-handler.js only
+- Test locally before pushing
+- Update docs after major changes

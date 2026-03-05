@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Presupuestos - Ongevag Studio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Generador de Presupuestos</h1>
+            <p>Especifica tu sitio web y obtén una cotización al instante</p>
+        </header>
+
+        <form id="presupuesto-form">
+            <!-- SECTION 1: TIPO DE SITIO -->
+            <section class="form-section">
+                <h2>🌐 Tipo de Sitio Web</h2>
+                <div class="form-group">
+                    <label>¿Qué tipo de sitio necesitas?</label>
+                    <select id="website_type" name="website_type" required onchange="updatePresupuesto()">
+                        <option value="">-- Selecciona una opción --</option>
+                        <option value="landing">Landing Page (1 página) - $180,000 ARS</option>
+                        <option value="simple">Sitio Simple (3-5 páginas) - $200,000 ARS</option>
+                        <option value="portfolio">Portfolio - $300,000 ARS</option>
+                        <option value="ecommerce">E-Commerce - $500,000 ARS</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SECCIONES -->
+            <section class="form-section">
+                <h2>📋 Secciones del Sitio</h2>
+                <div class="form-group">
+                    <label>¿Qué secciones quieres incluir? ($40,000 c/u)</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="sections" value="hero" onchange="updatePresupuesto()"> Hero/Header</label>
+                        <label><input type="checkbox" name="sections" value="about" onchange="updatePresupuesto()"> Acerca de</label>
+                        <label><input type="checkbox" name="sections" value="products" onchange="updatePresupuesto()"> Productos/Servicios</label>
+                        <label><input type="checkbox" name="sections" value="gallery" onchange="updatePresupuesto()"> Galería</label>
+                        <label><input type="checkbox" name="sections" value="testimonials" onchange="updatePresupuesto()"> Testimonios</label>
+                        <label><input type="checkbox" name="sections" value="faq" onchange="updatePresupuesto()"> FAQ</label>
+                        <label><input type="checkbox" name="sections" value="blog" onchange="updatePresupuesto()"> Blog</label>
+                        <label><input type="checkbox" name="sections" value="contact" onchange="updatePresupuesto()"> Contacto</label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: FUNCIONALIDADES -->
+            <section class="form-section">
+                <h2>⚡ Funcionalidades</h2>
+                <div class="form-group">
+                    <label>¿Qué funcionalidades necesitas? ($50,000 c/u)</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="features" value="tiendanube" onchange="updatePresupuesto()"> Integración Tienda Nube</label>
+                        <label><input type="checkbox" name="features" value="cart" onchange="updatePresupuesto()"> Carrito de compras</label>
+                        <label><input type="checkbox" name="features" value="search" onchange="updatePresupuesto()"> Búsqueda avanzada</label>
+                        <label><input type="checkbox" name="features" value="filters" onchange="updatePresupuesto()"> Sistema de filtros</label>
+                        <label><input type="checkbox" name="features" value="multilingual" onchange="updatePresupuesto()"> Múltiples idiomas</label>
+                        <label><input type="checkbox" name="features" value="seo" onchange="updatePresupuesto()"> Optimización SEO</label>
+                        <label><input type="checkbox" name="features" value="analytics" onchange="updatePresupuesto()"> Analytics</label>
+                        <label><input type="checkbox" name="features" value="booking" onchange="updatePresupuesto()"> Sistema de reservas</label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRESUPUESTO EN TIEMPO REAL -->
+            <section class="presupuesto-card">
+                <h3>💰 Presupuesto en Tiempo Real</h3>
+                <div class="presupuesto-detail">
+                    <div class="presupuesto-line">
+                        <span>Sitio Web:</span>
+                        <strong id="precio-base">$0</strong>
+                    </div>
+                    <div class="presupuesto-line">
+                        <span>Secciones (<span id="count-sections">0</span> × $40k):</span>
+                        <strong id="precio-secciones">$0</strong>
+                    </div>
+                    <div class="presupuesto-line">
+                        <span>Funcionalidades (<span id="count-features">0</span> × $50k):</span>
+                        <strong id="precio-features">$0</strong>
+                    </div>
+                    <div class="presupuesto-line separator">
+                        <span>Subtotal:</span>
+                        <strong id="subtotal">$0</strong>
+                    </div>
+                    <div class="presupuesto-line">
+                        <span>IVA (21%):</span>
+                        <strong id="impuesto">$0</strong>
+                    </div>
+                    <div class="presupuesto-line total">
+                        <span><strong>TOTAL:</strong></span>
+                        <strong id="total">$0</strong>
+                    </div>
+                    <div class="presupuesto-hint">
+                        ~USD <span id="total-usd">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INFORMACIÓN PERSONAL (MINI) -->
+            <section class="form-section">
+                <h2>👤 Información de Contacto</h2>
+                <div class="form-group">
+                    <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Tu email" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="telefono" name="telefono" placeholder="Tu teléfono">
+                </div>
+            </section>
+
+            <!-- SUBMIT -->
+            <div class="form-actions">
+                <button type="button" id="submit-btn" onclick="submitForm()" class="btn-primary">
+                    Enviar Cotización
+                </button>
+            </div>
+        </form>
+
+        <!-- Spinner de carga -->
+        <div id="loading-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Enviando cotización...</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/form-handler.js"></script>
+    <script src="js/email-handler.js"></script>
+</body>
+</html>

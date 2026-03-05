@@ -1,0 +1,62 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* TABLET (768px+) */
+@media (min-width: 768px) {
+    .container {
+        padding: 50px;
+    }
+
+    header h1 {
+        font-size: 2.8em;
+    }
+
+    .checkbox-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* DESKTOP (1024px+) */
+@media (min-width: 1024px) {
+    .container {
+        padding: 60px;
+    }
+
+    .checkbox-group {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* MOBILE (< 768px) */
+@media (max-width: 767px) {
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    .presupuesto-card {
+        padding: 15px;
+    }
+
+    .presupuesto-line {
+        font-size: 0.95em;
+    }
+
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
