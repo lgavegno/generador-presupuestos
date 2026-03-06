@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 // ACTUALIZA ESTO CON TU WEBHOOK URL DE GOOGLE APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/usercontent";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyYjeKH8VmJSPOddf0UmEumpjeIGZE_RVXymcwGuPAMX29xLEm3RZFYpytRmRAFJiS3/exec";
 
 async function sendToGoogleSheets(formData) {
     try {
