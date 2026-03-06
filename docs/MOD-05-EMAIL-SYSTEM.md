@@ -11,6 +11,10 @@
 
 Define the architecture, requirements, and specifications for the email notification system that sends form submissions to **osvojag@gmail.com** automatically via Google Sheets + Apps Script.
 
+**VERSION:** Minimalista (4 campos: nombre, email, teléfono, observaciones)
+**STATUS:** Pendiente webhook setup
+**SCOPE:** Presupuestador lead magnet (no formulario completo de 11 secciones)
+
 ---
 
 ## 🎯 REQUIREMENTS
@@ -20,7 +24,7 @@ Define the architecture, requirements, and specifications for the email notifica
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
 | FR-001 | System must send email to osvojag@gmail.com on form submission | CRITICAL | PENDING |
-| FR-002 | Email must include ALL form data (11 sections) | CRITICAL | PENDING |
+| FR-002 | Email must include ONLY minimal form data (4 fields) | CRITICAL | PENDING |
 | FR-003 | Email must include calculated presupuesto (ARS + USD) | CRITICAL | PENDING |
 | FR-004 | Email must include generated WordPress prompt | HIGH | PENDING |
 | FR-005 | Data must be saved to Google Sheets simultaneously | CRITICAL | PENDING |
@@ -122,49 +126,33 @@ Define the architecture, requirements, and specifications for the email notifica
 
 ---
 
-## 📊 DATA STRUCTURE
+## 📊 DATA STRUCTURE (MINIMALISTA)
 
 ### Data Sent from Frontend
-
 ```javascript
 {
   timestamp: "2026-03-05T14:30:00Z",
-  
-  // SECTION 1: Personal Info
   nombre: "Juan García",
-  dni: "12345678",
   email: "juan@email.com",
   telefono: "+54 3492 123456",
-  
-  // SECTION 2: Fiscal
-  afip_condition: "Monotributista",
-  cuit: "27123456789",
-  
-  // ... (resto de 11 secciones)
-  
-  // CALCULATED FIELDS
+  website_type: "simple",
+  secciones_elegidas: ["hero", "products"],
+  funcionalidades: ["seo"],
   presupuesto: {
-    tipo_sitio: "Sitio Simple",
     precio_base: 200000,
-    secciones: ["Hero", "Productos", "Testimonios"],
-    precio_secciones: 120000,
-    funcionalidades: ["SEO", "Analytics"],
-    precio_funcionalidades: 100000,
-    subtotal_ars: 420000,
-    impuesto_21: 88200,
-    total_ars: 508200,
-    total_usd: 1412.78
+    precio_secciones: 80000,
+    precio_funcionalidades: 50000,
+    subtotal_ars: 330000,
+    impuesto: 69300,
+    total_ars: 399300,
+    tieneIva: true
   },
-  
-  // GENERATED PROMPT
-  prompt_wordpress: "[PROMPT GIGANTE AQUÍ]",
-  
-  // SUBMISSION METADATA
-  user_agent: "Mozilla/5.0...",
-  ip_address: "[AUTOMATED]",
-  submission_id: "SUB-2026-001"
+  observaciones: "Quiero algo moderno"
 }
 ```
+
+**NOTA:** Versión minimalista (4 campos contacto)
+**NO incluye:** DNI, fiscal, domicilio, redes sociales
 
 ---
 

@@ -152,19 +152,26 @@ Define the user interface structure, components, layout, interactions, and respo
 
 ```html
 <div class="checkbox-item">
-  <input type="checkbox" name="sections" value="hero" onchange="updatePresupuesto()">
-  <label>Hero/Header</label>
+  <input 
+    type="checkbox" 
+    name="sections" 
+    value="hero" 
+    id="section-hero"
+    onchange="updatePresupuesto()"
+  >
+  <label for="section-hero">Hero/Header</label>
 </div>
 ```
 
-**Styling:**
-- Display: Flex, align-items: center
-- Padding: 10px
-- Background: White
-- Border: 1px solid #e0e0e0
-- Border-radius: 6px
-- Cursor: Pointer
-- Hover: Border-color #1f7950, background #f8fffe
+**DOM IDs (sections):**
+- `#section-hero`, `#section-about`, `#section-products`, etc.
+
+**DOM IDs (features):**
+- `#feature-tiendanube`, `#feature-cart`, `#feature-search`, etc.
+
+**Event:** `onchange="updatePresupuesto()"`
+- Dispara recálculo inmediato
+- Actualiza card presupuesto
 
 ---
 

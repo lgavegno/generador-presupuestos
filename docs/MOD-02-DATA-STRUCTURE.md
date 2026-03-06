@@ -194,6 +194,41 @@ function calculatePresupuesto(websiteType, sectionsCount, featuresCount) {
 
 ---
 
+## 💾 UTILITY FUNCTIONS
+
+### resetPresupuesto()
+Limpia el presupuesto a ceros.
+```javascript
+function resetPresupuesto() {
+  state.presupuesto = {
+    base: 0,
+    secciones: 0,
+    funcionalidades: 0,
+    subtotal: 0,
+    iva: 0,
+    total: 0,
+    tieneIva: false
+  };
+  updateUI();
+}
+```
+
+### formatCurrency(number)
+Formatea números a ARS con separadores de miles.
+```javascript
+function formatCurrency(num) {
+  return '$' + num.toLocaleString('es-AR');
+}
+```
+
+### localStorage Persistence
+Datos persisten en navegador:
+- Key: `presupuesto_state`
+- Restaura al recargar página
+- JSON serializado
+
+---
+
 ## 💾 STORAGE FORMAT
 
 ### localStorage (Client-side)

@@ -1,61 +1,60 @@
-﻿# MOD-07: PROJECT STRUCTURE & DEPLOYMENT
+﻿---
+
+# MOD-07: PROJECT STRUCTURE & DEPLOYMENT
 
 **Status:** ACTIVE  
 **Version:** 1.0  
-
-## OBJECTIVE
-
-Define the complete project structure for GitHub Pages with:
-1. HOME page (decision page)
-2. Presupuestador (minimalista subfolder)
-3. Tienda Nube (complete form)
+**Repository:** generador-presupuestos (NO formulario-tienda-nube)
 
 ## DIRECTORY STRUCTURE
-
-formulario-tienda-nube/ (root)
-  index.html (HOME - 2 buttons)
-  tienda-nube.html (Complete form)
-  presupuestador/ (subfolder)
-    index.html (Minimalista)
-    css/ js/ data/
+```
+generador-presupuestos/ (root)
+├── index.html (HOME - 1 botón)
+├── tienda-nube.html (Formulario completo - guardado)
+├── presupuestador/ (subfolder minimalista)
+│   ├── index.html
+│   ├── css/ (copiado)
+│   ├── js/ (copiado)
+│   └── data/ (copiado)
+├── css/ (original)
+├── js/ (original)
+├── data/ (original)
+└── docs/ (MOD + PLAN)
+```
 
 ## URL MAPPING
+```
+HOME: https://lgavegno.github.io/generador-presupuestos/
+Presupuestador: https://lgavegno.github.io/generador-presupuestos/presupuestador/
+Tienda Nube: https://lgavegno.github.io/generador-presupuestos/tienda-nube.html
+```
 
-HOME: https://lgavegno.github.io/formulario-tienda-nube/
-Presupuestador: https://lgavegno.github.io/formulario-tienda-nube/presupuestador/
-Tienda Nube: https://lgavegno.github.io/formulario-tienda-nube/tienda-nube.html
+## PRESUPUESTADOR MINIMALISTA
 
-## PRESUPUESTADOR CONTENTS
+**4 Campos de Contacto:**
+- Nombre (required)
+- Email (required)
+- Teléfono (optional)
+- Observaciones (optional)
 
-ONLY:
-- Tipo de Sitio
-- Secciones (9)
-- Funcionalidades (8)
-- Presupuesto en tiempo real
-- Nombre, Email, Teléfono (contact minimal)
+**Especificaciones:**
+- Tipo de Sitio (1 select)
+- Secciones (9 checkboxes, $40k c/u)
+- Funcionalidades (8 checkboxes, $50k c/u)
 
-NOT:
-- DNI/CUIT
-- Fiscal info
-- Domicilio
-- Redes sociales
+**Cálculo:**
+- Subtotal (base + secciones + features)
+- IVA 21% (checkbox optional)
+- Total ARS
 
-## TIENDA NUBE CONTENTS
-
-ALL from v3:
-- Información personal
-- Información fiscal
+**NO incluye:**
+- DNI/CUIT, fiscal, domicilio
+- Redes sociales, medios pago
 - Información del negocio
-- Domicilio
-- Redes sociales
-- Medios de pago
-- Diseño y especificaciones
 
-## USER FLOWS
+## TIENDA NUBE
 
-Flow 1 (Lead Magnet):
-User → HOME → Click Presupuestador → presupuestador/ → Fill basic info → Email sent
+Archivo guardado para futuro uso (WordPress, etc).
+No está enlazado en HOME.
 
-Flow 2 (Complete Setup):
-User → HOME → Click Tienda Nube → tienda-nube.html → Fill complete form → Ready for implementation
-
+---
