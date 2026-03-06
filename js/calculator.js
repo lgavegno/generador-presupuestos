@@ -5,6 +5,8 @@
 function updatePresupuesto() {
     const typeSelect = document.getElementById('website_type');
     const selectedType = typeSelect.value;
+    const facturaIva = document.getElementById('factura-iva');
+    const tieneIva = facturaIva ? facturaIva.checked : false;
 
     if (!selectedType) {
         resetPresupuesto();
@@ -27,9 +29,10 @@ function updatePresupuesto() {
     const funcionalidadesPrecio = state.features.length * CONFIG.PRECIO_FUNCIONALIDAD;
 
     const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;
-    const iva = subtotal * CONFIG.IVA;
+
+    // IVA SOLO si checkbox está marcado
+    const iva = tieneIva ? (subtotal * CONFIG.IVA) : 0;
     const total = subtotal + iva;
-    const totalUSD = total / CONFIG.TIPO_CAMBIO;
 
     state.presupuesto = {
         base: basePrecio,
@@ -38,7 +41,7 @@ function updatePresupuesto() {
         subtotal: subtotal,
         iva: iva,
         total: total,
-        totalUSD: totalUSD
+        tieneIva: tieneIva
     };
 
     updateUI();
@@ -46,6 +49,9 @@ function updatePresupuesto() {
 }
 
 function updateUI() {
+    const ivaLine = document.getElementById('iva-line');
+    const tieneIva = state.presupuesto.tieneIva;
+
     if (document.getElementById('precio-base')) {
         document.getElementById('precio-base').textContent = formatCurrency(state.presupuesto.base);
     }
@@ -64,14 +70,17 @@ function updateUI() {
     if (document.getElementById('subtotal')) {
         document.getElementById('subtotal').textContent = formatCurrency(state.presupuesto.subtotal);
     }
+
+    // Mostrar/ocultar IVA según checkbox
+    if (ivaLine) {
+        ivaLine.style.display = tieneIva ? 'flex' : 'none';
+    }
+
     if (document.getElementById('impuesto')) {
         document.getElementById('impuesto').textContent = formatCurrency(state.presupuesto.iva);
     }
     if (document.getElementById('total')) {
         document.getElementById('total').textContent = formatCurrency(state.presupuesto.total);
-    }
-    if (document.getElementById('total-usd')) {
-        document.getElementById('total-usd').textContent = formatCurrency(state.presupuesto.totalUSD);
     }
 }
 

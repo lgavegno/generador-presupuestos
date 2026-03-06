@@ -8,12 +8,18 @@ function collectFormData() {
         nombre: document.getElementById('nombre')?.value || '',
         email: document.getElementById('email')?.value || '',
         telefono: document.getElementById('telefono')?.value || '',
-        tipo_sitio: document.getElementById('website_type')?.value || '',
+        website_type: document.getElementById('website_type')?.value || '',
         secciones_elegidas: state.sections,
         funcionalidades: state.features,
         presupuesto: state.presupuesto,
+        observaciones: document.getElementById('observaciones')?.value || '',
         user_agent: navigator.userAgent
     };
+}
+
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
 function validateForm() {
@@ -26,7 +32,12 @@ function validateForm() {
         return false;
     }
 
-    if (!email || !isValidEmail(email)) {
+    if (!email) {
+        showError('Por favor ingresa tu email');
+        return false;
+    }
+
+    if (!isValidEmail(email)) {
         showError('Por favor ingresa un email válido');
         return false;
     }
@@ -37,11 +48,6 @@ function validateForm() {
     }
 
     return true;
-}
-
-function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+\$/;
-    return re.test(email);
 }
 
 async function submitForm() {
@@ -70,7 +76,7 @@ function showLoadingIndicator(show) {
         if (spinner) spinner.style.display = 'block';
     } else {
         if (btn) btn.disabled = false;
-        if (btn) btn.textContent = 'Enviar Cotización';
+        if (btn) btn.textContent = '📧 Enviar Cotización';
         if (spinner) spinner.style.display = 'none';
     }
 }

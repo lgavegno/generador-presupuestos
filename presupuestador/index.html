@@ -352,6 +352,20 @@
                 </div>
             </section>
 
+            <!-- FACTURACIÓN -->
+            <section class="form-section">
+                <h2>💳 Facturación</h2>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="factura-iva" name="factura_iva" onchange="updatePresupuesto()">
+                        ¿Necesitas factura con IVA?
+                    </label>
+                    <small style="display: block; margin-top: 8px; color: #666;">
+                        Marca si eres Responsable Inscripto y necesitas factura con IVA incluido.
+                    </small>
+                </div>
+            </section>
+
             <!-- 4. PRESUPUESTO EN TIEMPO REAL -->
             <section class="presupuesto-card">
                 <h3>Resumen de Inversión</h3>
@@ -378,19 +392,16 @@
                     <span class="value" id="subtotal">$0</span>
                 </div>
                 
-                <div class="p-row">
+                <div class="p-row" id="iva-line" style="display: none;">
                     <span>IVA (21%):</span>
-                    <span class="value" id="impuesto">$0</span>
+                    <strong id="impuesto">$0</strong>
                 </div>
                 
                 <div class="p-separator"></div>
                 
                 <div class="p-total">
                     <span>TOTAL ESTIMADO:</span>
-                    <span id="total">$0 ARS</span>
-                </div>
-                <div class="p-total-usd">
-                    ~ <span id="total-usd">0</span> USD
+                    <strong id="total">$0</strong>
                 </div>
             </section>
 
