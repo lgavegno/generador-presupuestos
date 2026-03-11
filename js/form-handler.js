@@ -8,10 +8,19 @@ function collectFormData() {
         nombre: document.getElementById('nombre')?.value || '',
         email: document.getElementById('email')?.value || '',
         telefono: document.getElementById('telefono')?.value || '',
-        website_type: document.getElementById('website_type')?.value || '',
+        tipo_sitio: document.getElementById('website_type')?.value || '',
         secciones_elegidas: state.sections,
         funcionalidades: state.features,
-        presupuesto: state.presupuesto,
+        // Mapeo manual para evitar 'undefined' en el backend
+        presupuesto: {
+            base: state.presupuesto.base,
+            secciones: state.presupuesto.secciones,
+            funcionalidades: state.presupuesto.funcionalidades,
+            subtotal: state.presupuesto.subtotal,
+            iva: state.presupuesto.iva,
+            total: state.presupuesto.total,
+            totalUSD: state.presupuesto.totalUSD
+        },
         observaciones: document.getElementById('observaciones')?.value || '',
         user_agent: navigator.userAgent
     };

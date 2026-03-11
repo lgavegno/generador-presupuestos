@@ -11,7 +11,16 @@ function collectFormData() {
         tipo_sitio: document.getElementById('website_type')?.value || '',
         secciones_elegidas: state.sections,
         funcionalidades: state.features,
-        presupuesto: state.presupuesto,
+        // Mapeo manual para evitar 'undefined' en el backend
+        presupuesto: {
+            base: state.presupuesto.base,
+            secciones: state.presupuesto.secciones,
+            funcionalidades: state.presupuesto.funcionalidades,
+            subtotal: state.presupuesto.subtotal,
+            iva: state.presupuesto.iva,
+            total: state.presupuesto.total,
+            totalUSD: state.presupuesto.totalUSD
+        },
         user_agent: navigator.userAgent
     };
 }
@@ -40,7 +49,7 @@ function validateForm() {
 }
 
 function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+\$/;
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
