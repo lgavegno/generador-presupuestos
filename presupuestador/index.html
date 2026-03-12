@@ -307,7 +307,7 @@
             <section class="form-section">
                 <h2>1. Selecciona el Tipo de Sitio Web</h2>
                 <div class="form-group">
-                    <select id="website_type" name="website_type" required onchange="updatePresupuesto()">
+                    <select id="tipo_sitio" name="tipo_sitio" required onchange="console.log('Select changed to:', this.value); updatePresupuesto();">
                         <option value="">-- Elige una opción --</option>
                         <option value="landing">Landing Page (1 página) - $180,000 ARS</option>
                         <option value="simple">Sitio Simple (3-5 páginas) - $200,000 ARS</option>
@@ -322,15 +322,15 @@
                 <h2>2. Secciones del Sitio ($40,000 c/u)</h2>
                 <div class="form-group">
                     <div class="checkbox-grid">
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="hero" onchange="updatePresupuesto()"><span>Hero/Header</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="hero" onchange="updatePresupuesto()"><span>Home/Inicio</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="sections" value="about" onchange="updatePresupuesto()"><span>Acerca de</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="sections" value="products" onchange="updatePresupuesto()"><span>Productos/Servicios</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="sections" value="gallery" onchange="updatePresupuesto()"><span>Galería</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="sections" value="testimonials" onchange="updatePresupuesto()"><span>Testimonios</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="faq" onchange="updatePresupuesto()"><span>FAQ</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="faq" onchange="updatePresupuesto()"><span>FAQ (Preguntas Frecuentes)</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="sections" value="blog" onchange="updatePresupuesto()"><span>Blog</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="sections" value="contact" onchange="updatePresupuesto()"><span>Contacto</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="newsletter" onchange="updatePresupuesto()"><span>Newsletter</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="sections" value="newsletter" onchange="updatePresupuesto()"><span>Newsletter (Email para Suscripción)</span></label>
                     </div>
                 </div>
             </section>
@@ -340,20 +340,20 @@
                 <h2>3. Funcionalidades Premium ($50,000 c/u)</h2>
                 <div class="form-group">
                     <div class="checkbox-grid">
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="tiendanube" onchange="updatePresupuesto()"><span>Integración Tienda Nube</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="cart" onchange="updatePresupuesto()"><span>Carrito de compras</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="search" onchange="updatePresupuesto()"><span>Búsqueda avanzada</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="filters" onchange="updatePresupuesto()"><span>Sistema de filtros</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="multilingual" onchange="updatePresupuesto()"><span>Múltiples idiomas</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="seo" onchange="updatePresupuesto()"><span>Optimización SEO</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="analytics" onchange="updatePresupuesto()"><span>Analytics</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="booking" onchange="updatePresupuesto()"><span>Sistema de reservas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="tiendanube" onchange="updatePresupuesto()"><span>Sincronización con Catálogo de Ventas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="cart" onchange="updatePresupuesto()"><span>Carrito de Compras & Pagos Online</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="search" onchange="updatePresupuesto()"><span>Búscador Inteligente de Productos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="filters" onchange="updatePresupuesto()"><span>Filtros de Búsqueda Avanzados</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="multilingual" onchange="updatePresupuesto()"><span>Sitio Multi-idioma (Español/Inglés)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="seo" onchange="updatePresupuesto()"><span>Posicionamiento en Google (SEO)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="analytics" onchange="updatePresupuesto()"><span>Panel de Estadísticas de Visitas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="features" value="booking" onchange="updatePresupuesto()"><span>Sistema de Reservas y Turnos</span></label>
                     </div>
                 </div>
             </section>
 
             <!-- FACTURACIÓN -->
-            <section class="form-section">
+            <section class="form-section" style="display: none;">
                 <h2>💳 Facturación</h2>
                 <div class="form-group">
                     <label>
@@ -387,7 +387,7 @@
                 
                 <div class="p-separator"></div>
                 
-                <div class="p-row">
+                <div class="p-row" style="display: none;">
                     <span>Subtotal:</span>
                     <span class="value" id="subtotal">$0</span>
                 </div>
@@ -403,6 +403,8 @@
                     <span>TOTAL ESTIMADO:</span>
                     <strong id="total">$0</strong>
                 </div>
+                <!-- USD reference removed from client view -->
+                <p style="text-align: right; font-size: 0.9em; margin-top: 10px; opacity: 0.8;">* Presupuesto válido por 15 días.</p>
             </section>
 
             <!-- 5. INFORMACIÓN DE CONTACTO -->
@@ -453,7 +455,7 @@
         // Our IDs match exactly what updateUI() in calculator.js expects:
         // 'precio-base', 'count-sections', 'precio-secciones', 'count-features', 'precio-features', 'subtotal', 'impuesto', 'total', 'total-usd'
         // And form-handler.js expects:
-        // 'nombre', 'email', 'telefono', 'website_type', 'presupuesto-form', 'submit-btn', 'loading-spinner'
+        // 'nombre', 'email', 'telefono', 'tipo_sitio', 'presupuesto-form', 'submit-btn', 'loading-spinner'
     </script>
 </body>
 

@@ -3,17 +3,22 @@
 // ═══════════════════════════════════════════════════════════════
 
 function updatePresupuesto() {
-    const typeSelect = document.getElementById('website_type');
-    const selectedType = typeSelect.value;
-    const facturaIva = document.getElementById('factura-iva');
-    const tieneIva = facturaIva ? facturaIva.checked : false;
+    console.log('🔧 updatePresupuesto() llamada');
+    const typeSelect = document.getElementById('tipo_sitio');
+    const selectedType = typeSelect ? typeSelect.value : null;
+
+    console.log('  - typeSelect elemento:', typeSelect);
+    console.log('  - selectedType:', selectedType);
+    console.log('  - CONFIG.PRESUPUESTO_BASE:', CONFIG.PRESUPUESTO_BASE);
 
     if (!selectedType) {
+        console.log('  - Sin tipo seleccionado, reseteando');
         resetPresupuesto();
         return;
     }
 
     state.websiteType = selectedType;
+    console.log('  - Tipo asignado:', state.websiteType);
 
     // Secciones
     const sectionCheckboxes = document.querySelectorAll('input[name="sections"]:checked');
@@ -24,15 +29,16 @@ function updatePresupuesto() {
     state.features = Array.from(featureCheckboxes).map(el => el.value);
 
     // Cálculos
-    const basePrecio = CONFIG.PRESUPUESTO_BASE[selectedType];
+    const basePrecio = CONFIG.PRESUPUESTO_BASE[selectedType] || 0;
     const seccionesPrecio = state.sections.length * CONFIG.PRECIO_SECCION;
     const funcionalidadesPrecio = state.features.length * CONFIG.PRECIO_FUNCIONALIDAD;
 
     const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;
 
-    // IVA SOLO si checkbox está marcado
-    const iva = tieneIva ? (subtotal * CONFIG.IVA) : 0;
+    // El IVA ahora se calcula SIEMPRE para que los datos viajen correctos al backend
+    const iva = subtotal * CONFIG.IVA;
     const total = subtotal + iva;
+    const totalUSD = total / CONFIG.TIPO_CAMBIO;
 
     state.presupuesto = {
         base: basePrecio,
@@ -41,47 +47,39 @@ function updatePresupuesto() {
         subtotal: subtotal,
         iva: iva,
         total: total,
-        tieneIva: tieneIva
+        totalUSD: totalUSD,
+        tieneIva: true
     };
+
+    console.log('  - Presupuesto calculado:', {
+        basePrecio,
+        seccionesPrecio,
+        funcionalidadesPrecio,
+        subtotal,
+        total: state.presupuesto.total
+    });
 
     updateUI();
     saveToStorage();
+    console.log('✓ updatePresupuesto() completada');
 }
 
 function updateUI() {
-    const ivaLine = document.getElementById('iva-line');
-    const tieneIva = state.presupuesto.tieneIva;
+    if (!state.presupuesto) return;
 
-    if (document.getElementById('precio-base')) {
-        document.getElementById('precio-base').textContent = formatCurrency(state.presupuesto.base);
-    }
-    if (document.getElementById('count-sections')) {
-        document.getElementById('count-sections').textContent = state.sections.length;
-    }
-    if (document.getElementById('precio-secciones')) {
-        document.getElementById('precio-secciones').textContent = formatCurrency(state.presupuesto.secciones);
-    }
-    if (document.getElementById('count-features')) {
-        document.getElementById('count-features').textContent = state.features.length;
-    }
-    if (document.getElementById('precio-features')) {
-        document.getElementById('precio-features').textContent = formatCurrency(state.presupuesto.funcionalidades);
-    }
-    if (document.getElementById('subtotal')) {
-        document.getElementById('subtotal').textContent = formatCurrency(state.presupuesto.subtotal);
-    }
-
-    // Mostrar/ocultar IVA según checkbox
-    if (ivaLine) {
-        ivaLine.style.display = tieneIva ? 'flex' : 'none';
-    }
-
-    if (document.getElementById('impuesto')) {
-        document.getElementById('impuesto').textContent = formatCurrency(state.presupuesto.iva);
-    }
-    if (document.getElementById('total')) {
-        document.getElementById('total').textContent = formatCurrency(state.presupuesto.total);
-    }
+    console.log('  - Actualizando UI...');
+    document.getElementById('precio-base') && (document.getElementById('precio-base').innerText = formatCurrency(state.presupuesto.base));
+    document.getElementById('count-sections') && (document.getElementById('count-sections').innerText = state.sections.length);
+    document.getElementById('precio-secciones') && (document.getElementById('precio-secciones').innerText = formatCurrency(state.presupuesto.secciones));
+    document.getElementById('count-features') && (document.getElementById('count-features').innerText = state.features.length);
+    document.getElementById('precio-features') && (document.getElementById('precio-features').innerText = formatCurrency(state.presupuesto.funcionalidades));
+    document.getElementById('subtotal') && (document.getElementById('subtotal').innerText = formatCurrency(state.presupuesto.subtotal));
+    document.getElementById('impuesto') && (document.getElementById('impuesto').innerText = formatCurrency(state.presupuesto.iva));
+    document.getElementById('total') && (document.getElementById('total').innerText = formatCurrency(state.presupuesto.subtotal));
+    console.log('  - UI actualizada con:', {
+        precioBase: formatCurrency(state.presupuesto.base),
+        total: formatCurrency(state.presupuesto.subtotal)
+    });
 }
 
 function resetPresupuesto() {
@@ -90,7 +88,7 @@ function resetPresupuesto() {
 }
 
 function formatCurrency(value) {
-    return new Intl.NumberFormat('es-AR', {
+    return '$' + new Intl.NumberFormat('es-AR', {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     }).format(value);

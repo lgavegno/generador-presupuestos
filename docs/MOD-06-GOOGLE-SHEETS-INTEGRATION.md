@@ -485,6 +485,69 @@ function logEvent(submissionId, eventType, message, status) {
 
 ---
 
+## 🏷️ MAPEO DE "FRIENDLY NAMES"
+
+A partir de la v1.1, el frontend envía códigos técnicos que son mapeados a nombres legibles en Google Sheets y emails.
+
+### Secciones (en `form-handler.js`)
+```javascript
+const SECCION_LABELS = {
+    hero: 'Inicio/Hero',
+    about: 'Acerca de',
+    products: 'Productos/Servicios',
+    gallery: 'Galería',
+    testimonials: 'Testimonios',
+    faq: 'Preguntas Frecuentes',
+    blog: 'Blog',
+    contact: 'Contacto',
+    newsletter: 'Newsletter'
+};
+```
+
+**Ejemplo:**
+- Frontend: `['hero', 'products', 'blog']`
+- Google Sheets: `Inicio/Hero, Productos/Servicios, Blog`
+- Email: `• Inicio/Hero`<br>`• Productos/Servicios`<br>`• Blog`
+
+### Funcionalidades (en `form-handler.js`)
+```javascript
+const FEATURE_LABELS = {
+    tiendanube: 'Sincronización con Catálogo de Ventas',
+    cart: 'Carrito de Compras & Pagos Online',
+    search: 'Buscador Interno',
+    filters: 'Filtros de Búsqueda Avanzados',
+    multilingual: 'Sitio Multilingüe',
+    seo: 'Optimización SEO',
+    analytics: 'Google Analytics / Estadísticas',
+    booking: 'Sistema de Reservas y Turnos'
+};
+```
+
+**Ejemplo:**
+- Frontend: `['seo', 'analytics']`
+- Google Sheets: `Optimización SEO, Google Analytics / Estadísticas`
+- Email: `• Optimización SEO`<br>`• Google Analytics / Estadísticas`
+
+### Implementación en Backend
+
+El Apps Script recibe la data YA MAPEADA desde el frontend:
+
+```javascript
+// En sendToGoogleSheets() del frontend, ANTES de enviar:
+const seccionesLegibles = state.sections.map(s => SECCION_LABELS[s] || s);
+const funcionalidadesLegibles = state.features.map(f => FEATURE_LABELS[f] || f);
+
+// Se envía al webhook:
+{
+  "secciones_elegidas": ["Inicio/Hero", "Productos/Servicios"],
+  "funcionalidades": ["Optimización SEO", "Google Analytics / Estadísticas"]
+}
+```
+
+**Ventaja:** Google Sheets y emails muestran nombres legibles automáticamente, sin lógica adicional en el backend.
+
+---
+
 ## 🔗 FRONTEND INTEGRATION
 
 ### JavaScript code sends data:

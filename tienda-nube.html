@@ -1401,31 +1401,31 @@
                     <label>¿Qué tipo de sitio web necesitas? <span class="required">*</span></label>
                     <div class="radio-group">
                         <div class="radio-item">
-                            <input type="radio" id="landing" name="website_type" value="Landing Page (1 página)" required>
+                            <input type="radio" id="landing" name="tipo_sitio" value="Landing Page (1 página)" required>
                             <label for="landing">
                                 <strong>Landing Page</strong> - 1 página enfocada en conversión
                             </label>
                         </div>
                         <div class="radio-item">
-                            <input type="radio" id="simple" name="website_type" value="Sitio Web Simple (3-5 páginas)" required>
+                            <input type="radio" id="simple" name="tipo_sitio" value="Sitio Web Simple (3-5 páginas)" required>
                             <label for="simple">
                                 <strong>Sitio Web Simple</strong> - 3-5 páginas con información completa
                             </label>
                         </div>
                         <div class="radio-item">
-                            <input type="radio" id="portfolio" name="website_type" value="Portfolio/Galería" required>
+                            <input type="radio" id="portfolio" name="tipo_sitio" value="Portfolio/Galería" required>
                             <label for="portfolio">
                                 <strong>Portfolio/Galería</strong> - Showcase de trabajos, productos o servicios
                             </label>
                         </div>
                         <div class="radio-item">
-                            <input type="radio" id="ecommerce" name="website_type" value="E-Commerce/Tienda Online" required>
+                            <input type="radio" id="ecommerce" name="tipo_sitio" value="E-Commerce/Tienda Online" required>
                             <label for="ecommerce">
                                 <strong>E-Commerce/Tienda</strong> - Integración con Tienda Nube
                             </label>
                         </div>
                         <div class="radio-item">
-                            <input type="radio" id="custom" name="website_type" value="Custom/Otro (especificar)" required>
+                            <input type="radio" id="custom" name="tipo_sitio" value="Custom/Otro (especificar)" required>
                             <label for="custom">
                                 <strong>Custom/Otro</strong> - Especificar en observaciones
                             </label>
@@ -1585,7 +1585,7 @@
         // Función para actualizar resumen de sitio web
         function updateWebsiteSummary() {
             // Obtener tipo de sitio seleccionado
-            const siteType = document.querySelector('input[name="website_type"]:checked');
+            const siteType = document.querySelector('input[name="tipo_sitio"]:checked');
             const typeText = siteType ? siteType.value : 'Pendiente de selección...';
             document.getElementById('summary-type').textContent = typeText;
 
@@ -1607,7 +1607,7 @@
         }
 
         // Event listeners para actualizar resumen en tiempo real
-        document.querySelectorAll('input[name="website_type"]').forEach(radio => {
+        document.querySelectorAll('input[name="tipo_sitio"]').forEach(radio => {
             radio.addEventListener('change', updateWebsiteSummary);
         });
 

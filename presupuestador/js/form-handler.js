@@ -2,40 +2,79 @@
 // FORM-HANDLER.JS - MANEJO DEL FORMULARIO
 // ═══════════════════════════════════════════════════════════════
 
+// Mapeo de valores técnicos a nombres legibles para el email
+const SECCION_LABELS = {
+    hero: 'Inicio/Hero',
+    about: 'Acerca de',
+    products: 'Productos/Servicios',
+    gallery: 'Galería',
+    testimonials: 'Testimonios',
+    faq: 'Preguntas Frecuentes',
+    blog: 'Blog',
+    contact: 'Contacto',
+    newsletter: 'Newsletter',
+    services: 'Servicios',
+    portfolio: 'Portafolio'
+};
+
+const FEATURE_LABELS = {
+    tiendanube: 'Sincronización con Catálogo de Ventas',
+    cart: 'Carrito de Compras & Pagos Online',
+    search: 'Buscador Interno',
+    filters: 'Filtros de Búsqueda Avanzados',
+    multilingual: 'Sitio Multilingüe',
+    seo: 'Optimización SEO',
+    analytics: 'Google Analytics / Estadísticas',
+    booking: 'Sistema de Reservas y Turnos',
+    cms: 'Gestor de Contenido (CMS)'
+};
+
 function collectFormData() {
+    const seccionesLegibles = state.sections.map(s => SECCION_LABELS[s] || s);
+    const funcionalidadesLegibles = state.features.map(f => FEATURE_LABELS[f] || f);
+
     return {
         timestamp: new Date().toISOString(),
         nombre: document.getElementById('nombre')?.value || '',
         email: document.getElementById('email')?.value || '',
         telefono: document.getElementById('telefono')?.value || '',
-        tipo_sitio: document.getElementById('website_type')?.value || '',
-        secciones_elegidas: state.sections,
-        funcionalidades: state.features,
-        // Mapeo manual para evitar 'undefined' en el backend
+        tipo_sitio: document.getElementById('tipo_sitio')?.value || '',
+        secciones_elegidas: seccionesLegibles,
+        funcionalidades: funcionalidadesLegibles,
+        // Desglose numérico completo para la hoja de cálculo y el email
         presupuesto: {
             base: state.presupuesto.base,
             secciones: state.presupuesto.secciones,
             funcionalidades: state.presupuesto.funcionalidades,
             subtotal: state.presupuesto.subtotal,
             iva: state.presupuesto.iva,
-            total: state.presupuesto.total,
-            totalUSD: state.presupuesto.totalUSD
+            total: state.presupuesto.total
         },
-        user_agent: navigator.userAgent
+        observaciones: document.getElementById('observaciones')?.value || ''
     };
+}
+
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
 function validateForm() {
     const nombre = document.getElementById('nombre')?.value.trim();
     const email = document.getElementById('email')?.value.trim();
-    const tipo = document.getElementById('website_type')?.value;
+    const tipo = document.getElementById('tipo_sitio')?.value;
 
     if (!nombre) {
         showError('Por favor ingresa tu nombre');
         return false;
     }
 
-    if (!email || !isValidEmail(email)) {
+    if (!email) {
+        showError('Por favor ingresa tu email');
+        return false;
+    }
+
+    if (!isValidEmail(email)) {
         showError('Por favor ingresa un email válido');
         return false;
     }
@@ -46,11 +85,6 @@ function validateForm() {
     }
 
     return true;
-}
-
-function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
 }
 
 async function submitForm() {
