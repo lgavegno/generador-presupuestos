@@ -160,9 +160,54 @@ docs: Registrar hito v1.1 en PROJECT_LOG.md
 - ✅ ~~Símbolos de moneda perdidos~~ → `formatCurrency()` ahora tiene `$`
 - ✅ ~~Campo observaciones no mapeado~~ → Ahora se mapea correctamente
 
+### DESPLIEGUE & RELEASE
+
+**Fecha de Cierre:** 12 Marzo 2026, 08:13 UTC-3
+
+**Commit Release:** `81dbfab` - feat: release v1.1.0
+**Tag:** `v1.1.0` (annotated)
+**Rama:** main
+
+**Workflow Completado:**
+```
+fix/email-variables-sync
+    ↓ commit (81dbfab)
+    ↓ merge --no-ff
+main ← [MERGED]
+    ↓ tag v1.1.0
+    ↓ push origin main --tags
+GitHub (LIVE)
+```
+
+**Verificación Post-Release:**
+- ✅ Todos los cambios pusheados a main
+- ✅ Tag v1.1.0 visible en GitHub
+- ✅ Rama de trabajo eliminada (local + remoto)
+- ✅ Documentación actualizada y sincronizada
+- ✅ Commits bien descritos con CHANGELOG
+
+**Estado de Producción:** ✅ LIVE
+**Usuarios Afectados:** Todos los que usan /presupuestador/index.html
+
 ### PRÓXIMOS PASOS
 
 1. Setup Google Apps Script (si aún no está hecho)
 2. Test email end-to-end con datos reales
 3. Monitoreo de cotizaciones en Google Sheets
 4. Optimizaciones futuras (ej: caché de presupuestos, A/B testing)
+
+---
+
+## PRÓXIMAS VERSIONES
+
+### v1.2 (Planeado)
+- Google Apps Script completo + testing
+- Email notifications end-to-end
+- Dashboard de estadísticas en Sheets
+- Soporte multi-idioma (ES/EN)
+
+### v2.0 (Planeado)
+- Integración Tienda Nube API
+- WordPress Prompt Generator
+- Dashboard de propietario (React)
+- Sistema de descuentos
