@@ -4,196 +4,620 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Presupuestos Minimalista</title>
+    <title>Generador de Presupuestos | Sitio Web Profesional</title>
+    <meta name="description" content="Obtené una cotización instantánea y transparente para tu sitio web profesional.">
+    <!-- Google Fonts: Inter -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+        rel="stylesheet" />
     <style>
-        * {
+        /* ══════════════════════════════════════════
+           RESET & VARIABLES
+        ══════════════════════════════════════════ */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         :root {
-            --color-primary: #1f4e79;
-            --color-secondary: #1f7950;
-            --color-accent: #ff6b35;
-            --color-light: #f9f9f9;
-            --color-white: #ffffff;
-            --color-text: #333333;
-            --color-border: #e0e0e0;
+            --bg-page: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0a1120;
+            --accent: #16c946;
+            --accent-dark: #12a83a;
+            --accent-pale: rgba(22, 201, 70, 0.08);
+            --accent-border: rgba(22, 201, 70, 0.5);
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --border-focus: #16c946;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition: 0.2s ease;
+        }
+
+        /* ══════════════════════════════════════════
+           BASE
+        ══════════════════════════════════════════ */
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            color: var(--color-text);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
-            padding: 20px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 800px;
+        /* ══════════════════════════════════════════
+           LAYOUT — Two-column sticky
+        ══════════════════════════════════════════ */
+        .page-wrapper {
+            max-width: 1140px;
             margin: 0 auto;
-            background: var(--color-white);
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            position: relative; /* For the back button */
+            padding: 24px 20px 60px;
         }
 
-        /* Back Button */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .left-col {
+            min-width: 0;
+        }
+
+        .right-col {
+            position: sticky;
+            top: 24px;
+        }
+
+        /* ══════════════════════════════════════════
+           BACK LINK
+        ══════════════════════════════════════════ */
         .back-link {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            text-decoration: none;
-            color: var(--color-primary);
-            font-weight: bold;
-            font-size: 1.1em;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
-            transition: color 0.3s;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            transition: color var(--transition);
         }
 
         .back-link:hover {
-            color: var(--color-accent);
+            color: var(--text-primary);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            margin-top: 20px; /* Space for back button */
-            padding-bottom: 20px;
-            border-bottom: 2px transparent; /* No hard bottom border as requested explicitly, using gradient text or full background */
+        .back-link svg {
+            width: 16px;
+            height: 16px;
         }
 
-        /* Header Gradient Text (or background if preferred, but gradient text is usually cleaner here) 
-           Request says: "Gradiente azul/verde (#1f4e79 a #1f7950)" for Header. Let's make the whole header area have the gradient to strictly follow "Header con fondo gradiente", wait, the request asks for "Header: Gradiente azul/verde".
-           Let's apply it just to the text for a cleaner look, or wait. If it meant background, let's keep it similar to index-home.html if needed.
-           Actually, the prompt says "Header: Gradiente azul/verde (#1f4e79 a #1f7950)". I'll apply it to the h1 text for a modern look, or to the entire header block if we want it like a true header. Let's make the text gradient.
-        */
-        header h1 {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2.8em;
+        /* ══════════════════════════════════════════
+           PAGE HEADER
+        ══════════════════════════════════════════ */
+        .page-header {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 40px 48px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, #0fd648 100%);
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        .page-header h1 span {
+            color: var(--accent-dark);
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-top: 8px;
+        }
+
+        /* ══════════════════════════════════════════
+           CARDS (sections)
+        ══════════════════════════════════════════ */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 32px 36px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+        }
+
+        .card-header .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: #111;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .card-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0;
+        }
+
+        .card-header .subtitle {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            margin-top: 10px;
+            padding-left: 38px;
+            font-style: normal;
+        }
+
+        /* Precio separado del h2 */
+        .price-tag {
+            display: block;
+            padding-left: 38px;
+            margin-top: 6px;
+            margin-bottom: 2px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+        }
+
+        /* ══════════════════════════════════════════
+           CLARITY BLOCK (info boxes)
+        ══════════════════════════════════════════ */
+        .clarity-block {
+            background: rgba(10, 17, 32, 0.8);
+            border: 1px solid var(--accent-border);
+            border-left: 3px solid var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin-top: 20px;
+            font-size: 0.875rem;
+            color: #ffffff;
+        }
+
+        .clarity-block strong {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .clarity-block ul {
+            margin-top: 8px;
+            padding-left: 18px;
+        }
+
+        .clarity-block ul li {
+            margin-bottom: 3px;
+            color: #ffffff;
+        }
+
+        .clarity-block ul li strong {
+            color: #ffffff;
+            display: inline;
+        }
+
+        /* ══════════════════════════════════════════
+           OPTION CARDS — Tipo de sitio
+        ══════════════════════════════════════════ */
+
+        /* Hidden <select> still exists for JS compatibility */
+        #tipo_sitio {
+            display: none;
+        }
+
+        .option-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .option-card {
+            position: relative;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            cursor: pointer;
+            transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+            background: rgba(30, 41, 59, 0.8);
+            user-select: none;
+        }
+
+        .option-card:hover {
+            border-color: var(--accent-dark);
+            box-shadow: var(--shadow-md);
+        }
+
+        .option-card.selected {
+            border-color: var(--accent);
+            background: var(--accent-pale);
+            box-shadow: 0 0 0 4px rgba(27, 250, 87, 0.1);
+        }
+
+        .option-card.selected .option-card__check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .option-card__check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 22px;
+            height: 22px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity var(--transition), transform var(--transition);
+        }
+
+        .option-card__check svg {
+            width: 13px;
+            height: 13px;
+            color: #111;
+        }
+
+        .option-card__icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .option-card__name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .option-card__price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
             margin-bottom: 10px;
         }
 
-        header p {
-            color: #666;
-            font-size: 1.2em;
+        .option-card__features {
+            list-style: none;
+            padding: 0;
         }
 
-        .form-section {
-            margin: 30px 0;
-            padding: 24px;
-            background: var(--color-light);
-            border-left: 5px solid var(--color-secondary);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .form-section h2 {
-            color: var(--color-primary);
-            margin-bottom: 20px;
-            font-size: 1.4em;
+        .option-card__features li {
+            font-size: 0.78rem;
+            color: #e2e8f0;
             display: flex;
             align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .option-card__features li::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background: var(--accent-dark);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ══════════════════════════════════════════
+           DIAGRAM IMAGE
+        ══════════════════════════════════════════ */
+        .diagram-block {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 28px 36px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .diagram-block h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 16px;
+        }
+
+        .diagram-block img {
+            width: 100%;
+            max-width: 580px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        /* ══════════════════════════════════════════
+           PILL CHECKBOXES
+        ══════════════════════════════════════════ */
+        .pill-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
 
+        .pill-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+            background: rgba(15, 23, 42, 0.6);
+            user-select: none;
+        }
+
+        .pill-item:hover {
+            border-color: var(--accent-dark);
+        }
+
+        .pill-item input[type="checkbox"] {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--accent-dark);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .pill-item span {
+            font-size: 0.87rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            line-height: 1.3;
+        }
+
+        /* Checked state — fluor fill, dark text for contrast */
+        .pill-item:has(input:checked) {
+            background: var(--accent);
+            border-color: var(--accent-dark);
+            box-shadow: 0 2px 8px rgba(27, 250, 87, 0.35);
+        }
+
+        .pill-item:has(input:checked) span {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* ══════════════════════════════════════════
+           CONTACT FORM
+        ══════════════════════════════════════════ */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 10px;
+            font-size: 0.825rem;
             font-weight: 600;
-            color: var(--color-primary);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 7px;
         }
 
-        .form-group select,
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="tel"] {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid var(--color-border);
-            border-radius: 6px;
-            font-size: 1em;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.97rem;
             font-family: inherit;
-            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-primary);
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
 
-        .form-group select:focus,
-        .form-group input:focus {
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
             outline: none;
-            border-color: var(--color-secondary);
-            box-shadow: 0 0 0 3px rgba(31, 121, 80, 0.1);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(27, 250, 87, 0.15);
         }
 
-        /* Checkboxes Grid */
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        /* ══════════════════════════════════════════
+           INFO BOX — Condiciones comerciales
+        ══════════════════════════════════════════ */
+        .info-box {
+            background: rgba(10, 17, 32, 0.85);
+            border: 1px solid rgba(22, 201, 70, 0.4);
+            border-left: 3px solid var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-bottom: 24px;
         }
 
-        @media (max-width: 600px) {
-            .checkbox-grid {
-                grid-template-columns: 1fr;
+        .info-box__title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-box strong {
+            color: #ffffff;
+        }
+
+        /* ══════════════════════════════════════════
+           SUBMIT BUTTON
+        ══════════════════════════════════════════ */
+        .submit-area {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #0a2e14;
+            border: none;
+            padding: 16px 44px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(27, 250, 87, 0.35);
+            letter-spacing: -0.01em;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(27, 250, 87, 0.45);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ══════════════════════════════════════════
+           SPINNER
+        ══════════════════════════════════════════ */
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.08);
+            border-top: 3px solid var(--accent-dark);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            animation: spin 0.75s linear infinite;
+            margin: 18px auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
 
-        .checkbox-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 10px;
-            background: white;
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .checkbox-item:hover {
-            border-color: var(--color-secondary);
-            background: #f0f7f4;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            margin-top: 3px;
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            accent-color: var(--color-secondary);
-            cursor: pointer;
-        }
-        
-        .checkbox-item span {
-            font-size: 1rem;
-            color: #444;
-            user-select: none;
-        }
-
-        /* Presupuesto Card */
-        .presupuesto-card {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin: 40px 0;
-            box-shadow: 0 10px 30px rgba(31, 78, 121, 0.25);
-        }
-
-        .presupuesto-card h3 {
-            margin-bottom: 25px;
-            font-size: 1.6em;
+        #loading-spinner {
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 15px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        #loading-spinner p {
+            color: var(--accent-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        /* ══════════════════════════════════════════
+           STICKY BUDGET SIDEBAR
+        ══════════════════════════════════════════ */
+        .presupuesto-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 24px rgba(27, 250, 87, 0.15), var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .presupuesto-card__header {
+            background: var(--accent);
+            padding: 22px 24px;
+        }
+
+        .presupuesto-card__header h3 {
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #0a1f10;
+            margin-bottom: 2px;
+        }
+
+        .presupuesto-card__header p {
+            font-size: 0.82rem;
+            color: #1a4a27;
+        }
+
+        .presupuesto-card__body {
+            padding: 24px;
         }
 
         .p-row {
@@ -201,262 +625,507 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            font-size: 1.1em;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9rem;
         }
-        
-        .p-row .value {
-            font-weight: bold;
-            font-size: 1.15em;
+
+        .p-row:last-child {
+            border-bottom: none;
+        }
+
+        .p-row span:first-child {
+            color: var(--text-secondary);
+        }
+
+        .p-row .value,
+        .p-row span:last-child {
+            font-weight: 700;
+            color: #ffffff;
         }
 
         .p-separator {
             height: 1px;
-            background: rgba(255, 255, 255, 0.3);
-            margin: 15px 0;
+            background: var(--border);
+            margin: 16px 0;
         }
 
+        /* IVA / subtotal rows — secondary */
+        .p-row.secondary {
+            opacity: 0.65;
+            font-size: 0.82rem;
+        }
+
+        /* Total */
         .p-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0 5px 0;
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #fff;
+            margin-top: 16px;
+            padding: 18px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--accent-border);
         }
 
-        .p-total-usd {
-            text-align: right;
-            font-size: 1em;
-            color: rgba(255,255,255,0.9);
-            font-style: italic;
-            margin-top: 5px;
+        .p-total__label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
         }
 
-        /* Botón Enviar */
-        .submit-area {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid var(--color-border);
+        .p-total__amount {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.04em;
+            line-height: 1;
         }
 
-        .btn-submit {
-            background: var(--color-accent);
-            color: white;
-            border: none;
-            padding: 18px 45px;
-            font-size: 1.3em;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+        .p-total__amount #total {
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
         }
 
-        .btn-submit:hover {
-            background: #e55b25;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        .p-total__note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 6px;
         }
 
-        /* Spinner (mantenido del original) */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-top: 4px solid var(--color-primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        /* ══════════════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .right-col {
+                position: static;
+            }
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 640px) {
+            .option-cards-grid {
+                grid-template-columns: 1fr;
+            }
 
-        #loading-spinner {
-            text-align: center;
-            margin-top: 20px;
-            display: none;
+            .pill-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .page-header {
+                padding: 28px 24px;
+            }
+
+            .card {
+                padding: 24px 20px;
+            }
         }
-        #loading-spinner p { color: var(--color-primary); font-weight: bold; margin-top: 10px; }
 
-        @media (max-width: 768px) {
-            .container { padding: 30px 20px; }
-            header h1 { font-size: 2.2em; }
-            .presupuesto-card { padding: 20px; }
-            .p-total { font-size: 1.25em; }
+        @media (max-width: 400px) {
+            .pill-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- LINK VOLVER -->
-        <a href="../" class="back-link">← Volver</a>
+    <div class="page-wrapper">
+        <!-- BACK LINK -->
+        <a href="../" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                    clip-rule="evenodd" />
+            </svg>
+            Volver
+        </a>
 
-        <header>
-            <h1>💰 Generador de Presupuestos</h1>
-            <p>Especifica tu sitio web y obtén una cotización al instante</p>
-        </header>
+        <!-- PAGE HEADER -->
+        <div class="page-header">
+            <h1>💰 Calculadora de <span>Presupuesto</span></h1>
+            <p>Seleccioná las opciones y recibí tu cotización personalizada al instante.</p>
+        </div>
 
-        <form id="presupuesto-form">
-            <!-- 1. TIPO DE SITIO -->
-            <section class="form-section">
-                <h2>1. Selecciona el Tipo de Sitio Web</h2>
-                <div class="form-group">
-                    <select id="tipo_sitio" name="tipo_sitio" required onchange="console.log('Select changed to:', this.value); updatePresupuesto();">
-                        <option value="">-- Elige una opción --</option>
-                        <option value="landing">Landing Page (1 página) - $180,000 ARS</option>
-                        <option value="simple">Sitio Simple (3-5 páginas) - $200,000 ARS</option>
-                        <option value="portfolio">Portfolio - $300,000 ARS</option>
-                        <option value="ecommerce">E-Commerce - $500,000 ARS</option>
-                    </select>
-                </div>
-            </section>
+        <div class="main-grid">
+            <!-- ══ LEFT COLUMN ══ -->
+            <div class="left-col">
+                <form id="presupuesto-form">
 
-            <!-- 2. SECCIONES -->
-            <section class="form-section">
-                <h2>2. Secciones del Sitio ($40,000 c/u)</h2>
-                <div class="form-group">
-                    <div class="checkbox-grid">
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="hero" onchange="updatePresupuesto()"><span>Home/Inicio</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="about" onchange="updatePresupuesto()"><span>Acerca de</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="products" onchange="updatePresupuesto()"><span>Productos/Servicios</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="gallery" onchange="updatePresupuesto()"><span>Galería</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="testimonials" onchange="updatePresupuesto()"><span>Testimonios</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="faq" onchange="updatePresupuesto()"><span>FAQ (Preguntas Frecuentes)</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="blog" onchange="updatePresupuesto()"><span>Blog</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="contact" onchange="updatePresupuesto()"><span>Contacto</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="sections" value="newsletter" onchange="updatePresupuesto()"><span>Newsletter (Email para Suscripción)</span></label>
+                    <!-- ─── 1. TIPO DE SITIO ─── -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><span class="step-badge">1</span>Tipo de Sitio Web</h2>
+                            <p class="subtitle">Seleccioná la arquitectura que mejor se ajusta a tu negocio.</p>
+                        </div>
+
+                        <!-- Hidden <select> keep JS working -->
+                        <select id="tipo_sitio" name="tipo_sitio" required aria-hidden="true" tabindex="-1" onchange="updatePresupuesto()">
+                            <option value=""></option>
+                            <option value="landing">Landing Page</option>
+                            <option value="simple">Sitio Simple</option>
+                            <option value="portfolio">Portfolio</option>
+                            <option value="ecommerce">E-Commerce</option>
+                        </select>
+
+                        <!-- Visual Option Cards -->
+                        <div class="option-cards-grid">
+
+                            <div class="option-card" data-value="landing" onclick="selectOptionCard(this)">
+                                <div class="option-card__check">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="option-card__icon"></div>
+                                <div class="option-card__name">Landing Page</div>
+                                <div class="option-card__price">$200,000 ARS</div>
+                                <ul class="option-card__features">
+                                    <li>1 página de alta conversión</li>
+                                    <li>Ideal para campañas y lanzamientos</li>
+                                    <li>Diseño enfocado en un objetivo</li>
+                                    <li>SEO On-page básico</li>
+                                </ul>
+                            </div>
+
+                            <div class="option-card" data-value="simple" onclick="selectOptionCard(this)">
+                                <div class="option-card__check">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="option-card__icon"></div>
+                                <div class="option-card__name">Sitio Simple</div>
+                                <div class="option-card__price">$250,000 ARS</div>
+                                <ul class="option-card__features">
+                                    <li>3 a 5 páginas navegables</li>
+                                    <li>Marca profesional completa</li>
+                                    <li>Arquitectura responsive</li>
+                                    <li>SEO semántico avanzado</li>
+                                </ul>
+                            </div>
+
+                            <div class="option-card" data-value="portfolio" onclick="selectOptionCard(this)">
+                                <div class="option-card__check">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="option-card__icon"></div>
+                                <div class="option-card__name">Portfolio</div>
+                                <div class="option-card__price">$350,000 ARS</div>
+                                <ul class="option-card__features">
+                                    <li>Galería de trabajos / proyectos</li>
+                                    <li>Presentación visual premium</li>
+                                    <li>Ideal para creativos y freelancers</li>
+                                    <li>Animaciones y transiciones</li>
+                                </ul>
+                            </div>
+
+                            <div class="option-card" data-value="ecommerce" onclick="selectOptionCard(this)">
+                                <div class="option-card__check">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="option-card__icon"></div>
+                                <div class="option-card__name">E-Commerce</div>
+                                <div class="option-card__price">$600,000 ARS</div>
+                                <ul class="option-card__features">
+                                    <li>Tienda online completa</li>
+                                    <li>Carrito + pasarela de pagos</li>
+                                    <li>Gestión de inventario</li>
+                                    <li>Checkout seguro PCI-DSS</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="clarity-block">
+                            <strong>📐 Sobre el Setup Profesional</strong>
+                            El precio base cubre la arquitectura técnica, la configuración de servidores, la puesta en marcha del SSL y la optimización de performance. Garantizamos una estructura responsive y la propiedad total del sitio una vez finalizado el proyecto, entregando una solución llave en mano lista para operar.
+                        </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- 3. FUNCIONALIDADES -->
-            <section class="form-section">
-                <h2>3. Funcionalidades Premium ($50,000 c/u)</h2>
-                <div class="form-group">
-                    <div class="checkbox-grid">
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="tiendanube" onchange="updatePresupuesto()"><span>Sincronización con Catálogo de Ventas</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="cart" onchange="updatePresupuesto()"><span>Carrito de Compras & Pagos Online</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="search" onchange="updatePresupuesto()"><span>Búscador Inteligente de Productos</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="filters" onchange="updatePresupuesto()"><span>Filtros de Búsqueda Avanzados</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="multilingual" onchange="updatePresupuesto()"><span>Sitio Multi-idioma (Español/Inglés)</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="seo" onchange="updatePresupuesto()"><span>Posicionamiento en Google (SEO)</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="analytics" onchange="updatePresupuesto()"><span>Panel de Estadísticas de Visitas</span></label>
-                        <label class="checkbox-item"><input type="checkbox" name="features" value="booking" onchange="updatePresupuesto()"><span>Sistema de Reservas y Turnos</span></label>
+                    <!-- ─── DIAGRAMA ─── -->
+                    <div class="diagram-block">
+                        <h3>¿No sabés cuál elegir?</h3>
+                        <img src="sitio-web-vs-landing.png" alt="Comparativa: Landing Page vs Sitio Web" loading="lazy">
                     </div>
-                </div>
-            </section>
 
-            <!-- FACTURACIÓN -->
-            <section class="form-section" style="display: none;">
-                <h2>💳 Facturación</h2>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="factura-iva" name="factura_iva" onchange="updatePresupuesto()">
-                        ¿Necesitas factura con IVA?
-                    </label>
-                    <small style="display: block; margin-top: 8px; color: #666;">
-                        Marca si eres Responsable Inscripto y necesitas factura con IVA incluido.
-                    </small>
-                </div>
-            </section>
+                    <!-- ─── 2. SECCIONES ─── -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><span class="step-badge">2</span>Secciones del Sitio</h2>
+                            <span class="price-tag">+$50,000 <small style="font-size:0.8rem;font-weight:500;">c/u</small></span>
+                            <p class="subtitle">Cada sección es una página o bloque con maquetación y diseño único y exclusivo.</p>
+                        </div>
 
-            <!-- 4. PRESUPUESTO EN TIEMPO REAL -->
-            <section class="presupuesto-card">
-                <h3>Resumen de Inversión</h3>
-                
-                <div class="p-row">
-                    <span>Precio Base Sitio:</span>
-                    <span class="value" id="precio-base">$0</span>
-                </div>
-                
-                <div class="p-row">
-                    <span>Adicional Secciones (<span id="count-sections">0</span>):</span>
-                    <span class="value" id="precio-secciones">$0</span>
-                </div>
-                
-                <div class="p-row">
-                    <span>Adicional Funcionalidades (<span id="count-features">0</span>):</span>
-                    <span class="value" id="precio-features">$0</span>
-                </div>
-                
-                <div class="p-separator"></div>
-                
-                <div class="p-row" style="display: none;">
-                    <span>Subtotal:</span>
-                    <span class="value" id="subtotal">$0</span>
-                </div>
-                
-                <div class="p-row" id="iva-line" style="display: none;">
-                    <span>IVA (21%):</span>
-                    <strong id="impuesto">$0</strong>
-                </div>
-                
-                <div class="p-separator"></div>
-                
-                <div class="p-total">
-                    <span>TOTAL ESTIMADO:</span>
-                    <strong id="total">$0</strong>
-                </div>
-                <!-- USD reference removed from client view -->
-                <p style="text-align: right; font-size: 0.9em; margin-top: 10px; opacity: 0.8;">* Presupuesto válido por 15 días.</p>
-            </section>
+                        <div class="pill-grid">
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections" value="hero"
+                                    onchange="updatePresupuesto()"><span>Home / Inicio</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections" value="about"
+                                    onchange="updatePresupuesto()"><span>Acerca de</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections"
+                                    value="products" onchange="updatePresupuesto()"><span>Productos /
+                                    Servicios</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections"
+                                    value="gallery" onchange="updatePresupuesto()"><span>Galería</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections"
+                                    value="testimonials" onchange="updatePresupuesto()"><span>Testimonios</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections" value="faq"
+                                    onchange="updatePresupuesto()"><span>FAQ</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections" value="blog"
+                                    onchange="updatePresupuesto()"><span>Blog</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections"
+                                    value="contact" onchange="updatePresupuesto()"><span>Contacto</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="sections"
+                                    value="newsletter" onchange="updatePresupuesto()"><span>Newsletter</span></label>
+                        </div>
 
-            <!-- 5. INFORMACIÓN DE CONTACTO -->
-            <section class="form-section">
-                <h2>4. Tus Datos de Contacto</h2>
-                
-                <div class="form-group">
-                    <label for="nombre">Nombre Completo *</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">E-mail *</label>
-                    <input type="email" id="email" name="email" placeholder="Ingresa tu correo principal" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="telefono">Teléfono / WhatsApp (Opcional)</label>
-                    <input type="tel" id="telefono" name="telefono" placeholder="+54 9 ...">
-                </div>
-            </section>
+                        <div class="clarity-block">
+                            <strong>🖌️ ¿Qué incluye cada sección?</strong>
+                            Cada sección se desarrolla como un módulo independiente con su propio layout y maquetación visual. El trabajo incluye la programación de interacciones específicas, optimización de assets para carga rápida y una estructura de componentes escalable que garantiza la coherencia técnica en todo el proyecto.
+                        </div>
+                    </div>
 
-            <!-- BOTÓN ENVIAR -->
-            <div class="submit-area">
-                <button type="button" id="submit-btn" onclick="submitForm()" class="btn-submit">
-                    📧 Enviar Cotización
-                </button>
-            </div>
-            
-            <div id="loading-spinner">
-                <div class="spinner"></div>
-                <p>Procesando cotización...</p>
-            </div>
-        </form>
-    </div>
+                    <!-- ─── 3. FUNCIONALIDADES ─── -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><span class="step-badge">3</span>Funcionalidades Premium</h2>
+                            <span class="price-tag">+$60,000 <small style="font-size:0.8rem;font-weight:500;">c/u</small></span>
+                            <p class="subtitle">Integraciones de alto nivel que elevan la experiencia del usuario.</p>
+                        </div>
+
+                        <div class="pill-grid">
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features"
+                                    value="tiendanube" onchange="updatePresupuesto()"><span>Catálogo de
+                                    Ventas</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features" value="cart"
+                                    onchange="updatePresupuesto()"><span>Carrito & Pagos Online</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features" value="search"
+                                    onchange="updatePresupuesto()"><span>Buscador Inteligente</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features"
+                                    value="filters" onchange="updatePresupuesto()"><span>Filtros
+                                    Avanzados</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features"
+                                    value="multilingual"
+                                    onchange="updatePresupuesto()"><span>Multi-idioma</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features" value="seo"
+                                    onchange="updatePresupuesto()"><span>SEO Avanzado</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features"
+                                    value="analytics" onchange="updatePresupuesto()"><span>Panel de
+                                    Estadísticas</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features"
+                                    value="booking" onchange="updatePresupuesto()"><span>Sistema de
+                                    Reservas</span></label>
+                            <label class="pill-item checkbox-item"><input type="checkbox" name="features" value="cms"
+                                    onchange="updatePresupuesto()"><span>Gestor de Contenido</span></label>
+                        </div>
+
+                        <div class="clarity-block">
+                            <strong>⚙️ ¿Por qué son "Premium"?</strong>
+                            Cada funcionalidad requiere desarrollo backend, integraciones con APIs externas y pruebas de
+                            calidad extensas. No son plugins que se activan con un click — son soluciones construidas y
+                            configuradas a medida de tu negocio.
+                            <ul>
+                                <li><strong>CMS:</strong> Panel para que vos mismo edites textos, imágenes y productos
+                                    sin tocar código.</li>
+                                <li><strong>Multi-idioma:</strong> Traducción profesional + rutas SEO para cada idioma.
+                                </li>
+                                <li><strong>SEO Avanzado:</strong> Schema.org, Core Web Vitals, sitemap dinámico y
+                                    monitoreo mensual.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- FACTURACIÓN (hidden, JS compatibility) -->
+                    <section style="display: none;">
+                        <div>
+                            <label>
+                                <input type="checkbox" id="factura-iva" name="factura_iva"
+                                    onchange="updatePresupuesto()">
+                                ¿Necesitas factura con IVA?
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- ─── 4. CONTACTO ─── -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><span class="step-badge">4</span>Tus Datos de Contacto</h2>
+                            <p class="subtitle">Recibís la cotización detallada en tu correo al instante.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre">Nombre Completo *</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">E-mail *</label>
+                            <input type="email" id="email" name="email" placeholder="tu@correo.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono">WhatsApp (Opcional)</label>
+                            <input type="tel" id="telefono" name="telefono" placeholder="+54 9 ...">
+                        </div>
+                    </div>
+
+                    <!-- CONDICIONES COMERCIALES -->
+                    <div class="info-box">
+                        <div class="info-box__title">📋 Condiciones Comerciales</div>
+                        <p>
+                            <strong>Infraestructura:</strong> Incluye primer año de Hosting (Plan Premium) y Dominio para los sitios detallados.
+                        </p>
+                        <p>
+                            <strong>Contenidos:</strong> El cliente provee textos, logos y fotos en alta calidad. No incluye redacción ni diseño de identidad. Si no dispone de material profesional, se deberá recurrir a un especialista en Diseño Gráfico o Copywriting (presupuestado por separado).
+                        </p>
+                        <p>
+                            <strong>Pago:</strong> 50% anticipado y 50% contra entrega.
+                        </p>
+                        <p style="color: #cbd5e1;">
+                            <strong style="color: #16c946;">Sistemas:</strong> Web Apps o ERPs se cotizan por separado debido a requerimientos de servidores VPS.
+                        </p>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <div class="submit-area">
+                        <button type="button" id="submit-btn" onclick="submitForm()" class="btn-submit">
+                            📧 Enviar Cotización
+                        </button>
+                    </div>
+
+                    <div id="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>Procesando cotización...</p>
+                    </div>
+
+                </form>
+            </div><!-- /left-col -->
+
+            <!-- ══ RIGHT COLUMN — STICKY SIDEBAR ══ -->
+            <div class="right-col">
+                <section class="presupuesto-card">
+                    <div class="presupuesto-card__header">
+                        <h3>Resumen de Inversión</h3>
+                        <p>Actualizado en tiempo real</p>
+                    </div>
+
+                    <div class="presupuesto-card__body">
+
+                        <div class="p-row">
+                            <span>Base del sitio</span>
+                            <span class="value" id="precio-base">$0</span>
+                        </div>
+
+                        <div class="p-row">
+                            <span>Secciones (<span id="count-sections">0</span>)</span>
+                            <span class="value" id="precio-secciones">$0</span>
+                        </div>
+
+                        <div class="p-row">
+                            <span>Funcionalidades (<span id="count-features">0</span>)</span>
+                            <span class="value" id="precio-features">$0</span>
+                        </div>
+
+                        <div class="p-separator"></div>
+
+                        <!-- Secondary rows: kept for JS but visually subdued -->
+                        <div class="p-row secondary" style="display:none;">
+                            <span>Subtotal</span>
+                            <span class="value" id="subtotal">$0</span>
+                        </div>
+
+                        <div class="p-row secondary" id="iva-line" style="display:none;">
+                            <span>IVA (21%)</span>
+                            <strong id="impuesto">$0</strong>
+                        </div>
+
+                        <div class="p-total">
+                            <div class="p-total__label">Total Estimado</div>
+                            <div class="p-total__amount"><strong id="total">$0</strong></div>
+                            <div class="p-total__note">* Presupuesto válido por 15 días</div>
+                        </div>
+
+                    </div>
+                </section>
+            </div><!-- /right-col -->
+
+        </div><!-- /main-grid -->
+    </div><!-- /page-wrapper -->
 
     <!-- SCRIPTS CORE -->
     <script src="../js/main.js"></script>
     <script src="../js/calculator.js"></script>
     <script src="../js/form-handler.js"></script>
     <script src="../js/email-handler.js"></script>
-    
+
     <script>
-        // Adjust the Google Sheets submission URL if needed since we are in a subfolder.
-        // The script variables might look at the global scope correctly because we imported them.
-        
-        // Minor patch: Update main.js references to look for exact IDs used locally if they differ.
-        // Our IDs match exactly what updateUI() in calculator.js expects:
-        // 'precio-base', 'count-sections', 'precio-secciones', 'count-features', 'precio-features', 'subtotal', 'impuesto', 'total', 'total-usd'
-        // And form-handler.js expects:
-        // 'nombre', 'email', 'telefono', 'tipo_sitio', 'presupuesto-form', 'submit-btn', 'loading-spinner'
+        /**
+         * selectOptionCard(card)
+         * ─────────────────────────────────────────────────────────
+         * Se ejecuta al hacer clic en una Option Card visual
+         * (Landing Page, Sitio Simple, Portfolio, E-Commerce).
+         *
+         * Responsabilidades:
+         *  1. Quita la clase .selected de todas las tarjetas.
+         *  2. Marca la tarjeta clickeada como .selected.
+         *  3. Sincroniza el valor con el <select id="tipo_sitio">
+         *     oculto que la lógica de JS (main.js / calculator.js)
+         *     escucha para recalcular el presupuesto.
+         *  4. Dispara un evento 'change' manual para que los
+         *     listeners del select (updatePresupuesto) se activen.
+         *
+         * @param {HTMLElement} card - El elemento .option-card clickeado.
+         */
+        function selectOptionCard(card) {
+            // Quitar estado seleccionado de todas las tarjetas
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+
+            // Marcar la tarjeta clickeada
+            card.classList.add('selected');
+
+            // Sincronizar con el <select> oculto que maneja el JS de cálculo
+            const select = document.getElementById('tipo_sitio');
+            select.value = card.dataset.value;
+
+            // Disparar el evento change para que calculator.js recalcule
+            select.dispatchEvent(new Event('change'));
+
+            console.log('[OptionCard] Tipo de sitio seleccionado:', card.dataset.value);
+        }
+
+        /**
+         * DOMContentLoaded — Inicialización de tarjetas
+         * ─────────────────────────────────────────────────────────
+         * Se ejecuta una vez que el DOM está completamente cargado.
+         * Si el <select id="tipo_sitio"> ya tiene un valor pre-cargado
+         * (por ejemplo, si el navegador restauró el estado del formulario),
+         * encuentra la Option Card correspondiente y le aplica .selected
+         * para mantener la UI sincronizada con el estado del formulario.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const val = document.getElementById('tipo_sitio').value;
+            if (val) {
+                const card = document.querySelector(`.option-card[data-value="${val}"]`);
+                if (card) card.classList.add('selected');
+            }
+        });
     </script>
+
 </body>
 
 </html>

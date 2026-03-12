@@ -11,7 +11,28 @@ function updatePresupuesto() {
         return;
     }
 
-    state.websiteType = selectedType;
+    const SECCIONES_INCLUIDAS = {
+        'landing': ['hero'],
+        'simple': ['hero'],
+        'portfolio': ['hero', 'about'],
+        'ecommerce': ['hero', 'about', 'products']
+    };
+
+    // Si el usuario cambia de tipo de sitio, seteamos las secciones incluidas por defecto
+    if (state.websiteType !== selectedType) {
+        state.websiteType = selectedType;
+        
+        // Resetear todas las secciones
+        const allSectionCheckboxes = document.querySelectorAll('input[name="sections"]');
+        allSectionCheckboxes.forEach(cb => cb.checked = false);
+        
+        // Marcar las incluidas
+        const incluidas = SECCIONES_INCLUIDAS[selectedType] || [];
+        incluidas.forEach(secId => {
+            const cb = document.querySelector(`input[name="sections"][value="${secId}"]`);
+            if (cb) cb.checked = true;
+        });
+    }
 
     // Secciones
     const sectionCheckboxes = document.querySelectorAll('input[name="sections"]:checked');
@@ -23,7 +44,12 @@ function updatePresupuesto() {
 
     // Cálculos
     const basePrecio = CONFIG.PRESUPUESTO_BASE[selectedType] || 0;
-    const seccionesPrecio = state.sections.length * CONFIG.PRECIO_SECCION;
+    
+    // Descartamos del cobro las secciones que ya están incluidas en el tipo de sitio elegido
+    const incluidasActuales = SECCIONES_INCLUIDAS[selectedType] || [];
+    const seccionesCobrables = state.sections.filter(sec => !incluidasActuales.includes(sec)).length;
+    const seccionesPrecio = seccionesCobrables * CONFIG.PRECIO_SECCION;
+    
     const funcionalidadesPrecio = state.features.length * CONFIG.PRECIO_FUNCIONALIDAD;
 
     const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;

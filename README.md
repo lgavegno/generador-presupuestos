@@ -84,17 +84,17 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 ### Tipos de Sitio Web
 | Tipo | Precio Base ARS |
 |------|-----------------|
-| Landing Page (1 página) | $180,000 |
-| Sitio Simple (3-5 páginas) | $200,000 |
-| Portfolio | $300,000 |
-| E-Commerce | $500,000 |
+| Landing Page (1 página) | $200,000 |
+| Sitio Simple (3-5 páginas) | $250,000 |
+| Portfolio | $350,000 |
+| E-Commerce | $600,000 |
 
 ### Secciones Adicionales
-- Precio por sección: **$40,000 ARS**
+- Precio por sección: **$50,000 ARS**
 - Opciones: Home/Hero, Acerca de, Productos, Galería, Testimonios, FAQ, Blog, Contacto, Newsletter
 
 ### Funcionalidades Premium
-- Precio por funcionalidad: **50,000 ARS**
+- Precio por funcionalidad: **60,000 ARS**
 - Opciones: Sincronización Tienda Nube, Carrito de Compras, Buscador, Filtros, Multi-idioma, SEO, Analytics, Sistema de Reservas
 
 ### Impuestos

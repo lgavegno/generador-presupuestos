@@ -7,13 +7,13 @@ console.log('🚀 Generador de Presupuestos iniciado');
 // Configuración global
 const CONFIG = {
     PRESUPUESTO_BASE: {
-        landing: 180000,
-        simple: 200000,
-        portfolio: 300000,
-        ecommerce: 500000
+        landing: 200000,
+        simple: 250000,
+        portfolio: 350000,
+        ecommerce: 600000
     },
-    PRECIO_SECCION: 40000,
-    PRECIO_FUNCIONALIDAD: 50000,
+    PRECIO_SECCION: 50000,
+    PRECIO_FUNCIONALIDAD: 60000,
     IVA: 0.21,
     TIPO_CAMBIO: 360
 };

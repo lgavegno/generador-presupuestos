@@ -5,6 +5,13 @@ Versionado: [Semantic Versioning](https://semver.org/)
 
 ---
 
+## [1.2.3] - 2026-03-12
+
+### 📌 Hito: Cierre v1.2.3 Final Pricing
+- Final pricing, hosting inclusion and content delivery policy.
+
+---
+
 ## [1.1.0] - 2026-03-12
 
 ### 📌 Hito: Normalización de Contrato de Datos y Estabilización

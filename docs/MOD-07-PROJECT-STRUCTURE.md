@@ -1,4 +1,4 @@
-﻿---
+---
 
 # MOD-07: PROJECT STRUCTURE & DEPLOYMENT
 
@@ -39,8 +39,8 @@ Tienda Nube: https://lgavegno.github.io/generador-presupuestos/tienda-nube.html
 
 **Especificaciones:**
 - Tipo de Sitio (1 select)
-- Secciones (9 checkboxes, $40k c/u)
-- Funcionalidades (8 checkboxes, $50k c/u)
+- Secciones (9 checkboxes, $50k c/u)
+- Funcionalidades (8 checkboxes, $60k c/u)
 
 **Cálculo:**
 - Subtotal (base + secciones + features)

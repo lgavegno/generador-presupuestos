@@ -104,8 +104,8 @@ REQUISITOS GENERALES:
 
 PRESUPUESTO DESGLOSADO:
 Base ([TIPO_SITIO]): $[PRECIO_BASE] ARS
-Secciones ([COUNT] × $40k): $[PRECIO_SECCIONES] ARS
-Funcionalidades ([COUNT] × $50k): $[PRECIO_FUNCIONALIDADES] ARS
+Secciones ([COUNT] × $50k): $[PRECIO_SECCIONES] ARS
+Funcionalidades ([COUNT] × $60k): $[PRECIO_FUNCIONALIDADES] ARS
 ────────────────────────────────────
 Subtotal: $[SUBTOTAL] ARS
 IVA (21%): $[IVA] ARS
