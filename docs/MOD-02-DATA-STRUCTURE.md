@@ -96,22 +96,27 @@ Google Sheets + Email
 ## 💰 PRESUPUESTO CALCULATION
 ```javascript
 BASE_PRICES = {
-  landing: 180000,
-  simple: 200000,
-  portfolio: 300000,
-  ecommerce: 500000
+  landing: 200000,
+  simple: 250000,
+  portfolio: 350000,
+  ecommerce: 600000
 }
 
-SECTION_PRICE = 40000
-FEATURE_PRICE = 50000
+SECTION_PRICE = 50000
+FEATURE_PRICE = 60000
 TAX_RATE = 0.21
-EXCHANGE_RATE = 360 // ARS to USD
+
+// Base Included Sections Logic:
+// 'landing': ['hero']
+// 'simple': ['hero']
+// 'portfolio': ['hero', 'about']
+// 'ecommerce': ['hero', 'about', 'products']
+// These sections are marked automatically and DO NOT sum to sections_count.
 
 // Calculation:
-subtotal = base_price + (sections_count * 40000) + (features_count * 50000)
+subtotal = base_price + (chargeable_sections_count * 50000) + (features_count * 60000)
 tax = subtotal * 0.21
 total_ars = subtotal + tax
-total_usd = total_ars / 360
 ```
 
 ---
@@ -159,20 +164,31 @@ total_usd = total_ars / 360
 ```javascript
 const CONFIG = {
   PRESUPUESTO_BASE: {
-    landing: 180000,
-    simple: 200000,
-    portfolio: 300000,
-    ecommerce: 500000
+    landing: 200000,
+    simple: 250000,
+    portfolio: 350000,
+    ecommerce: 600000
   },
-  PRECIO_SECCION: 40000,
-  PRECIO_FUNCIONALIDAD: 50000,
+  PRECIO_SECCION: 50000,
+  PRECIO_FUNCIONALIDAD: 60000,
   IVA: 0.21,
-  TIPO_CAMBIO: 360
+  TIPO_CAMBIO: 1200
 };
 
-function calculatePresupuesto(websiteType, sectionsCount, featuresCount) {
+function calculatePresupuesto(websiteType, sectionsSelected, featuresCount) {
   const basePrecio = CONFIG.PRESUPUESTO_BASE[websiteType];
-  const seccionesPrecio = sectionsCount * CONFIG.PRECIO_SECCION;
+    
+  const SECCIONES_INCLUIDAS = {
+      'landing': ['hero'],
+      'simple': ['hero'],
+      'portfolio': ['hero', 'about'],
+      'ecommerce': ['hero', 'about', 'products']
+  };
+
+  const incluidasActuales = SECCIONES_INCLUIDAS[websiteType] || [];
+  const seccionesCobrables = sectionsSelected.filter(sec => !incluidasActuales.includes(sec)).length;
+  
+  const seccionesPrecio = seccionesCobrables * CONFIG.PRECIO_SECCION;
   const funcionalidadesPrecio = featuresCount * CONFIG.PRECIO_FUNCIONALIDAD;
   
   const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;

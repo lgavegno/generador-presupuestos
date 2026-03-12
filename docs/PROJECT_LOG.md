@@ -57,6 +57,31 @@
 
 ---
 
+## v1.2.5 - FINAL PREMIUM UI/UX RELEASE
+
+**Fecha:** 12 Mar 2026
+**Status:** ✅ COMPLETADO
+
+### CAMBIOS IMPLEMENTADOS
+
+#### 1. Lógica de Paquetes (Secciones Incluidas)
+- **Implementación:** Las secciones base (ej. 'Home / Inicio') ahora cuestan $0 al calcular secciones extra, absorbiéndose en el Precio Base.
+- **Detalle por Tipo:**
+  - Landing / Simple: Pre-marcan 'Home'.
+  - Portfolio: Pre-marcan 'Home', 'Acerca de'.
+  - E-Commerce: Pre-marcan 'Home', 'Acerca de', 'Productos'.
+
+#### 2. Toast Notifications
+- **Status:** Reemplazo de alerts estáticos por un componente tipo "Toast" animado.
+- **Estilo:** Fondo `#0a0f1e` (Dark Blue), borde flúor (`#1bfa57`), aparición con slide-up al centro-abajo de la pantalla (`bottom: 30px`). Timeout de 5s.
+
+#### 3. Blindaje de Términos Comerciales & Pricing
+- **Pricing v2026:** Landing ($200k), Simple ($250k), Portfolio ($350k), E-Commerce ($600k).
+- **Secciones Extras:** $50k c/u. **Funciones Premium:** $60k c/u.
+- **Términos:** Política firme de 50/50. Infraestructura incluida el 1er año. Provisión de contenidos delegada al cliente. Exclusión total de Web Apps/ERPs para requerirVPS dedicado.
+
+---
+
 ## v1.1 - NORMALIZACIÓN DE CONTRATO DE DATOS Y ESTABILIZACIÓN
 
 **Fecha:** 12 Mar 2026

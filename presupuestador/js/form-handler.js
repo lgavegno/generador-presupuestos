@@ -138,18 +138,36 @@ function showError(message) {
 
 function showSuccess(message) {
     const notification = document.createElement('div');
+    // Using a toast style at bottom center
     notification.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #4CAF50;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 5px;
+        bottom: 30px;
+        left: 50%;
+        transform: translate(-50%, 20px);
+        background: #0a0f1e;
+        color: #ffffff;
+        border: 1px solid #1bfa57;
+        box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.7));
+        padding: 16px 24px;
+        border-radius: 8px;
         z-index: 10000;
-        animation: slideIn 0.3s ease;
+        font-weight: 500;
+        text-align: center;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `;
-    notification.textContent = '✓ ' + message;
+    notification.textContent = '✅ Cotización enviada con éxito. Revisá tu casilla de correo.';
     document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 5000);
+    
+    // Trigger reflow to start animation
+    requestAnimationFrame(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translate(-50%, 0)';
+    });
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translate(-50%, 20px)';
+        setTimeout(() => notification.remove(), 400);
+    }, 5000);
 }

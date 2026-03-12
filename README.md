@@ -81,20 +81,23 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 
 ## 📊 Estructura de Datos
 
-### Tipos de Sitio Web
-| Tipo | Precio Base ARS |
-|------|-----------------|
-| Landing Page (1 página) | $200,000 |
-| Sitio Simple (3-5 páginas) | $250,000 |
-| Portfolio | $350,000 |
-| E-Commerce | $600,000 |
+### Tipos de Sitio Web (Home incluida)
+| Tipo | Precio Base ARS | Secciones Base Incluidas ($0 extra) |
+|------|-----------------|---------------------------------|
+| Landing Page (1 página) | $200,000 | Home / Hero |
+| Sitio Simple (3-5 páginas) | $250,000 | Home / Hero |
+| Portfolio | $350,000 | Home, Acerca de |
+| E-Commerce | $600,000 | Home, Acerca de, Productos |
+
+> **Nota Comercial:** Los presupuestos de los sitios listados arriba incluyen el primer año de Hosting (Plan Premium) y Dominio (.com o .com.ar). El cliente es responsable de proveer textos, logos y fotos (los servicios de copywriting o diseño gráfico se cotizan por separado).
+> **Exclusión:** Los sistemas a medida (Web Apps, ERP, Gestores) quedan excluidos de esta lista de precios base ya que requieren servidores VPS dedicados.
 
 ### Secciones Adicionales
-- Precio por sección: **$50,000 ARS**
+- Precio por sección extra: **$50,000 ARS**
 - Opciones: Home/Hero, Acerca de, Productos, Galería, Testimonios, FAQ, Blog, Contacto, Newsletter
 
 ### Funcionalidades Premium
-- Precio por funcionalidad: **60,000 ARS**
+- Precio por funcionalidad: **$60,000 ARS**
 - Opciones: Sincronización Tienda Nube, Carrito de Compras, Buscador, Filtros, Multi-idioma, SEO, Analytics, Sistema de Reservas
 
 ### Impuestos
