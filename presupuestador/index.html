@@ -519,16 +519,14 @@
         /* ══════════════════════════════════════════
            SUBMIT BUTTON
         ══════════════════════════════════════════ */
-        .submit-area {
-            text-align: center;
-            margin-top: 28px;
-        }
-
         .btn-submit {
             background: var(--accent);
             color: #0a2e14;
             border: none;
             padding: 16px 44px;
+            margin: 18px 0 0 0;
+            width: 100%;
+            justify-content: center;
             font-size: 1.05rem;
             font-weight: 700;
             border-radius: 50px;
@@ -1001,12 +999,7 @@
                         </p>
                     </div>
 
-                    <!-- SUBMIT -->
-                    <div class="submit-area">
-                        <button type="button" id="submit-btn" onclick="submitForm()" class="btn-submit">
-                            📧 Enviar Cotización
-                        </button>
-                    </div>
+
 
                     <div id="loading-spinner">
                         <div class="spinner"></div>
@@ -1059,6 +1052,11 @@
                             <div class="p-total__amount"><strong id="total">$0</strong></div>
                             <div class="p-total__note">* Presupuesto válido por 15 días</div>
                         </div>
+
+                        <!-- SUBMIT -->
+                        <button type="button" id="submit-btn" onclick="submitForm()" class="btn-submit">
+                            📧 Enviar Cotización
+                        </button>
 
                     </div>
                 </section>
