@@ -761,7 +761,8 @@
                         </div>
 
                         <!-- Hidden <select> keep JS working -->
-                        <select id="tipo_sitio" name="tipo_sitio" required aria-hidden="true" tabindex="-1" onchange="updatePresupuesto()">
+                        <select id="tipo_sitio" name="tipo_sitio" required aria-hidden="true" tabindex="-1"
+                            onchange="updatePresupuesto()">
                             <option value=""></option>
                             <option value="landing">Landing Page</option>
                             <option value="simple">Sitio Simple</option>
@@ -788,6 +789,7 @@
                                     <li>Ideal para campañas y lanzamientos</li>
                                     <li>Diseño enfocado en un objetivo</li>
                                     <li>SEO On-page básico</li>
+                                    <li><strong>Entrega: 3-5 días</strong></li>
                                 </ul>
                             </div>
 
@@ -845,6 +847,7 @@
                                     <li>Carrito + pasarela de pagos</li>
                                     <li>Gestión de inventario</li>
                                     <li>Checkout seguro PCI-DSS</li>
+                                    <li><strong>Entrega: 15-20 días</strong></li>
                                 </ul>
                             </div>
 
@@ -852,8 +855,32 @@
 
                         <div class="clarity-block">
                             <strong>📐 Sobre el Setup Profesional</strong>
-                            El precio base cubre la arquitectura técnica, la configuración de servidores, la puesta en marcha del SSL y la optimización de performance. Garantizamos una estructura responsive y la propiedad total del sitio una vez finalizado el proyecto, entregando una solución llave en mano lista para operar.
+                            El precio base cubre la arquitectura técnica, la configuración de servidores, la puesta en
+                            marcha del SSL y la optimización de performance. Garantizamos una estructura responsive y la
+                            propiedad total del sitio una vez finalizado el proyecto, entregando una solución llave en
+                            mano lista para operar.
                         </div>
+                    </div>
+
+                    <!-- ─── BANNER CUSTOM PROJECT ─── -->
+                    <div class="card" style="border-color: var(--accent); background: #0a1120;"
+                        id="custom-project-card">
+                        <div class="card-header" style="margin-bottom: 16px;">
+                            <h2 style="color: var(--accent); font-size: 1.3rem;">¿Buscás un desarrollo 100% a medida?
+                            </h2>
+                        </div>
+                        <p style="font-size: 0.95rem; color: #e2e8f0; margin-bottom: 16px;">
+                            Si tu proyecto es una Web App, SaaS o requiere integraciones complejas, describilo acá abajo
+                            para una entrevista técnica.
+                        </p>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <textarea id="custom-project-desc" name="custom_project_desc"
+                                placeholder="Describí requisitos, usuarios y funcionalidades..."
+                                style="min-height: 120px;" oninput="updatePresupuesto()"></textarea>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">
+                            * Te contactaremos en máximo 24h hábiles para agendar la entrevista de descubrimiento.
+                        </p>
                     </div>
 
                     <!-- ─── DIAGRAMA ─── -->
@@ -863,11 +890,13 @@
                     </div>
 
                     <!-- ─── 2. SECCIONES ─── -->
-                    <div class="card">
+                    <div class="card" id="step-2-card" style="transition: opacity 0.3s, filter 0.3s;">
                         <div class="card-header">
                             <h2><span class="step-badge">2</span>Secciones del Sitio</h2>
-                            <span class="price-tag">+$50,000 <small style="font-size:0.8rem;font-weight:500;">c/u</small></span>
-                            <p class="subtitle">Cada sección es una página o bloque con maquetación y diseño único y exclusivo.</p>
+                            <span class="price-tag">+$50,000 <small
+                                    style="font-size:0.8rem;font-weight:500;">c/u</small></span>
+                            <p class="subtitle">Cada sección es una página o bloque con maquetación y diseño único y
+                                exclusivo.</p>
                         </div>
 
                         <div class="pill-grid">
@@ -894,15 +923,19 @@
 
                         <div class="clarity-block">
                             <strong>🖌️ ¿Qué incluye cada sección?</strong>
-                            Cada sección se desarrolla como un módulo independiente con su propio layout y maquetación visual. El trabajo incluye la programación de interacciones específicas, optimización de assets para carga rápida y una estructura de componentes escalable que garantiza la coherencia técnica en todo el proyecto.
+                            Cada sección se desarrolla como un módulo independiente con su propio layout y maquetación
+                            visual. El trabajo incluye la programación de interacciones específicas, optimización de
+                            assets para carga rápida y una estructura de componentes escalable que garantiza la
+                            coherencia técnica en todo el proyecto.
                         </div>
                     </div>
 
                     <!-- ─── 3. FUNCIONALIDADES ─── -->
-                    <div class="card">
+                    <div class="card" id="step-3-card" style="transition: opacity 0.3s, filter 0.3s;">
                         <div class="card-header">
                             <h2><span class="step-badge">3</span>Funcionalidades Premium</h2>
-                            <span class="price-tag">+$60,000 <small style="font-size:0.8rem;font-weight:500;">c/u</small></span>
+                            <span class="price-tag">+$60,000 <small
+                                    style="font-size:0.8rem;font-weight:500;">c/u</small></span>
                             <p class="subtitle">Integraciones de alto nivel que elevan la experiencia del usuario.</p>
                         </div>
 
@@ -982,20 +1015,38 @@
                         </div>
                     </div>
 
+                    <!-- ─── 5. SLA & CONDICIONES ─── -->
+                    <div class="card">
+                        <div class="card-header" style="margin-bottom: 16px;">
+                            <h2><span class="step-badge">5</span>Tiempos y Exclusiones (SLA)</h2>
+                        </div>
+                        <ul style="list-style: none; padding-left: 0; color: #e2e8f0; font-size: 0.9rem;">
+                            <li style="margin-bottom: 8px;">⏱️ <strong>Feedback de Revisión:</strong> Respondemos e
+                                implementamos ajustes menores en un plazo máximo de 48h hábiles.</li>
+                            <li style="margin-bottom: 8px;">📷 <strong>Materiales:</strong> No se incluye redacción de
+                                textos, diseño de logo ni toma fotográfica (el cliente debe proveer los assets listos
+                                para usar).</li>
+                        </ul>
+                    </div>
+
                     <!-- CONDICIONES COMERCIALES -->
                     <div class="info-box">
                         <div class="info-box__title">📋 Condiciones Comerciales</div>
                         <p>
-                            <strong>Infraestructura:</strong> Incluye primer año de Hosting (Plan Premium) y Dominio para los sitios detallados.
+                            <strong>Infraestructura:</strong> Incluye primer año de Hosting (Plan Premium) y Dominio
+                            para los sitios detallados.
                         </p>
                         <p>
-                            <strong>Contenidos:</strong> El cliente provee textos, logos y fotos en alta calidad. No incluye redacción ni diseño de identidad. Si no dispone de material profesional, se deberá recurrir a un especialista en Diseño Gráfico o Copywriting (presupuestado por separado).
+                            <strong>Contenidos:</strong> El cliente provee textos, logos y fotos en alta calidad. No
+                            incluye redacción ni diseño de identidad. Si no dispone de material profesional, se deberá
+                            recurrir a un especialista en Diseño Gráfico o Copywriting (presupuestado por separado).
                         </p>
                         <p>
                             <strong>Pago:</strong> 50% anticipado y 50% contra entrega.
                         </p>
                         <p style="color: #cbd5e1;">
-                            <strong style="color: #16c946;">Sistemas:</strong> Web Apps o ERPs se cotizan por separado debido a requerimientos de servidores VPS.
+                            <strong style="color: #16c946;">Sistemas:</strong> Web Apps o ERPs se cotizan por separado
+                            debido a requerimientos de servidores VPS.
                         </p>
                     </div>
 
@@ -1090,6 +1141,13 @@
          * @param {HTMLElement} card - El elemento .option-card clickeado.
          */
         function selectOptionCard(card) {
+            // Limpiar textarea custom si tiene contenido (modo exclusivo)
+            const customDesc = document.getElementById('custom-project-desc');
+            if (customDesc && customDesc.value.trim().length > 0) {
+                customDesc.value = '';
+                console.log('[OptionCard] Textarea custom limpiado (exclusividad de modos)');
+            }
+
             // Quitar estado seleccionado de todas las tarjetas
             document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
 

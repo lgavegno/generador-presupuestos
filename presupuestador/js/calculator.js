@@ -54,9 +54,9 @@ function updatePresupuesto() {
 
     const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;
 
-    // El IVA ahora se calcula SIEMPRE para que los datos viajen correctos al backend
+    // El IVA se calcula SOLO para información/desglose, no se suma al total final
     const iva = subtotal * CONFIG.IVA;
-    const total = subtotal + iva;
+    const total = subtotal;  // Total = Subtotal (sin IVA sumado)
     const totalUSD = total / CONFIG.TIPO_CAMBIO;
 
     state.presupuesto = {
@@ -77,19 +77,95 @@ function updatePresupuesto() {
 function updateUI() {
     if (!state.presupuesto) return;
 
-    document.getElementById('precio-base') && (document.getElementById('precio-base').innerText = formatCurrency(state.presupuesto.base));
-    document.getElementById('count-sections') && (document.getElementById('count-sections').innerText = state.sections.length);
-    document.getElementById('precio-secciones') && (document.getElementById('precio-secciones').innerText = formatCurrency(state.presupuesto.secciones));
-    document.getElementById('count-features') && (document.getElementById('count-features').innerText = state.features.length);
-    document.getElementById('precio-features') && (document.getElementById('precio-features').innerText = formatCurrency(state.presupuesto.funcionalidades));
-    document.getElementById('subtotal') && (document.getElementById('subtotal').innerText = formatCurrency(state.presupuesto.subtotal));
-    document.getElementById('impuesto') && (document.getElementById('impuesto').innerText = formatCurrency(state.presupuesto.iva));
-    document.getElementById('total') && (document.getElementById('total').innerText = formatCurrency(state.presupuesto.subtotal));
+    const totalEl = document.getElementById('total');
+
+    if (state.isCustom) {
+        // MODO CUSTOM: Ocultar desglose y mostrar "A Medida"
+        document.getElementById('precio-base') && (document.getElementById('precio-base').parentElement.style.display = 'none');
+        document.getElementById('count-sections') && (document.getElementById('count-sections').parentElement.parentElement.style.display = 'none');
+        document.getElementById('count-features') && (document.getElementById('count-features').parentElement.parentElement.style.display = 'none');
+        document.getElementById('precio-secciones') && (document.getElementById('precio-secciones').parentElement.style.display = 'none');
+        document.getElementById('precio-features') && (document.getElementById('precio-features').parentElement.style.display = 'none');
+        document.getElementById('subtotal') && (document.getElementById('subtotal').parentElement.style.display = 'none');
+        document.getElementById('impuesto') && (document.getElementById('impuesto').parentElement.style.display = 'none');
+
+        if (totalEl) {
+            totalEl.innerText = "A Medida";
+            totalEl.style.fontSize = "1.8rem";
+        }
+    } else {
+        // MODO ESTÁNDAR: Mostrar desglose y total
+        document.getElementById('precio-base') && (document.getElementById('precio-base').parentElement.style.display = 'flex');
+        document.getElementById('count-sections') && (document.getElementById('count-sections').parentElement.parentElement.style.display = 'flex');
+        document.getElementById('count-features') && (document.getElementById('count-features').parentElement.parentElement.style.display = 'flex');
+        document.getElementById('precio-secciones') && (document.getElementById('precio-secciones').parentElement.style.display = 'flex');
+        document.getElementById('precio-features') && (document.getElementById('precio-features').parentElement.style.display = 'flex');
+        document.getElementById('subtotal') && (document.getElementById('subtotal').parentElement.style.display = 'flex');
+        document.getElementById('impuesto') && (document.getElementById('impuesto').parentElement.style.display = 'flex');
+
+        document.getElementById('precio-base') && (document.getElementById('precio-base').innerText = formatCurrency(state.presupuesto.base));
+        document.getElementById('count-sections') && (document.getElementById('count-sections').innerText = state.sections.length);
+        document.getElementById('precio-secciones') && (document.getElementById('precio-secciones').innerText = formatCurrency(state.presupuesto.secciones));
+        document.getElementById('count-features') && (document.getElementById('count-features').innerText = state.features.length);
+        document.getElementById('precio-features') && (document.getElementById('precio-features').innerText = formatCurrency(state.presupuesto.funcionalidades));
+        document.getElementById('subtotal') && (document.getElementById('subtotal').innerText = formatCurrency(state.presupuesto.subtotal));
+        document.getElementById('impuesto') && (document.getElementById('impuesto').innerText = formatCurrency(state.presupuesto.iva));
+
+        if (totalEl) {
+            totalEl.innerText = formatCurrency(state.presupuesto.total);
+            totalEl.style.fontSize = "inherit";
+        }
+    }
 }
 
 function resetPresupuesto() {
     state.presupuesto = { base: 0, secciones: 0, funcionalidades: 0, subtotal: 0, iva: 0, total: 0, totalUSD: 0 };
+    state.sections = [];
+    state.features = [];
     updateUI();
+}
+
+function resetToCustomMode() {
+    console.log('🔄 resetToCustomMode() activada - Usuario escribiendo custom description');
+
+    // 1. Resetear estado completamente
+    state.presupuesto = { base: 0, secciones: 0, funcionalidades: 0, subtotal: 0, iva: 0, total: 0, totalUSD: 0 };
+    state.isCustom = true;
+    state.sections = [];
+    state.features = [];
+    state.websiteType = null;
+
+    // 2. Desmarcar option cards - Remover TODAS las clases de estado
+    document.querySelectorAll('.option-card').forEach(card => {
+        // Remover clases de estado
+        card.classList.remove('selected', 'active', 'checked');
+
+        // Resetear radio input interno
+        const radio = card.querySelector('input[type="radio"]');
+        if (radio) radio.checked = false;
+
+        // Limpiar atributos de estado
+        card.removeAttribute('aria-selected');
+        card.removeAttribute('data-selected');
+    });
+
+    // 3. Resetear select de tipo de sitio
+    const typeSelect = document.getElementById('tipo_sitio');
+    if (typeSelect) typeSelect.value = '';
+
+    // 4. Desmarcar todos los checkboxes
+    document.querySelectorAll('input[name="sections"], input[name="features"]').forEach(cb => {
+        cb.checked = false;
+    });
+
+    // 5. Actualizar UI inmediatamente
+    updateUI();
+
+    // 6. Force reflow para asegurar que el DOM se actualiza visualmente
+    void document.documentElement.offsetHeight;
+
+    saveToStorage();
+    console.log('✓ resetToCustomMode() completada - State:', state);
 }
 
 function formatCurrency(value) {

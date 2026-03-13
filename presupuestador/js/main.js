@@ -38,6 +38,21 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✓ DOM cargado');
     loadFromStorage();
+
+    // Event listener para custom project description
+    const customDescInput = document.getElementById('custom-project-desc');
+    if (customDescInput) {
+        // Disparar resetToCustomMode en 'input' y 'focus'
+        const handleCustomInput = () => {
+            const hasContent = customDescInput.value.trim().length > 0;
+            if (hasContent) {
+                resetToCustomMode();
+            }
+        };
+
+        customDescInput.addEventListener('input', handleCustomInput);
+        customDescInput.addEventListener('focus', handleCustomInput);
+    }
 });
 
 function saveToStorage() {

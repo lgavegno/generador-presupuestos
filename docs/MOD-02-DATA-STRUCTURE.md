@@ -2,9 +2,10 @@
 
 # MOD-02: DATA STRUCTURE SPECIFICATION
 
-**Status:** ACTIVE  
-**Version:** 1.0  
-**Last Updated:** Marzo 2026  
+**Status:** ACTIVE
+**Version:** 2.2.0
+**Last Updated:** Marzo 2026
+**Author:** Software Developer  
 
 ---
 
@@ -94,6 +95,8 @@ Google Sheets + Email
 ---
 
 ## 💰 PRESUPUESTO CALCULATION
+
+### Standard Mode (Cotización Estándar)
 ```javascript
 BASE_PRICES = {
   landing: 200000,
@@ -115,8 +118,26 @@ TAX_RATE = 0.21
 
 // Calculation:
 subtotal = base_price + (chargeable_sections_count * 50000) + (features_count * 60000)
-tax = subtotal * 0.21
-total_ars = subtotal + tax
+iva = subtotal * 0.21  // Informational ONLY (NOT summed to total)
+total_ars = subtotal   // IVA NOT included in final total
+```
+
+### Custom Mode (Proyectos a Medida - Web Apps/SaaS)
+```javascript
+// Triggered by: document.getElementById('custom-project-desc').value.trim().length > 0
+
+is_custom = true
+tipo_sitio = "WEB APP / CUSTOM"  // Automatic assignment
+customDescription = textarea_content  // CamelCase required for backend
+presupuesto = {
+  base: 0,
+  secciones: 0,
+  funcionalidades: 0,
+  subtotal: 0,
+  iva: 0,
+  total: 0
+}
+// Cotización realizada tras entrevista técnica (SLA: 24h contacto, 48h propuesta)
 ```
 
 ---
@@ -172,39 +193,60 @@ const CONFIG = {
   PRECIO_SECCION: 50000,
   PRECIO_FUNCIONALIDAD: 60000,
   IVA: 0.21,
-  TIPO_CAMBIO: 1200
+  TIPO_CAMBIO: 360
 };
 
-function calculatePresupuesto(websiteType, sectionsSelected, featuresCount) {
-  const basePrecio = CONFIG.PRESUPUESTO_BASE[websiteType];
-    
+function updatePresupuesto() {
+  const selectedType = document.getElementById('tipo_sitio')?.value;
+  const customDesc = document.getElementById('custom-project-desc')?.value.trim() || '';
+  const isCustom = customDesc.length > 0;
+
+  if (!selectedType && !isCustom) {
+    resetPresupuesto();
+    return;
+  }
+
+  if (isCustom) {
+    resetToCustomMode();
+    return;
+  }
+
+  const basePrecio = CONFIG.PRESUPUESTO_BASE[selectedType];
   const SECCIONES_INCLUIDAS = {
-      'landing': ['hero'],
-      'simple': ['hero'],
-      'portfolio': ['hero', 'about'],
-      'ecommerce': ['hero', 'about', 'products']
+    'landing': ['hero'],
+    'simple': ['hero'],
+    'portfolio': ['hero', 'about'],
+    'ecommerce': ['hero', 'about', 'products']
   };
 
-  const incluidasActuales = SECCIONES_INCLUIDAS[websiteType] || [];
-  const seccionesCobrables = sectionsSelected.filter(sec => !incluidasActuales.includes(sec)).length;
-  
+  const incluidasActuales = SECCIONES_INCLUIDAS[selectedType] || [];
+  const sectionCheckboxes = document.querySelectorAll('input[name="sections"]:checked');
+  const state.sections = Array.from(sectionCheckboxes).map(el => el.value);
+
+  const seccionesCobrables = state.sections.filter(sec => !incluidasActuales.includes(sec)).length;
   const seccionesPrecio = seccionesCobrables * CONFIG.PRECIO_SECCION;
-  const funcionalidadesPrecio = featuresCount * CONFIG.PRECIO_FUNCIONALIDAD;
-  
+
+  const featureCheckboxes = document.querySelectorAll('input[name="features"]:checked');
+  const funcionalidadesPrecio = featureCheckboxes.length * CONFIG.PRECIO_FUNCIONALIDAD;
+
   const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;
   const iva = subtotal * CONFIG.IVA;
-  const total = subtotal + iva;
+  const total = subtotal;  // IVA NOT summed to total
   const totalUSD = total / CONFIG.TIPO_CAMBIO;
-  
-  return {
-    basePrecio,
-    seccionesPrecio,
-    funcionalidadesPrecio,
+
+  state.presupuesto = {
+    base: basePrecio,
+    secciones: seccionesPrecio,
+    funcionalidades: funcionalidadesPrecio,
     subtotal,
     iva,
     total,
-    totalUSD
+    totalUSD,
+    tieneIva: true
   };
+
+  updateUI();
+  saveToStorage();
 }
 ```
 
@@ -278,21 +320,119 @@ Structured HTML with all sections organized
 
 ---
 
+## 📊 Google Sheets Column Mapping (A-Q)
+
+| Col | Name | Source | Type | Notes |
+|-----|------|--------|------|-------|
+| A | Timestamp | formData.timestamp | ISO8601 | YYYY-MM-DDTHH:mm:ssZ |
+| B | Nombre | formData.nombre | String | Required |
+| C | Email | formData.email | Email | Required + Validated |
+| D | Teléfono | formData.telefono | String | Optional |
+| E | Tipo de Sitio | formData.tipo_sitio | Enum | landing\|simple\|portfolio\|ecommerce\|WEB APP / CUSTOM |
+| F | Secciones | formData.secciones_elegidas | Array<String> | Comma-separated |
+| G | Funcionalidades | formData.funcionalidades | Array<String> | Comma-separated |
+| H | Base ($) | formData.presupuesto.base | Number | 0 if custom |
+| I | Secciones ($) | formData.presupuesto.secciones | Number | 0 if custom |
+| J | Funcionalidades ($) | formData.presupuesto.funcionalidades | Number | 0 if custom |
+| K | Subtotal ($) | formData.presupuesto.subtotal | Number | Without IVA |
+| L | IVA 21% ($) | formData.presupuesto.iva | Number | Informational only |
+| M | Total ($) | formData.presupuesto.total | Number | WITHOUT IVA |
+| N | is_custom | formData.is_custom | Boolean | true\|false |
+| O | customDescription | formData.customDescription | String | CamelCase - Web App requirements |
+| P | Observaciones | formData.observaciones | String | Custom notes (if custom, injects customDescription) |
+| Q | Asunto | formData.asunto | String | "Nuevo Presupuesto Web" or "SOLICITUD PROYECTO CUSTOM" |
+
+---
+
+## 🔗 Custom Mode Activation Logic
+
+### Frontend Detection
+```javascript
+const customDesc = document.getElementById('custom-project-desc')?.value.trim() || '';
+const isCustom = customDesc.length > 0;
+
+// If isCustom:
+// 1. state.isCustom = true
+// 2. state.websiteType = null
+// 3. Hide all presupuesto breakdown rows
+// 4. Show "A Medida" in total
+// 5. Change button to "📅 Solicitar Entrevista"
+// 6. formData.customDescription = customDesc (CamelCase)
+// 7. formData.tipo_sitio = "WEB APP / CUSTOM"
+// 8. formData.presupuesto = all zeros
+```
+
+### Backend Reception (Google Apps Script)
+```javascript
+// In doPost(e):
+const formData = JSON.parse(e.postData.contents);
+
+if (formData.is_custom) {
+  // Route to custom project handler
+  // Store customDescription in column O
+  // Inject customDescription into column P (Observaciones)
+  // Send SLA email: "Contacto en 24h hábiles"
+  // Set tipo_sitio = "WEB APP / CUSTOM" in column E
+}
+```
+
+---
+
 ## 📤 API CONTRACT (Google Apps Script Webhook)
 
-### Request
+### Request (Standard Mode)
 ```http
-POST /macros/d/[ID]/usercontent
+POST https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec
 Content-Type: application/json
 
 {
   "timestamp": "2026-03-05T14:30:00Z",
-  "website_type": "ecommerce",
-  "sections": ["..."],
-  "features": ["..."],
-  "contact": {"..."},
-  "presupuesto": {"..."},
-  "metadata": {"..."}
+  "is_custom": false,
+  "customDescription": "",
+  "nombre": "Juan García",
+  "email": "juan@email.com",
+  "telefono": "+54 3492 123456",
+  "tipo_sitio": "ecommerce",
+  "asunto": "Nuevo Presupuesto Web - Juan García",
+  "secciones_elegidas": ["hero", "productos", "testimonios"],
+  "funcionalidades": ["seo", "analytics"],
+  "presupuesto": {
+    "base": 600000,
+    "secciones": 150000,
+    "funcionalidades": 120000,
+    "subtotal": 870000,
+    "iva": 182700,
+    "total": 870000
+  },
+  "observaciones": "Quiero diseño moderno"
+}
+```
+
+### Request (Custom Mode - Web App/SaaS)
+```http
+POST https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec
+Content-Type: application/json
+
+{
+  "timestamp": "2026-03-05T14:30:00Z",
+  "is_custom": true,
+  "customDescription": "Necesito un SaaS con autenticación OAuth, panel admin y reportes PDF",
+  "nombre": "María Rodríguez",
+  "email": "maria@startup.com",
+  "telefono": "+54 3495 555555",
+  "tipo_sitio": "WEB APP / CUSTOM",
+  "asunto": "SOLICITUD PROYECTO CUSTOM - María Rodríguez",
+  "secciones_elegidas": [],
+  "funcionalidades": [],
+  "presupuesto": {
+    "base": 0,
+    "secciones": 0,
+    "funcionalidades": 0,
+    "subtotal": 0,
+    "iva": 0,
+    "total": 0
+  },
+  "observaciones": ""
 }
 ```
 

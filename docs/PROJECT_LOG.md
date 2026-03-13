@@ -57,6 +57,27 @@
 
 ---
 
+## v1.3.0 - LEAD GEN PROYECTOS CUSTOM
+
+**Fecha:** 13 Mar 2026
+**Status:** ✅ COMPLETADO
+
+### CAMBIOS IMPLEMENTADOS
+
+#### 1. Banner "Desarrollo 100% a medida"
+- Creado un área de texto específica entre el Paso 1 y el Paso 2 para proyectos complejos (Web Apps / SaaS).
+- Introducida Card SLA con los tiempos de entrega (48h de feedback, exclusión de assets base).
+- Timelines de Landing (3-5 días) y E-commerce (15-20 días).
+
+#### 2. Mutuamente Excluyente (UI/UX)
+- Cuando el usuario escribe detalles en el `custom-project-desc`, el JS automáticamente anula y bloquea los Pasos 2 y 3 (Secciones y Funcionalidades extra).
+- La UI cambia transparentemente el estado del botón a "📅 Solicitar Entrevista" y el Total a "A Medida".
+
+#### 3. Routing de Correos
+- Generación de asuntos dinámicos. Si el proyecto es custom, el Asunto del mail pasa a ser "SOLICITUD PROYECTO CUSTOM - [Nombre]" para rápida identificación comercial (Lead Gen/High-Ticket).
+
+---
+
 ## v1.2.5 - FINAL PREMIUM UI/UX RELEASE
 
 **Fecha:** 12 Mar 2026
@@ -79,6 +100,114 @@
 - **Pricing v2026:** Landing ($200k), Simple ($250k), Portfolio ($350k), E-Commerce ($600k).
 - **Secciones Extras:** $50k c/u. **Funciones Premium:** $60k c/u.
 - **Términos:** Política firme de 50/50. Infraestructura incluida el 1er año. Provisión de contenidos delegada al cliente. Exclusión total de Web Apps/ERPs para requerirVPS dedicado.
+
+---
+
+## v2.2.0 - GLOBAL BACKEND SYNC + UTF-8 ENCODING + CUSTOM PROJECTS
+
+**Fecha:** 13 Mar 2026
+**Status:** ✅ COMPLETADO
+**Author:** Software Developer
+
+### CAMBIOS IMPLEMENTADOS
+
+#### 1. Resolución del Bug de IVA
+- **Problema:** El total mostraba Landing $242k en lugar de $200k (IVA se sumaba automáticamente)
+- **Causa Raíz:** Línea 87 en `js/calculator.js`: `const total = subtotal + iva;`
+- **Fix:** Cambio a `const total = subtotal;` (IVA solo informativo, no sumado)
+- **Impacto:**
+  - Total correcto sin IVA incluido
+  - IVA se muestra como desglose separado
+  - Mejora en transparencia de precios
+
+#### 2. Implementación de Modo Custom (Web Apps/SaaS)
+- **Trigger:** Escribir en textarea `#custom-project-desc`
+- **Activación Dual:** Event listeners en 'input' y 'focus'
+- **Lógica de Exclusión Mutua:**
+  - Si usuario escribe custom → desmarcan option cards
+  - Si usuario clickea option card → se borra textarea custom
+  - Solo puede haber UNA ruta activa a la vez
+
+#### 3. Reset Visual Completo
+- **resetToCustomMode():**
+  - Remover clases `.selected`, `.active`, `.checked`
+  - Limpiar atributos `aria-selected`, `data-selected`
+  - Force reflow: `void document.documentElement.offsetHeight`
+  - Resetear state.websiteType = null
+
+- **selectOptionCard():**
+  - Limpiar textarea si tiene contenido
+  - Detectar exclusividad antes de procesar selección
+
+#### 4. Refactor de Validación
+- **validateForm():** Solo exige `tipo_sitio` si `!isCustom`
+- **collectFormData():**
+  - Si custom: `tipo_sitio = "WEB APP / CUSTOM"` (automático)
+  - Si custom: presupuesto = todos ceros
+  - `customDescription` en CamelCase (requerido para backend)
+  - `is_custom`: booleano true/false
+
+#### 5. Actualización de Endpoint Google Apps Script
+- **Anterior:** `AKfycbyosTbrkQP_fV5cpVjmUTZl8Kvv2rYd_fTIxbzNdtd4QmJV0oS-pL--FpeG4LPZKGwA`
+- **Actual:** `AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS`
+- **Archivos Updated:**
+  - `/js/email-handler.js` ✓
+  - `/presupuestador/js/email-handler.js` ✓
+
+#### 6. Mapeo de Google Sheets (Columnas A-Q)
+| Col | Campo | Valor |
+|-----|-------|-------|
+| O | customDescription | Captura de textarea (CamelCase) |
+| P | Observaciones | Si custom, inyecta customDescription |
+| E | Tipo de Sitio | "WEB APP / CUSTOM" si is_custom |
+| H-M | Presupuesto | Ceros si is_custom |
+
+#### 7. Mejoras de UX/Sidebar
+- **Modo Custom:** Oculta desglose (base, secciones, features)
+- **Modo Estándar:** Muestra desglose completo
+- **Total Display:**
+  - Custom: "A Medida" (1.8rem, centrado)
+  - Estándar: Formato moneda (inherit)
+- **Botón Dinámico:**
+  - Custom: "📅 Solicitar Entrevista"
+  - Estándar: "📧 Enviar Cotización"
+
+### BUGS CORREGIDOS
+
+1. **IVA sumado al total:** Ahora solo informativo
+2. **Persistencia de cards:** Se deseleccionan completamente
+3. **Validación bloqueante:** Ahora permite custom sin tipo_sitio
+4. **Estado residual:** resetToCustomMode() limpia completamente
+
+### COMMITS PRINCIPALES
+
+```
+feat: mobile button refactor & auto-home logic inclusion
+chore: release v1.2.5 - full sync of logic, ui and documentation
+feat: v1.2.4 - implemented bundled sections logic with zero cost for base items
+docs: v1.1.0 deployment complete - release tagged and pushed to production
+feat: release v1.1.0 - budget calculator restoration, friendly names mapping, and full documentation sync
+```
+
+### SLA COMERCIAL (Proyectos Custom)
+- **Contacto:** Máximo 24h hábiles
+- **Propuesta Técnica:** Máximo 48h después de entrevista
+- **Asunto Email:** "SOLICITUD PROYECTO CUSTOM - [Nombre Cliente]"
+
+### VERIFICACIÓN POST-RELEASE
+- ✅ Validación permite envío sin tipo_sitio si is_custom=true
+- ✅ customDescription en CamelCase en JSON
+- ✅ Presupuesto con ceros si custom
+- ✅ IVA no suma al total en ambos modos
+- ✅ Sidebar se actualiza dinámicamente
+- ✅ Cards se deseleccionan visualmente
+- ✅ Endpoint actualizado en ambos email-handler.js
+
+### DOCUMENTACIÓN ACTUALIZADA
+- ✅ README.md v2.2.0
+- ✅ MOD-02-DATA-STRUCTURE.md con mapeo de columnas A-Q
+- ✅ PROJECT_LOG.md (este archivo)
+- ✅ API_SPEC.md (nuevo)
 
 ---
 

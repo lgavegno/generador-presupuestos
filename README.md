@@ -3,7 +3,7 @@
 Herramienta web profesional para generar cotizaciones automáticas con integración a Google Sheets y notificaciones por email.
 
 **Status:** ✅ Production Ready
-**Version:** 1.1.0 (Stabilization & Data Normalization)
+**Version:** 2.2.0 (Global Backend Sync + UTF-8 Encoding + Custom Projects)
 **Last Updated:** Marzo 2026
 
 ---
@@ -90,7 +90,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 | E-Commerce | $600,000 | Home, Acerca de, Productos |
 
 > **Nota Comercial:** Los presupuestos de los sitios listados arriba incluyen el primer año de Hosting (Plan Premium) y Dominio (.com o .com.ar). El cliente es responsable de proveer textos, logos y fotos (los servicios de copywriting o diseño gráfico se cotizan por separado).
-> **Exclusión:** Los sistemas a medida (Web Apps, ERP, Gestores) quedan excluidos de esta lista de precios base ya que requieren servidores VPS dedicados.
+> **Exclusión:** Los sistemas a medida (Web Apps, ERP, Gestores) quedan excluidos de esta lista de precios base ya que requieren servidores VPS dedicados. Para estos casos, el sistema detecta la redacción en el banner "Desarrollo a medida" y cambia automáticamente al flujo de derivación para "Entrevista Técnica".
 
 ### Secciones Adicionales
 - Precio por sección extra: **$50,000 ARS**
@@ -101,8 +101,9 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 - Opciones: Sincronización Tienda Nube, Carrito de Compras, Buscador, Filtros, Multi-idioma, SEO, Analytics, Sistema de Reservas
 
 ### Impuestos
-- **IVA:** 21% (incluido automáticamente en el total)
+- **IVA:** 21% (calculado como información desglosada, NO se suma al total final)
 - **Divisa:** ARS (sin conversión USD en frontend)
+- **Total Final:** Precio Base + Secciones Extras + Funcionalidades Premium (sin IVA)
 
 ---
 
@@ -137,8 +138,13 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 
 ### 3. Actualizar Frontend
 ```javascript
-// En js/email-handler.js, reemplazar:
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/[YOUR_ID]/usercontent";
+// En js/email-handler.js y presupuestador/js/email-handler.js, reemplazar:
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec";
+```
+
+**Producción (Actual):**
+```
+AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS
 ```
 
 ### 4. Iniciar servidor
@@ -151,12 +157,20 @@ open http://localhost:8000/presupuestador/index.html
 
 ## 🎯 Flujo de Usuario
 
+### Flujo Estándar
 1. **Selecciona tipo de sitio** → Precio base actualizado
-2. **Elige secciones** (checkboxes) → Precio adicional calculado (+$40k c/u)
-3. **Selecciona funcionalidades** (checkboxes) → Precio adicional (+$50k c/u)
+2. **Elige secciones** (checkboxes) → Precio adicional calculado (+$50k c/u)
+3. **Selecciona funcionalidades** (checkboxes) → Precio adicional (+$60k c/u)
 4. **Completa datos de contacto** → Nombre, Email, Teléfono
 5. **Envía formulario** → Datos enviados a Google Apps Script
-6. **Confirmación** → Script guarda en Sheets + envía email
+6. **Confirmación** → Script guarda en Sheets + envía email detallado
+
+### Flujo Proyectos a Medida (Web Apps / SaaS)
+1. **Completa descripción del proyecto** en el banner "Desarrollo 100% a medida".
+2. **Exclusión Mutua** → Secciones y funcionalidades se deshabilitan.
+3. **Presupuesto Adaptativo** → El total cambia a "A Medida" y el botón a "Solicitar Entrevista".
+4. **Completa datos de contacto**.
+5. **Derivación Automática** → Email enviado con el asunto especial "SOLICITUD PROYECTO CUSTOM" y SLA de contacto en 24h.
 
 ---
 
@@ -164,28 +178,61 @@ open http://localhost:8000/presupuestador/index.html
 
 ### Webhook URL
 ```
-POST https://script.google.com/macros/s/[ID]/usercontent
+POST https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec
 Content-Type: application/json
+```
 
+#### Payload - Modo Estándar
+```json
 {
   "timestamp": "2026-03-12T14:30:00.000Z",
+  "is_custom": false,
+  "customDescription": "",
   "nombre": "Juan García",
   "email": "juan@email.com",
   "telefono": "+54 9 3492 123456",
   "tipo_sitio": "landing",
+  "asunto": "Nuevo Presupuesto Web - Juan García",
   "secciones_elegidas": ["Inicio/Hero", "Acerca de"],
   "funcionalidades": ["SEO", "Analytics"],
   "presupuesto": {
-    "base": 180000,
-    "secciones": 80000,
-    "funcionalidades": 100000,
-    "subtotal": 360000,
-    "iva": 75600,
-    "total": 435600
+    "base": 200000,
+    "secciones": 100000,
+    "funcionalidades": 120000,
+    "subtotal": 420000,
+    "iva": 88200,
+    "total": 420000
   },
   "observaciones": "Quiero diseño minimalista"
 }
 ```
+
+#### Payload - Modo Custom (Web Apps/SaaS)
+```json
+{
+  "timestamp": "2026-03-12T14:30:00.000Z",
+  "is_custom": true,
+  "customDescription": "Necesito una Web App SaaS con autenticación OAuth, panel admin y reportes en PDF",
+  "nombre": "María Rodríguez",
+  "email": "maria@startup.com",
+  "telefono": "+54 9 3495 555555",
+  "tipo_sitio": "WEB APP / CUSTOM",
+  "asunto": "SOLICITUD PROYECTO CUSTOM - María Rodríguez",
+  "secciones_elegidas": [],
+  "funcionalidades": [],
+  "presupuesto": {
+    "base": 0,
+    "secciones": 0,
+    "funcionalidades": 0,
+    "subtotal": 0,
+    "iva": 0,
+    "total": 0
+  },
+  "observaciones": ""
+}
+```
+
+> **Nota:** En modo custom, `presupuesto` contiene ceros ya que la cotización se realiza tras entrevista técnica. El campo `customDescription` se inyecta en la columna P (Observaciones) de Google Sheets.
 
 ### Respuesta
 ```json

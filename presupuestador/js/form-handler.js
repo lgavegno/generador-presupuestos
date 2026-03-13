@@ -33,23 +33,42 @@ function collectFormData() {
     const seccionesLegibles = state.sections.map(s => SECCION_LABELS[s] || s);
     const funcionalidadesLegibles = state.features.map(f => FEATURE_LABELS[f] || f);
 
-    return {
-        timestamp: new Date().toISOString(),
-        nombre: document.getElementById('nombre')?.value || '',
-        email: document.getElementById('email')?.value || '',
-        telefono: document.getElementById('telefono')?.value || '',
-        tipo_sitio: document.getElementById('tipo_sitio')?.value || '',
-        secciones_elegidas: seccionesLegibles,
-        funcionalidades: funcionalidadesLegibles,
-        // Desglose numérico completo para la hoja de cálculo y el email
-        presupuesto: {
+    const nombreVal = document.getElementById('nombre')?.value || '';
+    const customDesc = document.getElementById('custom-project-desc')?.value.trim() || '';
+    const isCustom = customDesc.length > 0;
+
+    const asuntoFinal = isCustom
+        ? `SOLICITUD PROYECTO CUSTOM - ${nombreVal}`
+        : `Nuevo Presupuesto Web - ${nombreVal}`;
+
+    // Si es custom, asignar tipo automático; si no, usar valor seleccionado
+    const tipoSitio = isCustom ? 'WEB APP / CUSTOM' : (document.getElementById('tipo_sitio')?.value || '');
+
+    // Si es custom, presupuesto con ceros; si no, usar valores del estado
+    const presupuestoData = isCustom
+        ? { base: 0, secciones: 0, funcionalidades: 0, subtotal: 0, iva: 0, total: 0 }
+        : {
             base: state.presupuesto.base,
             secciones: state.presupuesto.secciones,
             funcionalidades: state.presupuesto.funcionalidades,
             subtotal: state.presupuesto.subtotal,
             iva: state.presupuesto.iva,
             total: state.presupuesto.total
-        },
+        };
+
+    return {
+        timestamp: new Date().toISOString(),
+        asunto: asuntoFinal,
+        is_custom: isCustom,
+        customDescription: customDesc,  // ✅ CamelCase requerido para backend
+        nombre: nombreVal,
+        email: document.getElementById('email')?.value || '',
+        telefono: document.getElementById('telefono')?.value || '',
+        tipo_sitio: tipoSitio,
+        secciones_elegidas: seccionesLegibles,
+        funcionalidades: funcionalidadesLegibles,
+        // Desglose numérico - si es custom, todos en ceros
+        presupuesto: presupuestoData,
         observaciones: document.getElementById('observaciones')?.value || ''
     };
 }
@@ -62,6 +81,8 @@ function isValidEmail(email) {
 function validateForm() {
     const nombre = document.getElementById('nombre')?.value.trim();
     const email = document.getElementById('email')?.value.trim();
+    const customDesc = document.getElementById('custom-project-desc')?.value.trim() || '';
+    const isCustom = customDesc.length > 0;
     const tipo = document.getElementById('tipo_sitio')?.value;
 
     if (!nombre) {
@@ -79,7 +100,8 @@ function validateForm() {
         return false;
     }
 
-    if (!tipo) {
+    // Solo validar tipo_sitio si NO es un proyecto custom
+    if (!isCustom && !tipo) {
         showError('Por favor selecciona un tipo de sitio');
         return false;
     }
@@ -98,6 +120,12 @@ async function submitForm() {
     if (success) {
         document.getElementById('presupuesto-form').reset();
         resetPresupuesto();
+        
+        if (formData.is_custom) {
+             showSuccess('✅ Solicitud de entrevista enviada con éxito. Te contactaremos en 24h hábiles.');
+        } else {
+             showSuccess('✅ Cotización enviada con éxito. Revisá tu casilla de correo.');
+        }
     }
 
     showLoadingIndicator(false);
@@ -156,7 +184,7 @@ function showSuccess(message) {
         opacity: 0;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `;
-    notification.textContent = '✅ Cotización enviada con éxito. Revisá tu casilla de correo.';
+    notification.textContent = message;
     document.body.appendChild(notification);
     
     // Trigger reflow to start animation
