@@ -343,5 +343,5 @@ Proyecto privado de Leo (OmniStock SDD Team)
 ## 📞 Contacto
 
 Para soporte o preguntas sobre la arquitectura:
-- Email: osvojag@gmail.com
+- Email: ongevag@gmail.com
 - Docs: Revisar `/docs/` para detalles técnicos
