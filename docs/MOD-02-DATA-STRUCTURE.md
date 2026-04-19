@@ -517,4 +517,4 @@ Show confirmation (JavaScript)
 
 ---
 
-**Related:** MOD-01, MOD-03, MOD-06
+**Related:** MOD-01, MOD-03, MOD-05

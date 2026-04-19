@@ -1,6 +1,6 @@
 ---
 
-# MOD-04: UI ARCHITECTURE SPECIFICATION
+# MOD-03: UI ARCHITECTURE SPECIFICATION
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -30,13 +30,13 @@ Define the user interface structure, components, layout, interactions, and respo
 │ SECTION 1: Tipo de Sitio               │
 │ ┌───────────────────────────────────┐  │
 │ │ Select dropdown (4 opciones)      │  │
-│ │ - Landing Page ($180k)            │  │
-│ │ - Sitio Simple ($200k)            │  │
-│ │ - Portfolio ($300k)               │  │
-│ │ - E-Commerce ($500k)              │  │
+│ │ - Landing Page ($200k)            │  │
+│ │ - Sitio Simple ($250k)            │  │
+│ │ - Portfolio ($350k)               │  │
+│ │ - E-Commerce ($600k)              │  │
 │ └───────────────────────────────────┘  │
 │                                         │
-│ SECTION 2: Secciones ($40,000 c/u)    │
+│ SECTION 2: Secciones ($50,000 c/u)    │
 │ ┌───────────────────────────────────┐  │
 │ │ Grid de 9 checkboxes:             │  │
 │ │ ☑ Hero/Header  ☑ About            │  │
@@ -46,13 +46,14 @@ Define the user interface structure, components, layout, interactions, and respo
 │ │ ☑ Newsletter                      │  │
 │ └───────────────────────────────────┘  │
 │                                         │
-│ SECTION 3: Funcionalidades ($50k c/u) │
+│ SECTION 3: Funcionalidades ($60k c/u) │
 │ ┌───────────────────────────────────┐  │
-│ │ Grid de 8 checkboxes:             │  │
+│ │ Grid de 9 checkboxes:             │  │
 │ │ ☑ Tienda Nube  ☑ Carrito          │  │
 │ │ ☑ Búsqueda     ☑ Filtros          │  │
 │ │ ☑ Idiomas      ☑ SEO              │  │
 │ │ ☑ Analytics    ☑ Reservas         │  │
+│ │ ☑ CMS                             │  │
 │ └───────────────────────────────────┘  │
 │                                         │
 │ PRESUPUESTO EN TIEMPO REAL              │
@@ -95,8 +96,8 @@ Define the user interface structure, components, layout, interactions, and respo
 ```
 
 **Styling:**
-- Background: Gradient #1f4e79 → #1f7950
-- Color: White
+- Background: Gradient #0f172a → #1a4a2a (Dark Navy → Dark Green)
+- Color: White (#ffffff)
 - Padding: 40px
 - Text-align: Center
 - Back-link: Absolute position top-left
@@ -116,11 +117,12 @@ Define the user interface structure, components, layout, interactions, and respo
 ```
 
 **Styling:**
-- Background: #f9f9f9
-- Border-left: 4px solid #1f7950
+- Background: #1e293b (Dark Card)
+- Border-left: 4px solid #16c946 (Green Accent)
 - Padding: 20px
 - Margin: 30px 0
 - Border-radius: 5px
+- Text Color: #e2e8f0 (Light Secondary)
 
 ---
 
@@ -140,11 +142,12 @@ Define the user interface structure, components, layout, interactions, and respo
 ```
 
 **Styling:**
-- Background: Linear gradient #1f4e79 → #1f7950
-- Color: White
+- Background: Linear gradient #0a4d2e → #1a6b4a (Dark Green gradient)
+- Color: White (#ffffff)
 - Padding: 25px
 - Border-radius: 10px
-- Box-shadow: 0 8px 25px rgba(31, 78, 121, 0.3)
+- Box-shadow: 0 8px 25px rgba(22, 201, 70, 0.2)
+- Border: 1px solid #16c946 (Green accent border)
 
 ---
 
@@ -184,30 +187,38 @@ Define the user interface structure, components, layout, interactions, and respo
 ```
 
 **Styling:**
-- Background: Gradient #ff6b35 → #ff8c42
-- Color: White
+- Background: Linear gradient #16c946 → #12a83a (Green gradient)
+- Color: #0a2e14 (Dark green text)
 - Padding: 14px 30px
 - Font-size: 1em
 - Font-weight: 600
 - Border-radius: 6px
 - Cursor: Pointer
 - Transition: all 0.3s ease
-- Hover: Transform translateY(-2px), enhanced shadow
+- Hover: Brightness increased, enhanced shadow
 - Disabled: Opacity 0.6, cursor not-allowed
+- Active: Scale 0.98 on click
 
 ---
 
 ## 🎨 COLOR SYSTEM
 
+**Current Theme (Dark Mode — Actual as of presupuestador/index.html):**
+
 ```css
---primary: #1f4e79 (Dark Blue)
---secondary: #1f7950 (Forest Green)
---accent: #ff6b35 (Coral Orange)
---light: #f9f9f9 (Light Gray)
---white: #ffffff (White)
---text: #333333 (Dark Text)
---border: #e0e0e0 (Light Border)
+--bg-page: #0f172a (Dark Navy Background)
+--bg-card: #1e293b (Dark Card Background)
+--bg-input: #0a1120 (Darker Input Background)
+--accent: #16c946 (Bright Green Accent)
+--accent-dark: #12a83a (Darker Green)
+--text-primary: #ffffff (White Primary Text)
+--text-secondary: #e2e8f0 (Light Secondary Text)
+--text-muted: #94a3b8 (Muted Text)
+--border: #334155 (Dark Border)
+--border-focus: #16c946 (Green Focus Border)
 ```
+
+**Note:** All CSS is inline in `presupuestador/index.html` (~54KB). No external .css files.
 
 ---
 
@@ -343,18 +354,23 @@ showLoadingIndicator(false) hides spinner
 ```css
 .confirmation-message {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #4CAF50;
-  color: white;
-  padding: 15px 20px;
-  border-radius: 5px;
-  animation: slideIn 0.3s ease;
+  bottom: 30px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  background: #0a0f1e (Dark navy);
+  color: #ffffff (White text);
+  border: 1px solid #1bfa57 (Bright green border);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes slideIn {
-  from { transform: translateX(400px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+@keyframes slideUp {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
 }
 ```
 
@@ -365,11 +381,17 @@ showLoadingIndicator(false) hides spinner
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #f44336;
-  color: white;
+  background: #dc2626 (Red for errors);
+  color: #ffffff (White text);
   padding: 15px 20px;
   border-radius: 5px;
+  border: 1px solid #991b1b (Darker red border);
   animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 ```
 

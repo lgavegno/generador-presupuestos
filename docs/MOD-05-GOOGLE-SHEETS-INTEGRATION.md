@@ -1,9 +1,22 @@
-# MOD-06: GOOGLE SHEETS INTEGRATION SPECIFICATION
+# MOD-05: GOOGLE SHEETS INTEGRATION SPECIFICATION
 
-**Status:** ACTIVE  
-**Version:** 1.0  
-**Last Updated:** Marzo 2026  
-**Author:** Leo (OmniStock SDD Team)  
+**Status:** ACTIVE
+**Version:** 1.0
+**Last Updated:** Marzo 2026
+**Author:** Leo (OmniStock SDD Team)
+
+---
+
+## ⚠️ DISCLAIMER — Dos schemas documentados
+
+Este archivo documenta **dos versiones** del sistema:
+
+| Schema | Columnas | Estado | Referencia |
+|--------|----------|--------|------------|
+| A-AS (original) | Complejo, incluye DNI/CUIT/empresa | Legacy / no activo | Este archivo |
+| A-Q (activo) | Minimalista, 17 campos | **En producción** | `docs/API_SPEC.md` |
+
+**Para integrar con el sistema actual, usá `API_SPEC.md` como fuente de verdad.**
 
 ---
 
@@ -261,7 +274,7 @@ function saveToSheet(data) {
   try {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     
-    // Prepare row data (matching column order from MOD-06)
+    // Prepare row data (matching column order from MOD-05)
     const row = [
       data.timestamp,
       data.submission_id,

@@ -112,7 +112,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 1. **README.md** (este archivo) - Visión general
 2. **docs/PROJECT_CONSTITUTION.md** - Especificación del proyecto
 3. **docs/SETUP-GOOGLE-SHEETS.md** - Instrucciones de configuración
-4. **docs/MOD-06-GOOGLE-SHEETS-INTEGRATION.md** - Esquema de datos
+4. **docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md** - Esquema de datos
 5. **docs/PROJECT_LOG.md** - Historial de cambios
 
 ---
@@ -130,7 +130,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 ```
 1. Ir a script.google.com
 2. Crear nuevo proyecto
-3. Copiar código de MOD-06-GOOGLE-SHEETS-INTEGRATION.md
+3. Copiar código de MOD-05-GOOGLE-SHEETS-INTEGRATION.md
 4. Reemplazar SHEET_ID con el ID real
 5. Deploy como "Web App" (accessible to anyone)
 6. Copiar URL de deployment
@@ -138,7 +138,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 
 ### 3. Actualizar Frontend
 ```javascript
-// En js/email-handler.js y presupuestador/js/email-handler.js, reemplazar:
+// En presupuestador/js/email-handler.js, reemplazar:
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec";
 ```
 
@@ -296,7 +296,7 @@ generador-presupuestos/
 │   └── ui-updater.js                 # ✅ (sincronizada)
 ├── docs/
 │   ├── PROJECT_CONSTITUTION.md
-│   ├── MOD-01 a MOD-07.md
+│   ├── MOD-01 a MOD-06.md
 │   ├── PLAN-*.md
 │   ├── PROJECT_LOG.md
 │   └── SETUP-GOOGLE-SHEETS.md
@@ -345,3 +345,86 @@ Proyecto privado de Leo (OmniStock SDD Team)
 Para soporte o preguntas sobre la arquitectura:
 - Email: ongevag@gmail.com
 - Docs: Revisar `/docs/` para detalles técnicos
+
+---
+
+## Technical Architecture
+
+```
++---------------------------+     POST (JSON, mode:no-cors)
+|  Frontend (GitHub Pages)  | --------------------------------->
+|  Vanilla JS, no build     |                                  |
+|  - calculator.js (227 L)  |                                  v
+|  - form-handler.js (200 L)|          +-------------------------------+
+|  - email-handler.js (32 L)|          |  Google Apps Script (doPost)  |
+|  - main.js / state / cfg  |          |  - Validates + enriches data  |
++---------------------------+          |  - Generates submission ID    |
+                                       +---------------+---------------+
+                                                       |
+                                        +--------------+--------------+
+                                        |                             |
+                                        v                             v
+                                 +-----------+               +----------------+
+                                 | Google    |               | Gmail (MailApp) |
+                                 | Sheets    |               | Email to owner  |
+                                 | A-Q cols  |               | < 5 seconds     |
+                                 | LOGS tab  |               +----------------+
+                                 +-----------+
+```
+
+**Two user flows:**
+- **Standard:** Select site type + sections + features → real-time ARS pricing → submit → email notification
+- **Custom (Web Apps/SaaS):** Describe project → pricing shows "A Medida" → submit → owner contacts within 24h
+
+---
+
+## Engineering Decisions
+
+| Decision | Why | Details |
+|----------|-----|---------|
+| Vanilla JS (no framework) | Zero build step, deploys directly to GitHub Pages | [ADR-001](docs/adr/ADR-001_vanilla-js-sin-framework.md) |
+| Google Apps Script backend | $0/month cost, email + storage included | [ADR-002](docs/adr/ADR-002_google-apps-script-backend.md) |
+| Dual file structure (/js/ + /presupuestador/) | Legacy from iterative development | [ADR-003](docs/adr/ADR-003_dual-file-structure.md) |
+| ARS-only pricing | Argentine SME market, avoids exchange-rate confusion | [ADR-004](docs/adr/ADR-004_ars-moneda-unica.md) |
+
+---
+
+## Known Limitations & Roadmap
+
+### Current limitations (honest)
+
+- **Opaque responses:** `mode: 'no-cors'` means the frontend can't read the server response. If the Google Apps Script fails, the user sees "success" anyway. Only debug channel is Google Sheets → LOGS tab.
+- **Hardcoded webhook URL:** `GOOGLE_SCRIPT_URL` in `email-handler.js` must be updated manually every time the Google Apps Script is redeployed.
+- **Hardcoded exchange rate:** `TIPO_CAMBIO: 360` in `main.js` — doesn't update automatically. In an inflationary context, this gets stale quickly.
+- **No rate limiting:** The webhook is public. Anyone with the URL can send data. No protection against spam submissions.
+- **IVA informational only:** Tax (21%) is shown as a breakdown but not added to the final total. This is intentional but can confuse clients expecting the final price to include IVA.
+
+### If I had more time I would add
+
+- Replace `mode: 'no-cors'` with a proper CORS-enabled endpoint (requires Apps Script config changes) to get real error feedback
+- Move `GOOGLE_SCRIPT_URL` and `TIPO_CAMBIO` to a config file or environment variable instead of hardcoded constants
+- Add honeypot field to reduce spam submissions
+- Add PDF export of the quote for the end client
+- Implement server-side rate limiting (1 submission per email per 5 minutes)
+
+---
+
+## Project Metrics
+
+```
+JS files:           6 active files in presupuestador/js/
+Lines of code:      531 lines total (JS only)
+Documentation:      17 files in /docs/ + 4 ADRs
+External deps:      0 npm packages, 0 CDN libraries (only Google Fonts)
+Build step:         none
+Deploy:             git push → GitHub Pages auto-deploys
+Monthly cost:       $0
+```
+
+| Layer | File count | Notes |
+|-------|-----------|-------|
+| Frontend JS | 6 | Vanilla, no transpilation |
+| HTML | 2 | index.html (landing) + presupuestador/index.html (app) |
+| CSS | 0 external | All styles are inline in HTML files |
+| Docs | 17 + 4 ADRs | SDD methodology |
+| Test coverage | N/A | No test runner configured; manual testing documented in CHANGELOG |
