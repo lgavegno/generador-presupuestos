@@ -78,9 +78,9 @@ Form reset + resetPresupuesto()
 
 En `email-handler.js:14`, el fetch usa `mode: 'no-cors'`. Esto significa que si el Google Apps Script retorna un error 500, el frontend lo ignora y muestra "Cotización procesada exitosamente" igual. Para debuggear errores de backend, hay que ir **directamente a Google Sheets → hoja LOGS**.
 
-### 2. La carpeta `/presupuestador/js/` NO es la que ejecuta la app
+### 2. `/presupuestador/js/` es la ÚNICA fuente de verdad
 
-`presupuestador/index.html` carga los scripts de `../js/` (la carpeta raíz), NO de `presupuestador/js/`. Si editás un archivo en `/presupuestador/js/calculator.js`, no cambia nada en la app. La fuente de verdad es `/js/`. Ver `DEDUPLICATION_AUDIT.md`.
+`presupuestador/index.html` carga los scripts de `./js/` (relativo a presupuestador/), que apunta a `/presupuestador/js/`. Esta es la única carpeta JS activa en el proyecto. No existe `/js/` en la raíz. Ver `DEDUPLICATION_AUDIT.md` para contexto histórico (Opción B ejecutada en commit 82a2ba0).
 
 ### 3. El IVA se calcula pero NO se suma al total
 
@@ -106,7 +106,7 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 ### Lo que NO hacer
 - No agregar dependencias npm (no hay package.json, es por diseño)
 - No mover el CSS inline a archivos externos sin discutirlo antes
-- No editar `/presupuestador/js/` sin entender que no tiene efecto
+- No crear carpeta `/js/` en la raíz (la deuda técnica fue resuelta: usa solo `/presupuestador/js/`)
 - No cambiar `mode: 'no-cors'` a `mode: 'cors'` sin configurar headers en Google Apps Script
 
 ---
@@ -125,7 +125,7 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 
 Antes de tocar código, verificá:
 
-1. **Qué archivo JS está activo:** La app usa `/js/`, no `/presupuestador/js/`. Verificar con `DEDUPLICATION_AUDIT.md`.
+1. **Qué archivo JS está activo:** La app usa `/presupuestador/js/` (única fuente de verdad). Ver `DEDUPLICATION_AUDIT.md` para contexto histórico.
 2. **Precios vigentes:** El precio en producción está en `CONFIG.PRESUPUESTO_BASE` en `js/main.js`. Algunos docs reflejan versiones anteriores ($180k-$500k) que ya no aplican.
 3. **Modo custom vs standard:** Muchas funciones tienen bifurcación `if (state.isCustom)`. Si agregás lógica nueva, pensá si aplica a ambos modos.
 4. **Contrato del webhook:** Antes de cambiar `collectFormData()` en `form-handler.js`, leé `docs/API_SPEC.md` para no romper el schema de Google Sheets.
