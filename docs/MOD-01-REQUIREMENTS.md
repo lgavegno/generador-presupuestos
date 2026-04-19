@@ -15,11 +15,11 @@
 - [ ] Show validation errors
 
 ### FR-002: Price Calculation
-- [ ] Calculate base price by type
-- [ ] Add section prices ($40k each)
-- [ ] Add feature prices ($50k each)
-- [ ] Calculate 21% tax
-- [ ] Show ARS and USD totals
+- [x] ✅ Calculate base price by type
+- [x] ✅ Add section prices ($50k each)
+- [x] ✅ Add feature prices ($60k each)
+- [x] ✅ Calculate 21% tax (informativo only, NOT added to total)
+- [x] ✅ Show ARS and USD totals
 
 ### FR-003: Presupuesto Display
 - [ ] Show live presupuesto as user selects
@@ -28,11 +28,7 @@
 - [ ] Show summary card
 
 ### FR-004: Prompt Generation
-- [ ] Generate detailed WordPress prompt
-- [ ] Include all form data
-- [ ] Include pricing breakdown
-- [ ] Include design specifications
-- [ ] Include technical requirements
+- [ ] ⏳ PENDIENTE — `generatePrompt()` not implemented in codebase
 
 ### FR-005: Google Sheets Integration
 - [ ] Save all submissions to Sheet
@@ -109,24 +105,28 @@
 ## ACCEPTANCE CRITERIA
 
 ### A-001: Form Submission
-**GIVEN:** User completes all required fields  
-**WHEN:** User clicks "Enviar Cotización"  
+**GIVEN:** User completes all required fields
+**WHEN:** User clicks "Enviar Cotización"
 **THEN:** Data saved to Google Sheets AND email sent AND confirmation shown
+**Status:** ✅ IMPLEMENTADO (`submitForm()` en form-handler.js + `sendToGoogleSheets()` en email-handler.js)
 
 ### A-002: Price Calculation
-**GIVEN:** User selects type + sections + features  
-**WHEN:** Selection changes  
+**GIVEN:** User selects type + sections + features
+**WHEN:** Selection changes
 **THEN:** Total price updates in real-time
+**Status:** ✅ IMPLEMENTADO (`updatePresupuesto()` en calculator.js, evento onchange sincrónico)
 
 ### A-003: Email Delivery
-**GIVEN:** Form submitted successfully  
-**WHEN:** Email trigger fires  
+**GIVEN:** Form submitted successfully
+**WHEN:** Email trigger fires
 **THEN:** Email arrives at osvojag@gmail.com within 5 seconds
+**Status:** ⏳ PENDIENTE — Backend (Google Apps Script) responsable, no verificable desde frontend
 
 ### A-004: Data Persistence
-**GIVEN:** User submits form  
-**WHEN:** Email sent  
+**GIVEN:** User submits form
+**WHEN:** Email sent
 **THEN:** All data exists in Google Sheets row
+**Status:** ✅ IMPLEMENTADO (GAS `appendRow()` a SUBMISSIONS sheet)
 
 ---
 

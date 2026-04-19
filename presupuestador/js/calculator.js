@@ -3,12 +3,36 @@
 // ═══════════════════════════════════════════════════════════════
 
 function updatePresupuesto() {
+    console.log('updatePresupuesto() llamada');
     const typeSelect = document.getElementById('tipo_sitio');
     const selectedType = typeSelect ? typeSelect.value : null;
 
+    console.log('  - typeSelect elemento:', typeSelect);
+    console.log('  - selectedType:', selectedType);
+    console.log('  - CONFIG.PRESUPUESTO_BASE:', CONFIG.PRESUPUESTO_BASE);
+
     if (!selectedType) {
+        console.log('  - Sin tipo seleccionado, reseteando');
         resetPresupuesto();
         return;
+    }
+
+    const customDesc = document.getElementById('custom-project-desc')?.value.trim();
+    const isCustom = customDesc && customDesc.length > 0;
+    state.isCustom = isCustom;
+
+    const step2Card = document.getElementById('step-2-card');
+    const step3Card = document.getElementById('step-3-card');
+    const allCheckboxes = document.querySelectorAll('input[name="sections"], input[name="features"]');
+
+    if (isCustom) {
+        if (step2Card) { step2Card.style.opacity = '0.4'; step2Card.style.pointerEvents = 'none'; }
+        if (step3Card) { step3Card.style.opacity = '0.4'; step3Card.style.pointerEvents = 'none'; }
+        allCheckboxes.forEach(cb => { cb.checked = false; cb.disabled = true; });
+    } else {
+        if (step2Card) { step2Card.style.opacity = '1'; step2Card.style.pointerEvents = 'auto'; }
+        if (step3Card) { step3Card.style.opacity = '1'; step3Card.style.pointerEvents = 'auto'; }
+        allCheckboxes.forEach(cb => cb.disabled = false);
     }
 
     const SECCIONES_INCLUIDAS = {
@@ -21,18 +45,22 @@ function updatePresupuesto() {
     // Si el usuario cambia de tipo de sitio, seteamos las secciones incluidas por defecto
     if (state.websiteType !== selectedType) {
         state.websiteType = selectedType;
-        
-        // Resetear todas las secciones
-        const allSectionCheckboxes = document.querySelectorAll('input[name="sections"]');
-        allSectionCheckboxes.forEach(cb => cb.checked = false);
-        
-        // Marcar las incluidas
-        const incluidas = SECCIONES_INCLUIDAS[selectedType] || [];
-        incluidas.forEach(secId => {
-            const cb = document.querySelector(`input[name="sections"][value="${secId}"]`);
-            if (cb) cb.checked = true;
-        });
+
+        if (!isCustom) {
+            // Resetear todas las secciones
+            const allSectionCheckboxes = document.querySelectorAll('input[name="sections"]');
+            allSectionCheckboxes.forEach(cb => cb.checked = false);
+
+            // Marcar las incluidas
+            const incluidas = SECCIONES_INCLUIDAS[selectedType] || [];
+            incluidas.forEach(secId => {
+                const cb = document.querySelector(`input[name="sections"][value="${secId}"]`);
+                if (cb) cb.checked = true;
+            });
+        }
     }
+
+    console.log('  - Tipo asignado:', state.websiteType);
 
     // Secciones
     const sectionCheckboxes = document.querySelectorAll('input[name="sections"]:checked');
@@ -44,12 +72,12 @@ function updatePresupuesto() {
 
     // Cálculos
     const basePrecio = CONFIG.PRESUPUESTO_BASE[selectedType] || 0;
-    
+
     // Descartamos del cobro las secciones que ya están incluidas en el tipo de sitio elegido
     const incluidasActuales = SECCIONES_INCLUIDAS[selectedType] || [];
     const seccionesCobrables = state.sections.filter(sec => !incluidasActuales.includes(sec)).length;
     const seccionesPrecio = seccionesCobrables * CONFIG.PRECIO_SECCION;
-    
+
     const funcionalidadesPrecio = state.features.length * CONFIG.PRECIO_FUNCIONALIDAD;
 
     const subtotal = basePrecio + seccionesPrecio + funcionalidadesPrecio;
@@ -70,14 +98,27 @@ function updatePresupuesto() {
         tieneIva: true
     };
 
+    console.log('  - Presupuesto calculado:', {
+        basePrecio,
+        seccionesPrecio,
+        funcionalidadesPrecio,
+        subtotal,
+        total: state.presupuesto.total
+    });
+
     updateUI();
     saveToStorage();
+    console.log('✓ updatePresupuesto() completada');
 }
 
 function updateUI() {
     if (!state.presupuesto) return;
 
+    console.log('  - Actualizando UI...');
+
     const totalEl = document.getElementById('total');
+    const submitBtn = document.getElementById('submit-btn');
+    const noteEl = document.querySelector('.p-total__note');
 
     if (state.isCustom) {
         // MODO CUSTOM: Ocultar desglose y mostrar "A Medida"
@@ -93,6 +134,8 @@ function updateUI() {
             totalEl.innerText = "A Medida";
             totalEl.style.fontSize = "1.8rem";
         }
+        if (submitBtn) submitBtn.innerHTML = "Solicitar Entrevista";
+        if (noteEl) noteEl.innerText = "* Proyecto a Medida - Cotización vía Entrevista";
     } else {
         // MODO ESTÁNDAR: Mostrar desglose y total
         document.getElementById('precio-base') && (document.getElementById('precio-base').parentElement.style.display = 'flex');
@@ -115,11 +158,19 @@ function updateUI() {
             totalEl.innerText = formatCurrency(state.presupuesto.total);
             totalEl.style.fontSize = "inherit";
         }
+        if (submitBtn) submitBtn.innerHTML = "Enviar Cotización";
+        if (noteEl) noteEl.innerText = "* Presupuesto válido por 15 días";
     }
+    console.log('  - UI actualizada con:', {
+        isCustom: state.isCustom,
+        precioBase: formatCurrency(state.presupuesto.base),
+        total: formatCurrency(state.presupuesto.total)
+    });
 }
 
 function resetPresupuesto() {
     state.presupuesto = { base: 0, secciones: 0, funcionalidades: 0, subtotal: 0, iva: 0, total: 0, totalUSD: 0 };
+    state.isCustom = false;
     state.sections = [];
     state.features = [];
     updateUI();

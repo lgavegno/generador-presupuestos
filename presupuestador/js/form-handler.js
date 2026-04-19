@@ -120,11 +120,11 @@ async function submitForm() {
     if (success) {
         document.getElementById('presupuesto-form').reset();
         resetPresupuesto();
-        
+
         if (formData.is_custom) {
-             showSuccess('✅ Solicitud de entrevista enviada con éxito. Te contactaremos en 24h hábiles.');
+            showSuccess('✅ Solicitud de entrevista enviada con éxito. Te contactaremos en 24h hábiles.');
         } else {
-             showSuccess('✅ Cotización enviada con éxito. Revisá tu casilla de correo.');
+            showSuccess('✅ Cotización enviada con éxito. Revisá tu casilla de correo.');
         }
     }
 
@@ -186,7 +186,7 @@ function showSuccess(message) {
     `;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
+
     // Trigger reflow to start animation
     requestAnimationFrame(() => {
         notification.style.opacity = '1';
