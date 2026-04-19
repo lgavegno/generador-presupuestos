@@ -138,7 +138,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 
 ### 3. Actualizar Frontend
 ```javascript
-// En js/email-handler.js y presupuestador/js/email-handler.js, reemplazar:
+// En presupuestador/js/email-handler.js, reemplazar:
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec";
 ```
 
@@ -397,7 +397,6 @@ Para soporte o preguntas sobre la arquitectura:
 - **Hardcoded webhook URL:** `GOOGLE_SCRIPT_URL` in `email-handler.js` must be updated manually every time the Google Apps Script is redeployed.
 - **Hardcoded exchange rate:** `TIPO_CAMBIO: 360` in `main.js` — doesn't update automatically. In an inflationary context, this gets stale quickly.
 - **No rate limiting:** The webhook is public. Anyone with the URL can send data. No protection against spam submissions.
-- **Dual JS folder deuda:** `/presupuestador/js/` exists but is not loaded by the app. `/js/` in root is the active source. See `DEDUPLICATION_AUDIT.md`.
 - **IVA informational only:** Tax (21%) is shown as a breakdown but not added to the final total. This is intentional but can confuse clients expecting the final price to include IVA.
 
 ### If I had more time I would add
@@ -405,7 +404,6 @@ Para soporte o preguntas sobre la arquitectura:
 - Replace `mode: 'no-cors'` with a proper CORS-enabled endpoint (requires Apps Script config changes) to get real error feedback
 - Move `GOOGLE_SCRIPT_URL` and `TIPO_CAMBIO` to a config file or environment variable instead of hardcoded constants
 - Add honeypot field to reduce spam submissions
-- Resolve the dual-folder structure (execute DEDUPLICATION_AUDIT.md Option B)
 - Add PDF export of the quote for the end client
 - Implement server-side rate limiting (1 submission per email per 5 minutes)
 
@@ -414,7 +412,7 @@ Para soporte o preguntas sobre la arquitectura:
 ## Project Metrics
 
 ```
-JS files:           6 active files in /js/
+JS files:           6 active files in presupuestador/js/
 Lines of code:      531 lines total (JS only)
 Documentation:      17 files in /docs/ + 4 ADRs
 External deps:      0 npm packages, 0 CDN libraries (only Google Fonts)
