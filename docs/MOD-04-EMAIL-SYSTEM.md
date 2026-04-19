@@ -1,4 +1,4 @@
-# MOD-05: EMAIL SYSTEM SPECIFICATION
+# MOD-04: EMAIL SYSTEM SPECIFICATION
 
 **Status:** ACTIVE
 **Version:** 1.0
@@ -132,7 +132,7 @@ Define the architecture, requirements, and specifications for the email notifica
 #### Data Storage (Google Sheets)
 - **Responsibility:** Persist all form submissions
 - **Structure:** 1 row = 1 submission
-- **Columns:** (Ver MOD-06)
+- **Columns:** (Ver MOD-05)
 
 ---
 
@@ -333,7 +333,7 @@ contacta al cliente por: [email/whatsapp]
 
 ## 🔄 UPDATE POLICY
 
-### When to update MOD-05:
+### When to update MOD-04:
 
 - Major changes to email format
 - New validations added
@@ -368,7 +368,7 @@ contacta al cliente por: [email/whatsapp]
 
 ## 🚀 NEXT STEPS
 
-1. Create MOD-06-GOOGLE-SHEETS-INTEGRATION.md
+1. Create MOD-05-GOOGLE-SHEETS-INTEGRATION.md
 2. Create PLAN-002-EMAIL-IMPLEMENTATION.md
 3. Write Apps Script code
 4. Test end-to-end
@@ -383,5 +383,5 @@ contacta al cliente por: [email/whatsapp]
 **Related Documents:**
 - MOD-01-REQUIREMENTS.md
 - MOD-02-DATA-STRUCTURE.md
-- MOD-06-GOOGLE-SHEETS-INTEGRATION.md
+- MOD-05-GOOGLE-SHEETS-INTEGRATION.md
 - PLAN-002-EMAIL-IMPLEMENTATION.md

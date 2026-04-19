@@ -289,3 +289,72 @@ Usuario (navegador)
 - **`mode: 'no-cors'`** en el fetch hace que la respuesta del servidor sea opaca. El frontend no puede distinguir si el backend retornó éxito o error. El único canal de debug del backend es la hoja **LOGS** en Google Sheets.
 - **IVA nunca se suma al total.** Se calcula y muestra como desglose informativo. El `total` que ve el cliente = `subtotal` sin IVA.
 
+---
+
+## 📐 Metodología de Desarrollo
+
+### SDD — Specification-Driven Development
+
+Cada módulo del sistema tiene una especificación en `/docs/MOD-XX-nombre.md` que define requerimientos, contratos de datos y criterios de aceptación **antes** de escribir código. Los MODs son la fuente de verdad del diseño.
+
+| MOD | Módulo | Propósito | Status |
+|-----|--------|-----------|--------|
+| MOD-01 | Requirements | Requerimientos funcionales y acceptance criteria | ✅ |
+| MOD-02 | Data Structure | Schema de datos y contratos | ✅ |
+| MOD-03 | UI Architecture | Componentes, estilos y paleta visual | ✅ |
+| MOD-04 | Email System | Integración de notificaciones | ✅ |
+| MOD-05 | Google Sheets | Integración con backend GAS | ✅ |
+| MOD-06 | Project Structure | Arquitectura de carpetas y capas | ✅ |
+
+### Clean Architecture — Capas del Sistema
+
+```
+┌──────────────────────────────┐
+│  Presentación                │  ← index.html
+│  (Interfaz, CSS, eventos)    │     presupuestador/index.html
+├──────────────────────────────┤
+│  Aplicación                  │  ← main.js
+│  (CONFIG, state, init)       │     Orquestación de capas
+├──────────────────────────────┤
+│  Dominio                     │  ← calculator.js
+│  (Lógica de negocio pura)    │     updatePresupuesto()
+│  (Precios, cálculos)         │     resetPresupuesto()
+├──────────────────────────────┤
+│  Infraestructura             │  ← email-handler.js
+│  (APIs externas)             │     form-handler.js
+│  (Google Apps Script)        │     storage.js
+│  (localStorage)              │
+└──────────────────────────────┘
+```
+
+**Ventajas:**
+- ✅ Lógica de negocio independiente de UI
+- ✅ Fácil de testear (lógica pura en `calculator.js`)
+- ✅ Bajo acoplamiento entre módulos
+- ✅ Fácil migrar o cambiar backend
+
+### Scrum-inspired
+
+- **Ramas:** Trabajo en feature branches con patrón `feature/descripcion`
+- **Merges:** A develop vía PR o merge explícito con `--no-ff`
+- **Releases:** main recibe solo versiones estables (tags semánticos)
+- **Documentación:** ADRs registran decisiones arquitecturales irreversibles
+
+| Tipo de rama | Patrón | Origen | Destino |
+|-------------|--------|--------|---------|
+| Desarrollo | `feature/descripcion` | develop | develop (PR + review) |
+| Bugfix | `fix/descripcion` | develop | develop |
+| Release | `release/x.y.z` | develop | main (tag vx.y.z) |
+| Hotfix | `hotfix/descripcion` | main | main + develop |
+
+---
+
+## 📚 Decisiones Arquitecturales (ADRs)
+
+Decisiones irreversibles o costosas de cambiar están documentadas en `/docs/adr/`:
+
+1. **ADR-001:** Vanilla JS (sin frameworks) — Costo $0/mes, despliegue simple
+2. **ADR-002:** Google Apps Script backend — Serverless, email + storage incluido
+3. **ADR-003:** Estructura dual /js/ + /presupuestador/js — Legado, a resolver
+4. **ADR-004:** Moneda única ARS — Mercado local, evita confusión
+

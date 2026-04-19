@@ -21,10 +21,9 @@ HTML + Vanilla JS + Google Apps Script + Google Sheets + Gmail — sin framework
 | `docs/API_SPEC.md` | Contrato exacto del webhook (payload, respuesta, schema Sheets) | **Antes de tocar email-handler.js o el backend** |
 | `docs/MOD-02-DATA-STRUCTURE.md` | Objetos CONFIG y state, lógica de cálculo detallada | Antes de tocar calculator.js |
 | `docs/DATA-NORMALIZATION.md` | Cómo se mapean valores técnicos a nombres legibles | Antes de agregar secciones o funcionalidades |
-| `docs/MOD-06-GOOGLE-SHEETS-INTEGRATION.md` | Código de Google Apps Script + estructura de Sheets | Para cambios en backend GAS |
+| `docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md` | Código de Google Apps Script + estructura de Sheets | Para cambios en backend GAS |
 | `docs/SETUP-GOOGLE-SHEETS.md` | Instrucciones de configuración inicial | Solo para setup nuevo |
 | `docs/adr/` | Decisiones de arquitectura con contexto y trade-offs | Para entender "por qué" algo está así |
-| `DEDUPLICATION_AUDIT.md` | Análisis de archivos duplicados y deuda técnica pendiente | Si hay confusión sobre qué archivo editar |
 | `CHANGELOG.md` | Historial de bugs corregidos y cambios | Para entender la evolución del proyecto |
 
 ---
@@ -78,9 +77,9 @@ Form reset + resetPresupuesto()
 
 En `email-handler.js:14`, el fetch usa `mode: 'no-cors'`. Esto significa que si el Google Apps Script retorna un error 500, el frontend lo ignora y muestra "Cotización procesada exitosamente" igual. Para debuggear errores de backend, hay que ir **directamente a Google Sheets → hoja LOGS**.
 
-### 2. `/presupuestador/js/` es la ÚNICA fuente de verdad
+### 2. La carpeta `/presupuestador/js/` NO es la que ejecuta la app
 
-`presupuestador/index.html` carga los scripts de `./js/` (relativo a presupuestador/), que apunta a `/presupuestador/js/`. Esta es la única carpeta JS activa en el proyecto. No existe `/js/` en la raíz. Ver `DEDUPLICATION_AUDIT.md` para contexto histórico (Opción B ejecutada en commit 82a2ba0).
+`presupuestador/index.html` carga los scripts de `../js/` (la carpeta raíz), NO de `presupuestador/js/`. Si editás un archivo en `/presupuestador/js/calculator.js`, no cambia nada en la app. La fuente de verdad es `/js/`. Ver `docs/adr/ADR-003_dual-file-structure.md`.
 
 ### 3. El IVA se calcula pero NO se suma al total
 
@@ -106,7 +105,7 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 ### Lo que NO hacer
 - No agregar dependencias npm (no hay package.json, es por diseño)
 - No mover el CSS inline a archivos externos sin discutirlo antes
-- No crear carpeta `/js/` en la raíz (la deuda técnica fue resuelta: usa solo `/presupuestador/js/`)
+- No editar `/presupuestador/js/` sin entender que no tiene efecto
 - No cambiar `mode: 'no-cors'` a `mode: 'cors'` sin configurar headers en Google Apps Script
 
 ---
@@ -125,8 +124,8 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 
 Antes de tocar código, verificá:
 
-1. **Qué archivo JS está activo:** La app usa `/presupuestador/js/` (única fuente de verdad). Ver `DEDUPLICATION_AUDIT.md` para contexto histórico.
+1. **Qué archivo JS está activo:** La app usa `/js/`, no `/presupuestador/js/`. Ver `docs/adr/ADR-003_dual-file-structure.md`.
 2. **Precios vigentes:** El precio en producción está en `CONFIG.PRESUPUESTO_BASE` en `js/main.js`. Algunos docs reflejan versiones anteriores ($180k-$500k) que ya no aplican.
 3. **Modo custom vs standard:** Muchas funciones tienen bifurcación `if (state.isCustom)`. Si agregás lógica nueva, pensá si aplica a ambos modos.
 4. **Contrato del webhook:** Antes de cambiar `collectFormData()` en `form-handler.js`, leé `docs/API_SPEC.md` para no romper el schema de Google Sheets.
-5. **La deuda de estructura dual** está documentada en `DEDUPLICATION_AUDIT.md` y los ADRs. Salvo que el usuario pida explícitamente resolverla, no la toques.
+5. **La deuda de estructura dual** está documentada en los ADRs (esp. ADR-003). Salvo que el usuario pida explícitamente resolverla, no la toques.

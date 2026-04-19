@@ -62,7 +62,7 @@ Versionado: [Semantic Versioning](https://semver.org/)
 
 - ✅ **README.md** - Completamente reescrito con arquitectura, tecnologías, precios actualizados
 - ✅ **PROJECT_LOG.md** - Registrado hito v1.1 con detalles técnicos
-- ✅ **MOD-06-GOOGLE-SHEETS-INTEGRATION.md** - Agregada sección de "Friendly Names"
+- ✅ **MOD-05-GOOGLE-SHEETS-INTEGRATION.md** - Agregada sección de "Friendly Names"
 - ✅ **CHANGELOG.md** - Este archivo (nuevo)
 
 #### Testing
@@ -96,7 +96,7 @@ No hay cambios que requieran migración. El sistema es completamente backward-co
 - ✅ localStorage persistence
 - ✅ Diseño responsive
 - ✅ HOME con 1 botón (enlace a presupuestador)
-- ✅ Documentación SDD (MOD-01 a MOD-07)
+- ✅ Documentación SDD (MOD-01 a MOD-06)
 
 #### Pending
 - ⏳ Google Apps Script webhook (implementado pero no testeado)
@@ -124,5 +124,5 @@ No hay cambios que requieran migración. El sistema es completamente backward-co
 ## 🔗 Referencias
 
 - **Repo:** https://github.com/lgavegno/generador-presupuestos
-- **Docs:** `/docs/` (MOD-01 a MOD-07)
+- **Docs:** `/docs/` (MOD-01 a MOD-06)
 - **Contact:** osvojag@gmail.com

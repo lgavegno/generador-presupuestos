@@ -288,7 +288,7 @@ function collectFormData() {
 
 ## 🔗 Referencias
 
-- **MOD-06:** `/docs/MOD-06-GOOGLE-SHEETS-INTEGRATION.md`
+- **MOD-05:** `/docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md`
 - **form-handler.js:** `/js/form-handler.js`
 - **PROJECT_LOG:** `/docs/PROJECT_LOG.md` (v1.1.0)
 

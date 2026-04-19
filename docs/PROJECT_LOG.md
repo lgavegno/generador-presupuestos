@@ -2,6 +2,32 @@
 
 **Inicio:** Marzo 2026
 **Status:** ✅ PRODUCTION READY (presupuestador minimalista)
+**Última actualización:** 19 Abril 2026
+
+---
+
+## 📋 Metodología
+
+Este proyecto sigue explícitamente tres metodologías:
+
+### SDD — Specification-Driven Development
+- Cada módulo tiene su especificación en `/docs/MOD-XX-nombre.md` **antes** de escribir código
+- Los MODs son la fuente de verdad del diseño
+- Cambios estructurales requieren actualizar el MOD correspondiente
+
+### Scrum-inspired
+- Trabajo en feature branches: `feature/descripcion`
+- Merges a develop via PR o explícito con `--no-ff`
+- main recibe solo releases estables
+- Decisiones arquitecturales documentadas en ADRs
+
+### Clean Architecture — Separación de Capas
+```
+Presentación (index.html) → UI, CSS inline, eventos
+Aplicación (main.js) → CONFIG, state, inicialización
+Dominio (calculator.js) → Lógica de negocio pura
+Infraestructura (email-handler.js, storage.js) → APIs externas
+```
 
 ---
 
@@ -18,7 +44,7 @@
 ✅ localStorage persistence
 ✅ Diseño responsive
 ✅ HOME con 1 botón
-✅ Documentación SDD (MOD-01 a MOD-07)
+✅ Documentación SDD (MOD-01 a MOD-06)
 
 **PENDIENTE:**
 ⏳ Google Apps Script webhook

@@ -1,4 +1,4 @@
-# MOD-06: GOOGLE SHEETS INTEGRATION SPECIFICATION
+# MOD-05: GOOGLE SHEETS INTEGRATION SPECIFICATION
 
 **Status:** ACTIVE
 **Version:** 1.0
@@ -274,7 +274,7 @@ function saveToSheet(data) {
   try {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     
-    // Prepare row data (matching column order from MOD-06)
+    // Prepare row data (matching column order from MOD-05)
     const row = [
       data.timestamp,
       data.submission_id,

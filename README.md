@@ -109,13 +109,11 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 
 ## 📝 Documentación
 
-1. **README.md** (este archivo) — Visión general y portfolio técnico
-2. **docs/PROJECT_CONSTITUTION.md** — Especificación del proyecto + metodología SDD
-3. **docs/API_SPEC.md** — Contrato completo del webhook (fuente de verdad)
-4. **docs/MOD-01 a MOD-06** — Especificaciones por módulo
-5. **docs/adr/** — Architecture Decision Records (4 decisiones clave)
-6. **docs/SETUP-GOOGLE-SHEETS.md** — Guía de configuración del backend
-7. **docs/PROJECT_LOG.md** — Historial y metodología
+1. **README.md** (este archivo) - Visión general
+2. **docs/PROJECT_CONSTITUTION.md** - Especificación del proyecto
+3. **docs/SETUP-GOOGLE-SHEETS.md** - Instrucciones de configuración
+4. **docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md** - Esquema de datos
+5. **docs/PROJECT_LOG.md** - Historial de cambios
 
 ---
 
@@ -132,7 +130,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 ```
 1. Ir a script.google.com
 2. Crear nuevo proyecto
-3. Copiar código de MOD-06-GOOGLE-SHEETS-INTEGRATION.md
+3. Copiar código de MOD-05-GOOGLE-SHEETS-INTEGRATION.md
 4. Reemplazar SHEET_ID con el ID real
 5. Deploy como "Web App" (accessible to anyone)
 6. Copiar URL de deployment
@@ -140,7 +138,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 
 ### 3. Actualizar Frontend
 ```javascript
-// En presupuestador/js/email-handler.js, reemplazar:
+// En js/email-handler.js y presupuestador/js/email-handler.js, reemplazar:
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9Bz6bXnt06aGHfWEAv76xKWvcc_NBaNhzO5Zijx6RYLr0aNyoH2zpoW-_YYqa0rlS/exec";
 ```
 
@@ -280,36 +278,29 @@ Content-Type: application/json
 
 ```
 generador-presupuestos/
-├── index.html                        # Landing page estática
 ├── presupuestador/
-│   ├── index.html                    # App principal (formulario)
-│   └── js/                           # Fuente de verdad única
-│       ├── main.js                   # CONFIG global, state, inicialización
-│       ├── calculator.js             # Lógica de cálculo de precios
-│       ├── form-handler.js           # Validación y envío del formulario
-│       ├── email-handler.js          # Comunicación con webhook GAS
-│       ├── storage.js                # localStorage (stub)
+│   ├── index.html                    # Formulario principal
+│   └── js/
+│       ├── calculator.js             # Lógica de cálculos (raíz)
+│       ├── form-handler.js           # Validación de formulario
+│       ├── email-handler.js          # Comunicación con webhook
+│       ├── main.js                   # CONFIG y estado global
+│       ├── storage.js                # localStorage management
 │       └── ui-updater.js             # Actualización de DOM
+├── js/
+│   ├── calculator.js                 # ✅ (sincronizada)
+│   ├── form-handler.js               # ✅ (sincronizada)
+│   ├── email-handler.js              # ✅ (sincronizada)
+│   ├── main.js                       # ✅ (sincronizada)
+│   ├── storage.js                    # ✅ (sincronizada)
+│   └── ui-updater.js                 # ✅ (sincronizada)
 ├── docs/
-│   ├── adr/                          # Architecture Decision Records
-│   │   ├── ADR-001_vanilla-js-sin-framework.md
-│   │   ├── ADR-002_google-apps-script-backend.md
-│   │   ├── ADR-003_dual-file-structure.md
-│   │   └── ADR-004_ars-moneda-unica.md
-│   ├── MOD-01-REQUIREMENTS.md
-│   ├── MOD-02-DATA-STRUCTURE.md
-│   ├── MOD-03-PROMPT-GENERATOR.md    # (legacy, no implementado)
-│   ├── MOD-04-UI-ARCHITECTURE.md
-│   ├── MOD-05-EMAIL-SYSTEM.md
-│   ├── MOD-06-GOOGLE-SHEETS-INTEGRATION.md
-│   ├── API_SPEC.md                   # Contrato completo del webhook
-│   ├── DATA-NORMALIZATION.md
 │   ├── PROJECT_CONSTITUTION.md
+│   ├── MOD-01 a MOD-06.md
+│   ├── PLAN-*.md
 │   ├── PROJECT_LOG.md
 │   └── SETUP-GOOGLE-SHEETS.md
-├── CLAUDE.md
-├── README.md
-└── CHANGELOG.md
+└── README.md                         # (este archivo)
 ```
 
 ---
@@ -406,7 +397,7 @@ Para soporte o preguntas sobre la arquitectura:
 - **Hardcoded webhook URL:** `GOOGLE_SCRIPT_URL` in `email-handler.js` must be updated manually every time the Google Apps Script is redeployed.
 - **Hardcoded exchange rate:** `TIPO_CAMBIO: 360` in `main.js` — doesn't update automatically. In an inflationary context, this gets stale quickly.
 - **No rate limiting:** The webhook is public. Anyone with the URL can send data. No protection against spam submissions.
-- **Estructura resuelta:** `/presupuestador/js/` es la única fuente de verdad (deuda técnica resuelta en commit 82a2ba0). No existe `/js/` en la raíz. Ver `DEDUPLICATION_AUDIT.md`.
+- **Dual JS folder deuda:** `/presupuestador/js/` exists but is not loaded by the app. `/js/` in root is the active source. See `DEDUPLICATION_AUDIT.md`.
 - **IVA informational only:** Tax (21%) is shown as a breakdown but not added to the final total. This is intentional but can confuse clients expecting the final price to include IVA.
 
 ### If I had more time I would add
@@ -423,7 +414,7 @@ Para soporte o preguntas sobre la arquitectura:
 ## Project Metrics
 
 ```
-JS files:           6 active files in /presupuestador/js/
+JS files:           6 active files in /js/
 Lines of code:      531 lines total (JS only)
 Documentation:      17 files in /docs/ + 4 ADRs
 External deps:      0 npm packages, 0 CDN libraries (only Google Fonts)
