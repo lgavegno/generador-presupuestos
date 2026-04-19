@@ -42,18 +42,14 @@ Create a web-based quote/presupuesto generator that:
 
 ## 💰 PRICING STRUCTURE
 
-> **Nota (actualizado):** Los precios abajo reflejan los valores en producción (v2.2.0). Los valores originales de la especificación inicial eran más bajos y ya no aplican.
-
 **TIPO DE SITIO (Base):**
-- Landing Page: $200,000 ARS
-- Sitio Simple (3-5 pág): $250,000 ARS
-- Portfolio: $350,000 ARS
-- E-Commerce: $600,000 ARS
+- Landing Page: $180,000 ARS
+- Sitio Simple (3-5 pág): $200,000 ARS
+- Portfolio: $300,000 ARS
+- E-Commerce: $500,000 ARS
 
-**SECCIONES INCLUIDAS SIN COSTO:** cada tipo incluye secciones base (Landing/Simple: Hero; Portfolio: Hero+About; E-Commerce: Hero+About+Products)
-
-**SECCIONES ADICIONALES:** $50,000 ARS c/u
-**FUNCIONALIDADES:** $60,000 ARS c/u
+**SECCIONES ADICIONALES:** $40,000 ARS c/u
+**FUNCIONALIDADES:** $50,000 ARS c/u
 
 **IMPUESTOS:** 21% IVA (Argentina)
 
@@ -192,100 +188,3 @@ Create a web-based quote/presupuesto generator that:
 ---
 
 **Next Document:** MOD-01-REQUIREMENTS.md
-
----
-
-## 🔄 FLUJO DE DATOS END-TO-END
-
-Diagrama completo del ciclo de vida de una cotización:
-
-```
-Usuario (navegador)
-        |
-        | Abre presupuestador/index.html
-        v
-+-----------------------------------------------+
-|  STEP 1: Selección de tipo de sitio           |
-|  <select id="tipo_sitio">                     |
-|  → onchange: updatePresupuesto()              |
-|  → auto-marca secciones incluidas             |
-+-----------------------------------------------+
-        |
-        v
-+-----------------------------------------------+
-|  STEP 2: Selección de secciones/features      |
-|  <input type="checkbox" name="sections">      |
-|  → onchange: updatePresupuesto()              |
-|  → Secciones incluidas en base: gratis        |
-|  → Secciones extra: $50k c/u                 |
-|  → Features: $60k c/u                        |
-+-----------------------------------------------+
-        |
-        | [Modo Custom: si escribe en textarea  |
-        |  custom-project-desc, resetToCustomMode()]
-        v
-+-----------------------------------------------+
-|  calculator.js: updatePresupuesto()           |
-|  subtotal = base + secExtra*50k + feat*60k    |
-|  iva = subtotal * 0.21 (informativo, no suma) |
-|  total = subtotal                             |
-|  → updateUI() (actualiza DOM)                |
-|  → saveToStorage() (localStorage)            |
-+-----------------------------------------------+
-        |
-        v
-+-----------------------------------------------+
-|  STEP 3: Datos de contacto                   |
-|  nombre* | email* | telefono | observaciones  |
-+-----------------------------------------------+
-        |
-        | Click "Enviar Cotización"
-        v
-+-----------------------------------------------+
-|  form-handler.js: submitForm()               |
-|  → validateForm()                            |
-|    - nombre (required)                        |
-|    - email (required, regex)                  |
-|    - tipo_sitio (required si no es custom)   |
-|  → collectFormData()                         |
-|    - mapea ['hero'] → ['Inicio/Hero']        |
-|    - si custom: presupuesto = {ceros}         |
-|    - asunto diferente por modo               |
-+-----------------------------------------------+
-        |
-        | fetch(GOOGLE_SCRIPT_URL, { mode: 'no-cors' })
-        | POST JSON
-        v
-+-----------------------------------------------+
-|  Google Apps Script: doPost(e)               |
-|  → JSON.parse(e.postData.contents)           |
-|  → generateSubmissionId()  (SUB-YYYYMM-XXXX) |
-|  → appendRow() en hoja SUBMISSIONS (cols A-Q)|
-|  → MailApp.sendEmail() a propietario         |
-|  → logEvent() en hoja LOGS                  |
-|  → return {success, submission_id}           |
-+-----------------------------------------------+
-        |               |
-        v               v
-+-------------+  +------------------+
-| Google      |  | Gmail            |
-| Sheets      |  | Notificación al  |
-| SUBMISSIONS |  | propietario      |
-| LOGS        |  | (< 5 segundos)   |
-+-------------+  +------------------+
-        |
-        | (respuesta opaca por no-cors)
-        v
-+-----------------------------------------------+
-|  Frontend: showSuccess() / showError()        |
-|  → form.reset()                              |
-|  → resetPresupuesto()                        |
-+-----------------------------------------------+
-```
-
-### Notas clave del flujo
-
-- **Modo Custom** se activa cuando el campo `#custom-project-desc` tiene texto. Deshabilita secciones y funcionalidades, muestra "A Medida" en el total, cambia el botón a "Solicitar Entrevista" y asigna `tipo_sitio = "WEB APP / CUSTOM"` automáticamente.
-- **`mode: 'no-cors'`** en el fetch hace que la respuesta del servidor sea opaca. El frontend no puede distinguir si el backend retornó éxito o error. El único canal de debug del backend es la hoja **LOGS** en Google Sheets.
-- **IVA nunca se suma al total.** Se calcula y muestra como desglose informativo. El `total` que ve el cliente = `subtotal` sin IVA.
-

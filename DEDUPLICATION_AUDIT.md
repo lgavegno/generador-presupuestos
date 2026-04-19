@@ -1,8 +1,7 @@
 # 🔍 AUDITORÍA DE DUPLICACIÓN — Reporte Detallado
 
-**Fecha:** 13 de abril de 2026 (análisis)
-**Fecha Ejecución:** 19 de abril de 2026 (Opción B implementada)
-**Estado:** ✅ COMPLETADO — Opción B ejecutada en commit 82a2ba0
+**Fecha:** 13 de abril de 2026
+**Estado:** Análisis Completo — ESPERANDO CONFIRMACIÓN antes de cambios
 **Auditor:** Claude Senior Architect
 
 ---
@@ -188,37 +187,41 @@ No deben tocarse (o al menos, no "eliminar uno").
 
 ---
 
-## 📋 ESTRUCTURA ANTERIOR (antes de cambios — 13 de abril)
+## 📋 ESTRUCTURA ACTUAL (antes de cambios)
 
 ```
 generador-presupuestos/
 │
 ├── index.html                          ← LANDING PAGE (no scripts)
-├── tienda-nube.html                    ← LEGACY (no se usa)
+├── tienda-nube.html                    ← LEGACY (no se usa) ❌ ELIMINAR
 │
 ├── /js/                                ← Scripts "source of truth"
-│   ├── main.js
-│   ├── calculator.js
-│   ├── form-handler.js
-│   ├── email-handler.js
-│   ├── storage.js
-│   └── ui-updater.js
+│   ├── main.js                         ✅ SYNC OK
+│   ├── calculator.js                   ⚠️  MÁS ACTUALIZADO (usar como base)
+│   ├── form-handler.js                 ✅ SYNC OK (minor formatting)
+│   ├── email-handler.js                ✅ SYNC OK
+│   ├── storage.js                      ✅ SYNC OK
+│   └── ui-updater.js                   ✅ SYNC OK
 │
-├── /presupuestador/                    ← APP (cargaba scripts de ../)
-│   ├── index.html
-│   ├── /js/                            ← COPIA desincronizado
-│   ├── /css/
-│   └── /data/
+├── /presupuestador/                    ← APP (carga scripts de ../)
+│   ├── index.html                      ← Presupuestador app (54KB CSS inline)
+│   ├── /js/                            ← COPIA (desincronizado)
+│   │   ├── main.js                     ✅ OK
+│   │   ├── calculator.js               ❌ VIEJO (51 líneas menos)
+│   │   ├── form-handler.js             ✅ OK (formatting only)
+│   │   ├── email-handler.js            ✅ OK
+│   │   ├── storage.js                  ✅ OK
+│   │   └── ui-updater.js               ✅ OK
+│   ├── /css/                           ✅ OK (identicos pero son stubs)
+│   └── /data/                          ✅ OK (identicos pero obsoleto)
 │
-├── /css/
-│   ├── styles.css
-│   └── responsive.css
+├── /css/                               ← CSS (3-5 líneas, mayormente vacío)
+│   ├── styles.css                      ✅ OK (idéntico)
+│   └── responsive.css                  ✅ OK (idéntico)
 │
-└── /data/
-    └── pricing.json
+└── /data/                              ← DATA (obsoleto)
+    └── pricing.json                    ❌ OBSOLETO (no se usa)
 ```
-
-**Total:** 20 archivos, 4 carpetas redundantes
 
 ---
 
@@ -268,126 +271,109 @@ generador-presupuestos/
 
 ---
 
-## 🔄 EJECUCIÓN — OPCIÓN B COMPLETADA
+## 🔄 RUTA RECOMENDADA
 
-**Fecha Implementación:** 19 de abril de 2026
-**Commit:** `82a2ba0` — "refactor: restructure app as self-contained presupuestador module + update docs"
+Mi recomendación: **OPCIÓN B (Eliminar duplicación)**
 
-**Cambios ejecutados:**
-- ✅ Crear `presupuestador/js/` y copiar todos los archivos desde `/js/`
-- ✅ Actualizar script src en `presupuestador/index.html` de `../js/` a `./js/`
-- ✅ Eliminar `/js/` vacío (fuente de verdad ahora en `presupuestador/js/`)
-- ✅ Verificación: 4 scripts cargan con HTTP 200, presupuestador funciona correctamente
-
-**Beneficios realizados:**
-- ✅ Elimina confusión (presupuestador/ es ahora autocontenido)
-- ✅ Reduce mantenimiento (una sola fuente de verdad)
-- ✅ Limpia proyecto (elimina duplicación visual)
-- ✅ Mejora DX (estructura clara: app en presupuestador/, landing en raíz)
+**Justificación:**
+- ✅ Elimina confusión (un solo lugar para editar)
+- ✅ Reduce mantenimiento (no hay que sincronizar dos carpetas)
+- ✅ Limpia proyecto (elimina archivos muertos)
+- ✅ No rompe funcionalidad (presupuestador/index.html ya carga de `../js/`)
+- ✅ Mejora DX (más fácil de entender para nuevos devs)
 
 ---
 
-## 📋 CHECKLIST DE CAMBIOS EJECUTADOS (19/04/2026)
+## 📋 CHECKLIST DE CAMBIOS PROPUESTOS
 
-### FASE 1: Sincronizar & Mover Archivos
-- [x] ✅ Crear `presupuestador/js/`
-- [x] ✅ Copiar todos los archivos desde `/js/` a `presupuestador/js/`
+**SI APRUEBAS, EJECUTARÉ ESTOS CAMBIOS:**
 
-### FASE 2: Actualizar References
-- [x] ✅ Cambiar script src en `presupuestador/index.html` de `../js/` a `./js/` (líneas 1120-1123)
+### FASE 1: Sincronizar Archivos Críticos
+- [ ] Copiar `/js/calculator.js` → `/presupuestador/js/calculator.js` (reemplazar)
+- [ ] Sincronizar `/js/form-handler.js` → `/presupuestador/js/form-handler.js` (formato)
 
-### FASE 3: Eliminar Duplicación
-- [x] ✅ Eliminar carpeta `/js/` (completamente)
+### FASE 2: Eliminar Duplicación
+- [ ] Eliminar carpeta `/js/` (completa)
+- [ ] Eliminar carpeta `/css/` (completa)
+- [ ] Eliminar carpeta `/data/` (completa)
+
+### FASE 3: Eliminar Legacy
+- [ ] Eliminar `tienda-nube.html`
 
 ### FASE 4: Verificación
-- [x] ✅ Revisar que presupuestador/index.html carga (4 scripts HTTP 200)
-- [x] ✅ Revisar que index.html raíz funciona (landing page estática)
-- [x] ✅ Verificar que presupuestador funciona: calculadora en tiempo real
+- [ ] Revisar que presupuestador/index.html aún funciona
+- [ ] Revisar que index.html raíz aún funciona
+- [ ] Tests manuales en navegador
 
 ---
 
-## ✅ RESOLUCIÓN DE RIESGOS
+## ⚠️ RIESGOS Y MITIGACIÓN
 
-| Riesgo Potencial | Mitigation | Status |
-|--------|-----------|--------|
-| Romper presupuestador/ | Ya cargaba de ../js/ → cambio a ./js/ funciona igual | ✅ Verificado |
-| Perder código | Todo se unifica en presupuestador/js/, nada se pierde | ✅ Confirmado |
-| Rutas rotas | ./js/ es relativo a presupuestador/index.html | ✅ Funcional |
-| Romper landing page | index.html raíz no carga scripts, no afecta | ✅ Intacta |
+| Riesgo | Mitigación |
+|--------|-----------|
+| Romper presupuestador/ | Ya carga de ../js/, no de presupuestador/js/ |
+| Perder código | Todo se unifica, no se pierde nada |
+| Confundir paths | Solo presupuestador/ carga scripts (futura: ./js/) |
+| Romper landing page | index.html raíz no carga scripts, no afecta |
 
 ---
 
-## ✅ ESTADO FINAL (post-ejecución)
+## ✅ ESTADO ACTUAL vs PROPUESTO
 
-### ESTRUCTURA ANTERIOR (13 de abril)
+**ANTES:**
 ```
-20 archivos, 4 carpetas redundantes
 /js/                          (6 archivos)
+/css/                         (2 archivos stubs)
+/data/                        (1 archivo obsoleto)
 /presupuestador/js/           (6 archivos - desincronizado)
-/css/ + /presupuestador/css/  (stubs innecesarios)
-/data/ + /presupuestador/data/(obsoleto)
-tienda-nube.html              (legacy)
+/presupuestador/css/          (2 archivos stubs)
+/presupuestador/data/         (1 archivo obsoleto)
+tienda-nube.html             (legacy)
+
+Total: 20 archivos, 4 carpetas redundantes
 ```
 
-### ESTRUCTURA ACTUAL (19 de abril — commit 82a2ba0)
+**DESPUÉS:**
 ```
 presupuestador/
-  ├── index.html             (app con scripts de ./js/)
-  ├── js/                    (6 archivos — FUENTE DE VERDAD)
-  │   ├── main.js
-  │   ├── calculator.js
-  │   ├── form-handler.js
-  │   ├── email-handler.js
-  │   ├── storage.js
-  │   └── ui-updater.js
+  ├── index.html
+  ├── js/                    (6 archivos sincronizados)
+  ├── css/                   (2 archivos, o extraídos)
+  └── data/                  (si decidimos mantener)
 
 index.html                    (landing page)
 
-Total: 10 archivos, 1 estructura clara
+Total: 11 archivos, 1 carpeta de app
 ```
 
-**Limpieza:** -50% de archivos duplicados, +100% claridad arquitectónica
+**Limpieza:** -45% de archivos duplicados
 
 ---
 
-## 🎯 RESULTADO FINAL — ÁRBOL ACTUAL (19/04/2026)
+## 🎯 TU DECISIÓN
 
-```
-generador-presupuestos/
-│
-├── index.html                          ← LANDING PAGE (estático, sin scripts)
-│
-├── presupuestador/                     ← APP INTERACTIVA (autocontenida)
-│   ├── index.html                      ← Presupuestador (54KB CSS inline, 4 scripts locales)
-│   └── js/                             ← FUENTE DE VERDAD ÚNICA
-│       ├── main.js                     ✅ Config + State global
-│       ├── calculator.js               ✅ Lógica cálculos presupuesto
-│       ├── form-handler.js             ✅ Validación + envío
-│       ├── email-handler.js            ✅ POST a Google Sheets
-│       ├── storage.js                  ✅ localStorage (stub)
-│       └── ui-updater.js               ✅ UI updates (stub)
-│
-└── docs/                               ← Documentación
-    ├── MOD-01-REQUIREMENTS.md          ✅ Actualizado (19/04)
-    ├── MOD-04-UI-ARCHITECTURE.md       ✅ Actualizado (19/04)
-    ├── MOD-05-EMAIL-SYSTEM.md          ✅ Actualizado (19/04)
-    ├── MOD-06-GOOGLE-SHEETS-INTEGRATION.md ✅ Actualizado (19/04)
-    ├── API_SPEC.md                     ← Fuente de verdad de payload
-    └── adr/                            ← Architecture Decision Records
-```
+**Por favor confirma cuál opción prefieres:**
 
-### ✅ Verificación post-restructuring
-- [x] `presupuestador/index.html` carga 4 scripts con HTTP 200
-- [x] Scripts ubicados en `./js/` (rutas relativas funcionales)
-- [x] Presupuestador funciona: cálculo en tiempo real, validación, envío
-- [x] `/js/` raíz eliminado (ya no hay duplicación)
-- [x] Documentación sincronizada con código actual
+### OPCIÓN A (Mínima)
+- Sincronizar calculator.js
+- Eliminar pricing.json y tienda-nube.html
+- Mantener estructura dual (/js/ + /presupuestador/js/)
+- ✅ Rápido (30 min)
+- ❌ Mantiene confusión estructural
 
-### 📊 Métricas de limpieza
-| Métrica | Antes | Después | Cambio |
-|---------|-------|---------|--------|
-| Total archivos JS | 12 | 6 | -50% |
-| Directorios redundantes | 4 | 0 | -100% |
-| Fuentes de verdad para JS | 2 | 1 | -50% |
-| Claridad arquitectónica | Media | Alta | +∞ |
+### OPCIÓN B (Recomendada)
+- Eliminar todas las carpetas redundantes
+- Limpiar proyecto completamente
+- Mantener solo /presupuestador/ con sus /js/, /css/
+- ✅ Limpio, profesional
+- ✅ Mejor DX
+- ⏱️ Medio (2 horas)
+
+### OPCIÓN C (Custom)
+- Otra estructura que tengas en mente
+- Dime y la ejecuto
+
+---
+
+**Esperando tu confirmación.**
 

@@ -1,19 +1,9 @@
 # MOD-05: EMAIL SYSTEM SPECIFICATION
 
-**Status:** ACTIVE
-**Version:** 1.0
-**Last Updated:** Marzo 2026
-**Author:** Leo (OmniStock SDD Team)
-
----
-
-## ⚠️ NOTA IMPORTANTE
-
-> Este documento mezcla el diseño original (formulario complejo con DNI/CUIT/datos fiscales)
-> con el sistema minimalista actual (4 campos: nombre, email, teléfono, observaciones).
->
-> Las secciones marcadas como **LEGACY** corresponden al diseño v1 no implementado en el frontend actual.
-> Consultar `docs/API_SPEC.md` para el contrato de payload vigente.
+**Status:** ACTIVE  
+**Version:** 1.0  
+**Last Updated:** Marzo 2026  
+**Author:** Leo (OmniStock SDD Team)  
 
 ---
 
@@ -33,27 +23,27 @@ Define the architecture, requirements, and specifications for the email notifica
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-001 | System must send email to osvojag@gmail.com on form submission | CRITICAL | ✅ IMPLEMENTADO (MailApp.sendEmail en GAS) |
-| FR-002 | Email must include ONLY minimal form data (4 fields: nombre, email, telefono, observaciones) | CRITICAL | ✅ IMPLEMENTADO (payload en form-handler.js) |
-| FR-003 | Email must include calculated presupuesto (ARS + USD) | CRITICAL | ✅ IMPLEMENTADO (state.presupuesto + TIPO_CAMBIO) |
-| FR-004 | Email must include generated WordPress prompt | HIGH | ⏳ PENDIENTE (generatePrompt() no existe) |
-| FR-005 | Data must be saved to Google Sheets simultaneously | CRITICAL | ✅ IMPLEMENTADO (GAS appendRow()) |
-| FR-006 | Email must be human-readable and professional | HIGH | ✅ IMPLEMENTADO (formatEmailBody en GAS) |
-| FR-007 | Email must be sent within 5 seconds of submission | MEDIUM | ✅ IMPLEMENTADO (fetch asíncrono, typically < 5s) |
-| FR-008 | System must log all submissions in Google Sheets | HIGH | ✅ IMPLEMENTADO (LOGS sheet en GAS) |
-| FR-009 | User must see confirmation message after submission | MEDIUM | ✅ IMPLEMENTADO (showSuccess() toast en form-handler.js) |
-| FR-010 | System must handle errors gracefully | MEDIUM | ✅ IMPLEMENTADO (try/catch + showError() toast) |
+| FR-001 | System must send email to osvojag@gmail.com on form submission | CRITICAL | PENDING |
+| FR-002 | Email must include ONLY minimal form data (4 fields) | CRITICAL | PENDING |
+| FR-003 | Email must include calculated presupuesto (ARS + USD) | CRITICAL | PENDING |
+| FR-004 | Email must include generated WordPress prompt | HIGH | PENDING |
+| FR-005 | Data must be saved to Google Sheets simultaneously | CRITICAL | PENDING |
+| FR-006 | Email must be human-readable and professional | HIGH | PENDING |
+| FR-007 | Email must be sent within 5 seconds of submission | MEDIUM | PENDING |
+| FR-008 | System must log all submissions in Google Sheets | HIGH | PENDING |
+| FR-009 | User must see confirmation message after submission | MEDIUM | PENDING |
+| FR-010 | System must handle errors gracefully | MEDIUM | PENDING |
 
 ### Non-Functional Requirements (NFR)
 
 | ID | Requirement | Status |
 |----|-------------|--------|
-| NFR-001 | Zero cost (Google Sheets + Apps Script free tier) | ✅ IMPLEMENTADO |
-| NFR-002 | No backend infrastructure required | ✅ IMPLEMENTADO (Google only) |
-| NFR-003 | Ultra-simple setup (10 minutes max) | ✅ IMPLEMENTADO (SETUP-GOOGLE-SHEETS.md) |
-| NFR-004 | Works entirely within GitHub Pages + Google | ✅ IMPLEMENTADO |
-| NFR-005 | Reliable (99%+ uptime via Google) | ✅ IMPLEMENTADO (SLA de Google) |
-| NFR-006 | Secure (API keys not exposed in frontend) | ✅ IMPLEMENTADO (URL publica, sin credenciales) |
+| NFR-001 | Zero cost (Google Sheets + Apps Script free tier) | PENDING |
+| NFR-002 | No backend infrastructure required | PENDING |
+| NFR-003 | Ultra-simple setup (10 minutes max) | PENDING |
+| NFR-004 | Works entirely within GitHub Pages + Google | PENDING |
+| NFR-005 | Reliable (99%+ uptime via Google) | PENDING |
+| NFR-006 | Secure (API keys not exposed in frontend) | PENDING |
 
 ---
 
