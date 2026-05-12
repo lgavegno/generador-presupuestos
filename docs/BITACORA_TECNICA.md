@@ -294,3 +294,30 @@ Documento de registro cronológico de decisiones técnicas, auditorías y cambio
 **Documento actualizado:** 12 de mayo de 2026
 **Auditor:** Claude Senior Architect
 **Status:** ✅ REORGANIZACIÓN COMPLETADA
+
+---
+
+## Sprint-Refactor-Mayo — Ejecución T001–T005 (12 mayo 2026)
+
+### T001 — Eliminación de `/index.html` (raíz)
+- **Acción:** `rm /index.html` — archivo legacy eliminado definitivamente.
+- **Razón:** ADR-003 (RESUELTO): `presupuestador/` es la única fuente de verdad. El `index.html` de la raíz era un remanente de la estructura dual y ya no tenía función activa.
+- **Impacto:** Ninguno en producción. El servidor local apunta a `presupuestador/index.html`.
+
+### T002 — Registro en BITÁCORA (este bloque)
+- **Acción:** Documentado en este archivo.
+
+### T003 — Label sidebar → "Previsualización Estimada"
+- **Acción:** En `presupuestador/index.html` línea ~1067: `<h3>Resumen de Inversión</h3>` → `<h3>Previsualización Estimada</h3>`.
+- **Subtítulo:** `"Actualizado en tiempo real"` → `"Actualización automática"` (elimina la falsa promesa de tiempo real).
+- **ADR de referencia:** ADR-005_clarificacion-previsualizacion.md
+
+### T004 — Disclaimer orientativo en sidebar
+- **Acción:** Agregado `<p class="presupuesto-disclaimer">` con texto: *"Valores orientativos. El presupuesto definitivo se confirma tras el relevamiento del proyecto."*
+- **Ubicación:** Antes del botón "Enviar Cotización" en `presupuestador/index.html`.
+- **Estilo:** Bloque con borde izquierdo accent + fondo suave (`.presupuesto-disclaimer` en CSS inline).
+
+### T005 — Verificación manual
+- **Resultado:** HTML validado. Servidor: `python -m http.server 8000` → `http://localhost:8000/presupuestador/index.html`.
+
+**Status:** ✅ SPRINT COMPLETADO
