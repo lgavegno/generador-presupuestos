@@ -112,7 +112,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 1. **README.md** (este archivo) - Visión general
 2. **docs/PROJECT_CONSTITUTION.md** - Especificación del proyecto
 3. **docs/SETUP-GOOGLE-SHEETS.md** - Instrucciones de configuración
-4. **docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md** - Esquema de datos
+4. **docs/modules/MOD-05-GOOGLE-SHEETS-INTEGRATION.md** - Esquema de datos
 5. **docs/PROJECT_LOG.md** - Historial de cambios
 
 ---
@@ -130,7 +130,7 @@ El **Generador de Presupuestos** es una aplicación web minimalista que permite 
 ```
 1. Ir a script.google.com
 2. Crear nuevo proyecto
-3. Copiar código de MOD-05-GOOGLE-SHEETS-INTEGRATION.md
+3. Copiar código de docs/modules/MOD-05-GOOGLE-SHEETS-INTEGRATION.md
 4. Reemplazar SHEET_ID con el ID real
 5. Deploy como "Web App" (accessible to anyone)
 6. Copiar URL de deployment
@@ -296,10 +296,26 @@ generador-presupuestos/
 │   └── ui-updater.js                 # ✅ (sincronizada)
 ├── docs/
 │   ├── PROJECT_CONSTITUTION.md
-│   ├── MOD-01 a MOD-06.md
-│   ├── PLAN-*.md
+│   ├── API_SPEC.md
+│   ├── BITACORA_TECNICA.md
+│   ├── DATA-NORMALIZATION.md
+│   ├── SETUP-GOOGLE-SHEETS.md
 │   ├── PROJECT_LOG.md
-│   └── SETUP-GOOGLE-SHEETS.md
+│   ├── modules/
+│   │   ├── MOD-01-REQUIREMENTS.md
+│   │   ├── MOD-02-DATA-STRUCTURE.md
+│   │   ├── MOD-03-UI-ARCHITECTURE.md
+│   │   ├── MOD-04-EMAIL-SYSTEM.md
+│   │   ├── MOD-05-GOOGLE-SHEETS-INTEGRATION.md
+│   │   └── MOD-06-PROJECT-STRUCTURE.md
+│   ├── adr/
+│   │   ├── ADR-001_vanilla-js-sin-framework.md
+│   │   ├── ADR-002_google-apps-script-backend.md
+│   │   ├── ADR-003_dual-file-structure.md
+│   │   ├── ADR-004_ars-moneda-unica.md
+│   │   └── ADR-005_clarificacion-previsualizacion.md
+│   ├── archive/
+│   └── plans/
 └── README.md                         # (este archivo)
 ```
 

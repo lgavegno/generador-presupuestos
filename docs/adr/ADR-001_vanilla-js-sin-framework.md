@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado
 **Fecha:** Marzo 2026 (inferida del CHANGELOG v1.0.0)
-**Autor:** Leo (Ongevag Studio)
+**Autor:** Leandro Gavegno (Ongevag Studio)
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Estado:** Aceptado
 **Fecha:** Marzo 2026 (inferida de PROJECT_CONSTITUTION.md)
-**Autor:** Leo (Ongevag Studio)
+**Autor:** Leandro Gavegno (Ongevag Studio)
 
 ---
 
