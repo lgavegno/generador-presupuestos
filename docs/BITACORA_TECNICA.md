@@ -225,3 +225,72 @@ Documento de registro cronológico de decisiones técnicas, auditorías y cambio
 **Documento generado:** 19 de abril de 2026
 **Auditor:** Claude Senior Architect
 **Status:** ✅ COMPLETADO
+
+---
+
+## Auditoría 3 — Reorganización SDD Senior y Plan de Refactor (Mayo 2026)
+
+**Objetivo:** Estructurar documentación en patrón SDD Senior y crear plan para limpieza de raíz.
+
+**Estado previo:**
+- Documentación plana en `/docs/` sin jerarquía
+- MOD-*.md junto a referencias globales (confuso para onboarding)
+- Sin carpetas funcionales para planes de ejecución
+
+**Acciones ejecutadas:**
+
+### 1. Reorganización de Estructura (12 mayo 2026)
+- ✅ Creadas carpetas funcionales:
+  - `docs/modules/` — contiene MOD-01 a MOD-06
+  - `docs/plans/` — para planes de ejecución (vacío, listo para uso)
+  - `docs/archive/` — para legacy (vacío, reservado)
+
+- ✅ Movidos 6 MOD-*.md a `docs/modules/`
+  - MOD-01-REQUIREMENTS.md
+  - MOD-02-DATA-STRUCTURE.md
+  - MOD-03-UI-ARCHITECTURE.md
+  - MOD-04-EMAIL-SYSTEM.md
+  - MOD-05-GOOGLE-SHEETS-INTEGRATION.md
+  - MOD-06-PROJECT-STRUCTURE.md
+
+- ✅ Mantenidos en raíz de `/docs/`:
+  - API_SPEC.md, BITACORA_TECNICA.md (este), PROJECT_CONSTITUTION.md, PROJECT_LOG.md
+  - DATA-NORMALIZATION.md, SETUP-GOOGLE-SHEETS.md (referencias de onboarding)
+  - docs/adr/ (ADR-001 a ADR-005)
+
+### 2. Actualización de Referencias
+- ✅ CLAUDE.md:
+  - Línea 35: `docs/MOD-02-DATA-STRUCTURE.md` → `docs/modules/MOD-02-DATA-STRUCTURE.md`
+  - Línea 37: `docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md` → `docs/modules/MOD-05-GOOGLE-SHEETS-INTEGRATION.md`
+  - Agregada sección: "Estructura de documentación (SDD Senior)" con diagrama completo
+
+- ✅ README.md:
+  - Línea 115: Actualizada referencia a MOD-05
+  - Línea 133: Actualizada instrucción de setup
+  - Línea 298-319: Reescrita estructura de proyecto con subcarpetas
+
+### 3. Creación de Plan de Implementación
+- ✅ Creado `docs/plans/cleanup-ui-refactor/plan.md`
+  - Sprint: Sprint-Refactor-Mayo
+  - Fase 1: Limpieza de `/index.html` (raíz)
+  - Fase 2: Refactor UI sidebar (terminología "Previsualización Estimada")
+  - Enlaza ADR-003 y ADR-005
+
+**Commits pendientes:**
+- Reorganización SDD + plan de refactor
+
+**Beneficios:**
+- 📁 Estructura clara: especificaciones (modules/) vs. planes (plans/) vs. decisiones (adr/)
+- 🔍 Onboarding mejorado: referencias globales en raíz
+- 📋 Listo para múltiples sprints de ejecución
+- 📖 Documentación agnóstica a idioma (carpetas funcionales)
+
+**Deuda técnica validada:**
+- ✅ ADR-005 documentado y aprobado (preview sidebar)
+- ⏳ ADR-006 pendiente: consolidación final de /index.html raíz
+
+---
+
+**Documento actualizado:** 12 de mayo de 2026
+**Auditor:** Claude Senior Architect
+**Status:** ✅ REORGANIZACIÓN COMPLETADA
