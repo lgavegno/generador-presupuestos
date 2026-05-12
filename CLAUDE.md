@@ -1,4 +1,6 @@
-# CLAUDE.md — Contexto para IA
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Qué hace este proyecto (30 palabras)
 
@@ -12,6 +14,17 @@ HTML + Vanilla JS + Google Apps Script + Google Sheets + Gmail — sin framework
 
 ---
 
+## Comandos de desarrollo
+
+No hay build, no hay tests, no hay lint. Solo servidor local:
+
+```bash
+python -m http.server 8000
+# Abrir: http://localhost:8000/presupuestador/index.html
+```
+
+---
+
 ## Mapa de documentación
 
 | Archivo | Qué contiene | Cuándo leerlo |
@@ -19,11 +32,11 @@ HTML + Vanilla JS + Google Apps Script + Google Sheets + Gmail — sin framework
 | `README.md` | Visión general, precios, payload webhook, troubleshooting | Siempre primero |
 | `docs/PROJECT_CONSTITUTION.md` | Scope, constraints, fases del proyecto, diagrama de flujo | Contexto de negocio |
 | `docs/API_SPEC.md` | Contrato exacto del webhook (payload, respuesta, schema Sheets) | **Antes de tocar email-handler.js o el backend** |
-| `docs/MOD-02-DATA-STRUCTURE.md` | Objetos CONFIG y state, lógica de cálculo detallada | Antes de tocar calculator.js |
+| `docs/modules/MOD-02-DATA-STRUCTURE.md` | Objetos CONFIG y state, lógica de cálculo detallada | Antes de tocar calculator.js |
 | `docs/DATA-NORMALIZATION.md` | Cómo se mapean valores técnicos a nombres legibles | Antes de agregar secciones o funcionalidades |
-| `docs/MOD-05-GOOGLE-SHEETS-INTEGRATION.md` | Código de Google Apps Script + estructura de Sheets | Para cambios en backend GAS |
+| `docs/modules/MOD-05-GOOGLE-SHEETS-INTEGRATION.md` | Código de Google Apps Script + estructura de Sheets | Para cambios en backend GAS |
 | `docs/SETUP-GOOGLE-SHEETS.md` | Instrucciones de configuración inicial | Solo para setup nuevo |
-| `docs/adr/` | Decisiones de arquitectura con contexto y trade-offs | Para entender "por qué" algo está así |
+| `docs/adr/` | Decisiones de arquitectura con contexto y trade-offs (ADR-003: RESUELTO) | Para entender "por qué" algo está así |
 | `CHANGELOG.md` | Historial de bugs corregidos y cambios | Para entender la evolución del proyecto |
 
 ---
@@ -77,9 +90,9 @@ Form reset + resetPresupuesto()
 
 En `email-handler.js:14`, el fetch usa `mode: 'no-cors'`. Esto significa que si el Google Apps Script retorna un error 500, el frontend lo ignora y muestra "Cotización procesada exitosamente" igual. Para debuggear errores de backend, hay que ir **directamente a Google Sheets → hoja LOGS**.
 
-### 2. La carpeta `/presupuestador/js/` NO es la que ejecuta la app
+### 2. La única carpeta JS activa es `/presupuestador/js/`
 
-`presupuestador/index.html` carga los scripts de `../js/` (la carpeta raíz), NO de `presupuestador/js/`. Si editás un archivo en `/presupuestador/js/calculator.js`, no cambia nada en la app. La fuente de verdad es `/js/`. Ver `docs/adr/ADR-003_dual-file-structure.md`.
+La deduplicación de la estructura dual fue completada el 19/04/2026 (ADR-003, RESUELTO). No existe carpeta `/js/` en la raíz. `presupuestador/index.html` carga los scripts con `./js/` que resuelve a `presupuestador/js/`. Todos los JS a editar están en `presupuestador/js/`.
 
 ### 3. El IVA se calcula pero NO se suma al total
 
@@ -105,7 +118,6 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 ### Lo que NO hacer
 - No agregar dependencias npm (no hay package.json, es por diseño)
 - No mover el CSS inline a archivos externos sin discutirlo antes
-- No editar `/presupuestador/js/` sin entender que no tiene efecto
 - No cambiar `mode: 'no-cors'` a `mode: 'cors'` sin configurar headers en Google Apps Script
 
 ---
@@ -124,8 +136,35 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 
 Antes de tocar código, verificá:
 
-1. **Qué archivo JS está activo:** La app usa `/js/`, no `/presupuestador/js/`. Ver `docs/adr/ADR-003_dual-file-structure.md`.
-2. **Precios vigentes:** El precio en producción está en `CONFIG.PRESUPUESTO_BASE` en `js/main.js`. Algunos docs reflejan versiones anteriores ($180k-$500k) que ya no aplican.
-3. **Modo custom vs standard:** Muchas funciones tienen bifurcación `if (state.isCustom)`. Si agregás lógica nueva, pensá si aplica a ambos modos.
-4. **Contrato del webhook:** Antes de cambiar `collectFormData()` en `form-handler.js`, leé `docs/API_SPEC.md` para no romper el schema de Google Sheets.
-5. **La deuda de estructura dual** está documentada en los ADRs (esp. ADR-003). Salvo que el usuario pida explícitamente resolverla, no la toques.
+1. **Precios vigentes:** El precio en producción está en `CONFIG.PRESUPUESTO_BASE` en `presupuestador/js/main.js`. Algunos docs reflejan versiones anteriores ($180k-$500k) que ya no aplican.
+2. **Modo custom vs standard:** Muchas funciones tienen bifurcación `if (state.isCustom)`. Si agregás lógica nueva, pensá si aplica a ambos modos.
+3. **Contrato del webhook:** Antes de cambiar `collectFormData()` en `form-handler.js`, leé `docs/API_SPEC.md` para no romper el schema de Google Sheets.
+
+---
+
+## Estructura de documentación (SDD Senior)
+
+```
+docs/
+├── PROJECT_CONSTITUTION.md      # Especificación de requerimientos
+├── PROJECT_LOG.md               # Historial de cambios y auditoría
+├── API_SPEC.md                  # Contrato de integración webhook
+├── BITACORA_TECNICA.md          # Log técnico de decisiones
+├── DATA-NORMALIZATION.md        # Mapeo de valores técnicos
+├── SETUP-GOOGLE-SHEETS.md       # Guía de configuración inicial
+├── modules/                     # Especificación detallada de módulos
+│   ├── MOD-01-REQUIREMENTS.md
+│   ├── MOD-02-DATA-STRUCTURE.md
+│   ├── MOD-03-UI-ARCHITECTURE.md
+│   ├── MOD-04-EMAIL-SYSTEM.md
+│   ├── MOD-05-GOOGLE-SHEETS-INTEGRATION.md
+│   └── MOD-06-PROJECT-STRUCTURE.md
+├── adr/                         # Architecture Decision Records
+│   ├── ADR-001_vanilla-js-sin-framework.md
+│   ├── ADR-002_google-apps-script-backend.md
+│   ├── ADR-003_dual-file-structure.md
+│   ├── ADR-004_ars-moneda-unica.md
+│   └── ADR-005_clarificacion-previsualizacion.md
+├── archive/                     # Documentación legacy (vacío, para futuro)
+└── plans/                       # Planes de ejecución y roadmap (vacío, para futuro)
+```

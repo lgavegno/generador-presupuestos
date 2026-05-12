@@ -691,6 +691,17 @@
             margin-top: 6px;
         }
 
+        .presupuesto-disclaimer {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin: 12px 0 8px;
+            padding: 8px 10px;
+            border-left: 3px solid var(--accent, #6c63ff);
+            background: rgba(108,99,255,0.06);
+            border-radius: 0 4px 4px 0;
+        }
+
         /* ══════════════════════════════════════════
            RESPONSIVE
         ══════════════════════════════════════════ */
@@ -1064,8 +1075,8 @@
             <div class="right-col">
                 <section class="presupuesto-card">
                     <div class="presupuesto-card__header">
-                        <h3>Resumen de Inversión</h3>
-                        <p>Actualizado en tiempo real</p>
+                        <h3>Previsualización Estimada</h3>
+                        <p>Actualización automática</p>
                     </div>
 
                     <div class="presupuesto-card__body">
@@ -1103,6 +1114,8 @@
                             <div class="p-total__amount"><strong id="total">$0</strong></div>
                             <div class="p-total__note">* Presupuesto válido por 15 días</div>
                         </div>
+
+                        <p class="presupuesto-disclaimer">* Valores orientativos. El presupuesto definitivo se confirma tras el relevamiento del proyecto.</p>
 
                         <!-- SUBMIT -->
                         <button type="button" id="submit-btn" onclick="submitForm()" class="btn-submit">

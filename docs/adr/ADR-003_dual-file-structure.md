@@ -2,7 +2,7 @@
 
 **Estado:** Parcialmente resuelto — deuda técnica activa
 **Fecha:** Marzo-Abril 2026 (ver PLAN-003 y DEDUPLICATION_AUDIT.md)
-**Autor:** Leo (Ongevag Studio)
+**Autor:** Leandro Gavegno (Ongevag Studio)
 
 ---
 
