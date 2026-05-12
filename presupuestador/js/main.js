@@ -38,6 +38,7 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✓ DOM cargado');
     loadFromStorage();
+    UpdateWebsiteTypeUseCase.init();
 
     // Event listener para custom project description
     const customDescInput = document.getElementById('custom-project-desc');

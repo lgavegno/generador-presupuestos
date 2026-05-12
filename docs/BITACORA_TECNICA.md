@@ -321,3 +321,150 @@ Documento de registro cronológico de decisiones técnicas, auditorías y cambio
 - **Resultado:** HTML validado. Servidor: `python -m http.server 8000` → `http://localhost:8000/presupuestador/index.html`.
 
 **Status:** ✅ SPRINT COMPLETADO
+
+---
+
+## Auditoría SDD — Feature Conditional Logic (12 mayo 2026)
+
+**Tipo de evento:** Bloqueo preventivo de implementación  
+**Decisión:** Priorizar integridad de la documentación sobre velocidad de codificación
+
+### Contexto
+
+Durante la auditoría pre-implementación de la feature `conditional-selection-logic` se detectó que el MOD-07 y el plan de implementación no cumplían el estándar SDD definido en el manual del proyecto. El código estaba a punto de ejecutarse sin especificación completa.
+
+### Hallazgos de la Auditoría
+
+| Ítem | Estado encontrado | Acción requerida |
+| :--- | :--- | :--- |
+| MOD-07 — Casos de Uso | ❌ Ausente | Redactar UC-01, UC-02, UC-03 |
+| MOD-07 — Criterios de Aceptación | ❌ Ausente | Definir 6 criterios medibles |
+| MOD-07 — Manejo de Errores | ❌ Ausente | Documentar integridad de `state` |
+| MOD-07 §3 — Detalle de implementación en SPEC | ❌ Error de nivel (menciona `calculator.js`) | Reemplazar por requisito de alto nivel |
+| Plan — Constraint "Gestión de Stock" | ❌ Sin tarea asignada | Crear T007 |
+| Plan — Comportamiento auto-desmarque | ❌ Sin tarea explícita | Crear T009 |
+| Plan — Tooltip T006 | ❌ Sin respaldo en SPEC | Agregar §7 Feedback Visual en MOD-07 |
+
+### Acciones Ejecutadas (12 mayo 2026)
+
+- ✅ MOD-07 v1.1: agregadas secciones §4 Casos de Uso, §5 Criterios de Aceptación, §6 Manejo de Errores, §7 Feedback Visual
+- ✅ MOD-07 §3 reescrito: eliminada referencia a `calculator.js`, reemplazado por requisito técnico de alto nivel
+- ✅ Plan actualizado: renumeradas fases, agregadas T007 (Gestión de Stock), T009 (auto-desmarque), T010 (feedback de limpieza)
+- ✅ Trazabilidad completa: cada tarea del plan referencia sección y criterio del MOD-07
+
+### Decisión Registrada
+
+**Principio aplicado:** Un SPEC incompleto propaga ambigüedad al código. El costo de corregir documentación antes de implementar es O(minutos). El costo de refactorizar código por requisito mal definido es O(horas).
+
+**Regla de precedente:** En este proyecto, ninguna tarea de implementación (feat, refactor) puede iniciarse si el SPEC referenciado en el plan no tiene Casos de Uso, Criterios de Aceptación y Manejo de Errores completos.
+
+---
+
+**Documento actualizado:** 12 de mayo de 2026
+**Auditor:** Claude Senior Architect
+**Status:** ✅ BLOQUEO RESUELTO — documentación completa, implementación habilitada
+
+---
+
+## Migración a Clean Architecture — Feature Conditional Logic (12 mayo 2026)
+
+**Tipo de evento:** Decisión de diseño — refactorización de arquitectura antes de implementar
+
+### Contexto
+
+El diseño inicial de la feature (MOD-07 v1.1) colocaba la lógica de validación dentro de `calculator.js` (función `applyConstraints()`). Esta decisión acoplaba la lógica de negocio pura a la capa de UI, dificultando el testing aislado y violando el principio de responsabilidad única.
+
+### Decisión
+
+Se aprobó migrar el diseño de la feature a Clean Architecture con tres capas explícitas:
+
+| Capa | Archivo | Por qué |
+| :--- | :--- | :--- |
+| **Domain** | `domain/ConstraintEngine.js` | Lógica de negocio pura, testeable sin DOM ni estado global |
+| **Application** | `application/UpdateWebsiteTypeUseCase.js` | Orquestación del flujo — único punto que modifica `state` |
+| **Infrastructure** | `infrastructure/ui-renderer.js` | Mutaciones del DOM — separadas de la lógica de negocio |
+
+### Cambios en Documentación
+
+- ✅ `SEQ-01-conditional-logic.puml` actualizado a v2 con participantes `UI Layer`, `UseCase`, `Domain`, `Presenter`
+- ✅ `UC-01-selection-constraints.md` creado — Happy Path con perspectiva de capas
+- ✅ `UC-02-state-cleanup.md` creado — Happy Path con perspectiva de capas
+- ✅ `UC-03-visual-feedback.md` creado — caso de uso de feedback visual (nuevo)
+- ✅ `MOD-07` actualizado a v2.0: sección §4 Separación de Responsabilidades + contrato `ValidationResult`
+- ✅ `plan.md` reescrito: T003 (Domain), T004 (Application), T005 (Infrastructure)
+
+### Beneficio
+
+`ConstraintEngine` es una función pura: recibe `(websiteType, features)`, retorna `ValidationResult`. Sin side effects. Puede verificarse con `console.assert()` sin levantar el formulario completo.
+
+### Regla de precedente
+
+En este proyecto, la lógica de negocio pura va en `domain/`. El Application layer orquesta. El DOM solo lo toca el Presenter (Infrastructure). Ningún cálculo de negocio vive en archivos de UI.
+
+---
+
+**Documento actualizado:** 12 de mayo de 2026
+**Auditor:** Claude Senior Architect
+**Status:** ✅ DISEÑO v2 APROBADO — implementación JS habilitada desde T003
+
+---
+
+## Sprint-Logic-Coherence — T005: Infrastructure / ui-renderer.js (12 mayo 2026)
+
+**Tipo de evento:** Implementación — Presenter / Infrastructure layer
+
+### Solución técnica implementada
+
+**Archivo creado:** `presupuestador/js/infrastructure/ui-renderer.js`
+
+#### Normalización de IDs reales (HTML → código)
+
+Los checkboxes del formulario no tienen atributo `id`. La selección se realiza mediante atributos compuestos:
+
+```
+Features → querySelector('input[name="features"][value="cart|tiendanube|multilingual"]')
+Sección  → querySelector('input[name="sections"][value="blog"]')
+```
+
+Esto evita depender de IDs inexistentes y es resiliente a cambios de layout del HTML.
+
+#### Lógica de exclusión del blog (caso especial)
+
+La sección Blog (`name="sections" value="blog"`) no es una feature — pertenece al grupo de secciones. Su restricción es exclusiva de `landing` (sitio de una sola página), por lo que se gestiona directamente en el Presenter con lógica separada (`_renderBlogSection`), fuera de `MANAGED_FEATURE_VALUES`.
+
+Cuando `state.websiteType === 'landing'`: `checked=false`, `disabled=true`.
+En cualquier otro tipo: `disabled=false` (el usuario puede marcarla libremente).
+
+#### Invariante garantizado
+
+El Presenter recibe siempre el `state` ya limpio (post-UseCase). Solo lee, nunca escribe sobre `state`. Deriva el DOM desde el estado, no al revés.
+
+#### Orden de carga en index.html (verificado)
+
+```html
+<script src="./js/domain/ConstraintEngine.js"></script>
+<script src="./js/application/UpdateWebsiteTypeUseCase.js"></script>
+<script src="./js/infrastructure/ui-renderer.js"></script>
+<script src="./js/main.js"></script>
+```
+
+### Feedback de restricciones
+
+`renderConstraints` realiza `console.log('[UIRenderer] Restricciones activas:', reasons)` para exponer al desarrollador las restricciones aplicadas en cada cambio de tipo de sitio.
+
+### Estado del sprint
+
+| Tarea | Estado |
+| :--- | :--- |
+| T001 — Rama git | ✅ |
+| T002 — Bitácora inicio | pendiente (plan.md) |
+| T003 — ConstraintEngine.js | ✅ |
+| T004 — UpdateWebsiteTypeUseCase.js | ✅ |
+| T005 — ui-renderer.js | ✅ |
+| T006–T010 — Validación manual | pendiente |
+
+---
+
+**Documento actualizado:** 12 de mayo de 2026
+**Auditor:** Claude Senior Architect
+**Status:** ✅ T005 COMPLETADA — Infrastructure layer implementada

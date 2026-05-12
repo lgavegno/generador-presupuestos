@@ -158,7 +158,9 @@ docs/
 │   ├── MOD-03-UI-ARCHITECTURE.md
 │   ├── MOD-04-EMAIL-SYSTEM.md
 │   ├── MOD-05-GOOGLE-SHEETS-INTEGRATION.md
-│   └── MOD-06-PROJECT-STRUCTURE.md
+│   ├── MOD-06-PROJECT-STRUCTURE.md
+│   └── conditional-logic/
+│       └── MOD-07-CONDITIONAL-LOGIC.md
 ├── adr/                         # Architecture Decision Records
 │   ├── ADR-001_vanilla-js-sin-framework.md
 │   ├── ADR-002_google-apps-script-backend.md
@@ -166,5 +168,9 @@ docs/
 │   ├── ADR-004_ars-moneda-unica.md
 │   └── ADR-005_clarificacion-previsualizacion.md
 ├── archive/                     # Documentación legacy (vacío, para futuro)
-└── plans/                       # Planes de ejecución y roadmap (vacío, para futuro)
+└── plans/                       # Planes de ejecución y roadmap
+    ├── feature-conditional-logic/
+    │   └── plan.md
+    └── ui-cleanup-refactor/
+        └── plan.md
 ```

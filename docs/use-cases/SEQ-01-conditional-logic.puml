@@ -1,0 +1,41 @@
+@startuml SEQ-01-conditional-logic
+title SEQ-01 v2: Clean Architecture — Validación de Restricciones al Cambiar Tipo de Sitio
+
+actor Usuario
+participant "UI Layer\n(event listener)" as UI
+participant "UpdateWebsiteType\nUseCase" as UseCase
+participant "ConstraintEngine\n(Domain)" as Domain
+participant "Presenter\n(ui-renderer.js)" as Presenter
+
+== Trigger ==
+
+Usuario -> UI : Selecciona nuevo tipo de sitio
+UI -> UseCase : execute({ newType, currentFeatures })
+
+== Domain: Lógica Pura ==
+
+UseCase -> Domain : validateConstraints(newType, currentFeatures)
+
+Domain -> Domain : Fase 1: evalúa restricciones de tipo\n(ej: carrito_pagos incompatible con "landing")
+Domain -> Domain : Fase 2: resuelve cascada de dependencias\n(ej: gestion_stock depende de carrito_pagos)
+
+Domain --> UseCase : ValidationResult {\n  invalidFeatures: string[],\n  reasons: { [featureId]: string }\n}
+
+== Application: Orquestación de State ==
+
+UseCase -> UseCase : actualiza state.websiteType = newType
+UseCase -> UseCase : elimina invalidFeatures de state.features
+note right of UseCase : State es SIEMPRE fuente de verdad.\nEl DOM nunca se lee como estado.
+
+== Presenter: Actualización del DOM ==
+
+UseCase -> Presenter : render(state, ValidationResult.reasons)
+Presenter -> UI : deshabilita checkboxes de invalidFeatures\n(disabled=true, checked=false)
+Presenter -> UI : muestra feedback visual con reason por funcionalidad deshabilitada
+Presenter -> UI : llama updatePresupuesto() — recalcula precio
+
+== Post-condición ==
+
+note over UseCase, UI : state.features ∩ invalidFeatures = ∅\nDOM refleja state sin inconsistencias
+
+@enduml
