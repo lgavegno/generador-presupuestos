@@ -468,3 +468,52 @@ El Presenter recibe siempre el `state` ya limpio (post-UseCase). Solo lee, nunca
 **Documento actualizado:** 12 de mayo de 2026
 **Auditor:** Claude Senior Architect
 **Status:** ✅ T005 COMPLETADA — Infrastructure layer implementada
+
+---
+
+## Auditoria 4 — Ecosistema SDD Completo (12 mayo 2026)
+
+**Tipo de evento:** Auditoria de documentacion — Fase 2 de SDD audit metodologico
+
+### Objetivo
+
+Generar el ecosistema SDD completo a partir de la auditoria del codigo real. Documentar brechas entre lo que existe y lo que esta especificado. Producir documentacion que refleje fielmente el estado actual del proyecto.
+
+### Hallazgos
+
+| Item | Estado encontrado | Accion |
+| :--- | :--- | :--- |
+| PROJECT_CONSTITUTION.md v1.0 | Diagrama de arch incorrecto (calculator.js como Domain), deliverables desactualizados, faltaba MOD-07 | Reescrito a v2.0 |
+| MOD-06-PROJECT-STRUCTURE.md v1.0 | Estructura obsoleta: /js/ raiz, tienda-nube.html, sin domain/application/infrastructure | Reescrito a v2.0 |
+| ADR-006 ausente | La decision de arquitectura hibrida no estaba documentada | Creado |
+| UC-04 ausente | El flujo principal de envio de cotizacion no tenia caso de uso formal | Creado |
+| UC-05 ausente | El modo custom no tenia caso de uso formal | Creado |
+| CA-06 sin implementacion en codigo | `ui-renderer.js` recibe `reasons` pero solo hace console.log | T011 agregado al plan |
+| UC-01.md, UC-02.md, UC-03.md (v1) | Supersedidos por versiones v2 con Clean Architecture pero no marcados | Documentado en MOD-06 |
+| plan.md: sin tarea para CA-06 implementation | Las fases 5-6 eran solo testing manual, no habia tarea de implementacion | T011-T012 agregados |
+
+### Archivos producidos en esta auditoria
+
+**Actualizados (updates):**
+- `docs/PROJECT_CONSTITUTION.md` → v2.0
+- `docs/modules/MOD-06-PROJECT-STRUCTURE.md` → v2.0
+- `docs/plans/feature-conditional-logic/plan.md` → T011, T012, Fase 5-6 reestructuradas
+
+**Creados (new):**
+- `docs/adr/ADR-006_clean-architecture-hibrida.md`
+- `docs/use-cases/UC-04-cotizacion-submit.md`
+- `docs/use-cases/UC-05-modo-custom.md`
+
+### DoD abierto al finalizar la auditoria
+
+El Sprint-Logic-Coherence tiene las tareas T001-T005 completadas pero el DoD no esta cerrado:
+- CA-06 (feedback visual en DOM) no esta implementado en `ui-renderer.js` — T011 pendiente.
+- T006-T010 (validacion manual) no ejecutados.
+
+La feature esta en `develop`, no en `main`. No se puede mergear hasta cerrar el DoD.
+
+---
+
+**Documento actualizado:** 12 de mayo de 2026
+**Auditor:** Claude Senior Architect
+**Status:** ✅ AUDITORIA 4 COMPLETADA — ecosistema SDD generado
