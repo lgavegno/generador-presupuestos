@@ -36,7 +36,6 @@ python -m http.server 8000
 | `docs/modules/MOD-02-DATA-STRUCTURE.md` | Objetos CONFIG y state, lógica de cálculo detallada | Antes de tocar calculator.js |
 | `docs/DATA-NORMALIZATION.md` | Cómo se mapean valores técnicos a nombres legibles | Antes de agregar secciones o funcionalidades |
 | `docs/modules/MOD-05-GOOGLE-SHEETS-INTEGRATION.md` | Código de Google Apps Script + estructura de Sheets | Para cambios en backend GAS |
-| `docs/SETUP-GOOGLE-SHEETS.md` | Instrucciones de configuración inicial | Solo para setup nuevo |
 | `docs/adr/` | Decisiones de arquitectura con contexto y trade-offs (ADR-003: RESUELTO) | Para entender "por qué" algo está así |
 | `CHANGELOG.md` | Historial de bugs corregidos y cambios | Para entender la evolución del proyecto |
 
@@ -153,20 +152,14 @@ Antes de tocar código, verificá:
 ```
 docs/
 ├── PROJECT_CONSTITUTION.md      # Especificación de requerimientos
-├── PROJECT_LOG.md               # Historial de cambios y auditoría
 ├── API_SPEC.md                  # Contrato de integración webhook
 ├── BITACORA_TECNICA.md          # Log técnico de decisiones
 ├── DATA-NORMALIZATION.md        # Mapeo de valores técnicos
-├── SETUP-GOOGLE-SHEETS.md       # Guía de configuración inicial
 ├── modules/                     # Especificación detallada de módulos
-│   ├── MOD-01-REQUIREMENTS.md
 │   ├── MOD-02-DATA-STRUCTURE.md
 │   ├── MOD-03-UI-ARCHITECTURE.md
 │   ├── MOD-04-EMAIL-SYSTEM.md
-│   ├── MOD-05-GOOGLE-SHEETS-INTEGRATION.md
-│   ├── MOD-06-PROJECT-STRUCTURE.md
-│   └── conditional-logic/
-│       └── MOD-07-CONDITIONAL-LOGIC.md
+│   └── MOD-05-GOOGLE-SHEETS-INTEGRATION.md
 ├── adr/                         # Architecture Decision Records
 │   ├── ADR-001_vanilla-js-sin-framework.md
 │   ├── ADR-002_google-apps-script-backend.md
