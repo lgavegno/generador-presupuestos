@@ -4,741 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Presupuestos | Sitio Web Profesional</title>
-    <meta name="description" content="Obtené una cotización instantánea y transparente para tu sitio web profesional.">
+    <title>Cotizador de Sitios Web en ARS | Precios Transparentes — ONGEVAG</title>
+    <meta name="description" content="Calculá el costo de tu sitio web en Argentina. Presupuesto online instantáneo en pesos para landing pages, portfolios, tiendas online y web apps. Sin compromiso.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ONGEVAG">
+    <meta name="geo.region" content="AR-S">
+    <link rel="canonical" href="https://ongevag.com/presupuestador/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Cotizador de Sitios Web en ARS — ONGEVAG">
+    <meta property="og:description" content="Calculá el precio de tu sitio web en segundos. Presupuesto online en pesos argentinos para PyMEs.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ongevag.com/presupuestador/">
+    <meta property="og:locale" content="es_AR">
+
+    <!-- Schema.org: WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Cotizador de Sitios Web — ONGEVAG",
+      "description": "Herramienta de presupuestación online para sitios web en Argentina. Precios en ARS para landing pages, portfolios, tiendas online y web apps.",
+      "url": "https://ongevag.com/presupuestador/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "ARS",
+        "offerCount": "4",
+        "lowPrice": "600000",
+        "highPrice": "2000000"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "ONGEVAG",
+        "url": "https://ongevag.com"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Argentina"
+      }
+    }
+    </script>
+
+    <link rel="stylesheet" href="./css/style.css">
     <!-- Google Fonts: Inter -->
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
         rel="stylesheet" />
-    <style>
-        /* ══════════════════════════════════════════
-           RESET & VARIABLES
-        ══════════════════════════════════════════ */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-page: #0f172a;
-            --bg-card: #1e293b;
-            --bg-input: #0a1120;
-            --accent: #16c946;
-            --accent-dark: #12a83a;
-            --accent-pale: rgba(22, 201, 70, 0.08);
-            --accent-border: rgba(22, 201, 70, 0.5);
-            --text-primary: #ffffff;
-            --text-secondary: #e2e8f0;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --border-focus: #16c946;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
-            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
-            --radius-sm: 8px;
-            --radius-md: 14px;
-            --radius-lg: 20px;
-            --transition: 0.2s ease;
-        }
-
-        /* ══════════════════════════════════════════
-           BASE
-        ══════════════════════════════════════════ */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: var(--bg-page);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ══════════════════════════════════════════
-           LAYOUT — Two-column sticky
-        ══════════════════════════════════════════ */
-        .page-wrapper {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 24px 20px 60px;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 28px;
-            align-items: start;
-        }
-
-        .left-col {
-            min-width: 0;
-        }
-
-        .right-col {
-            position: sticky;
-            top: 24px;
-        }
-
-        /* ══════════════════════════════════════════
-           BACK LINK
-        ══════════════════════════════════════════ */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-            transition: color var(--transition);
-        }
-
-        .back-link:hover {
-            color: var(--text-primary);
-        }
-
-        .back-link svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* ══════════════════════════════════════════
-           PAGE HEADER
-        ══════════════════════════════════════════ */
-        .page-header {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: 40px 48px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent) 0%, #0fd648 100%);
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-        }
-
-        .page-header h1 span {
-            color: var(--accent-dark);
-        }
-
-        .page-header p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            margin-top: 8px;
-        }
-
-        /* ══════════════════════════════════════════
-           CARDS (sections)
-        ══════════════════════════════════════════ */
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 32px 36px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-        }
-
-        .card-header {
-            margin-bottom: 24px;
-        }
-
-        .card-header .step-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            background: var(--accent);
-            color: #111;
-            font-size: 0.8rem;
-            font-weight: 800;
-            border-radius: 50%;
-            margin-right: 10px;
-            flex-shrink: 0;
-        }
-
-        .card-header h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0;
-        }
-
-        .card-header .subtitle {
-            color: #cbd5e1;
-            font-size: 0.875rem;
-            margin-top: 10px;
-            padding-left: 38px;
-            font-style: normal;
-        }
-
-        /* Precio separado del h2 */
-        .price-tag {
-            display: block;
-            padding-left: 38px;
-            margin-top: 6px;
-            margin-bottom: 2px;
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--accent);
-            letter-spacing: -0.02em;
-        }
-
-        /* ══════════════════════════════════════════
-           CLARITY BLOCK (info boxes)
-        ══════════════════════════════════════════ */
-        .clarity-block {
-            background: rgba(10, 17, 32, 0.8);
-            border: 1px solid var(--accent-border);
-            border-left: 3px solid var(--accent);
-            border-radius: var(--radius-sm);
-            padding: 16px 20px;
-            margin-top: 20px;
-            font-size: 0.875rem;
-            color: #ffffff;
-        }
-
-        .clarity-block strong {
-            color: var(--accent);
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 700;
-        }
-
-        .clarity-block ul {
-            margin-top: 8px;
-            padding-left: 18px;
-        }
-
-        .clarity-block ul li {
-            margin-bottom: 3px;
-            color: #ffffff;
-        }
-
-        .clarity-block ul li strong {
-            color: #ffffff;
-            display: inline;
-        }
-
-        /* ══════════════════════════════════════════
-           OPTION CARDS — Tipo de sitio
-        ══════════════════════════════════════════ */
-
-        /* Hidden <select> still exists for JS compatibility */
-        #tipo_sitio {
-            display: none;
-        }
-
-        .option-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .option-card {
-            position: relative;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            cursor: pointer;
-            transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
-            background: rgba(30, 41, 59, 0.8);
-            user-select: none;
-        }
-
-        .option-card:hover {
-            border-color: var(--accent-dark);
-            box-shadow: var(--shadow-md);
-        }
-
-        .option-card.selected {
-            border-color: var(--accent);
-            background: var(--accent-pale);
-            box-shadow: 0 0 0 4px rgba(27, 250, 87, 0.1);
-        }
-
-        .option-card.selected .option-card__check {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .option-card__check {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 22px;
-            height: 22px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: scale(0.6);
-            transition: opacity var(--transition), transform var(--transition);
-        }
-
-        .option-card__check svg {
-            width: 13px;
-            height: 13px;
-            color: #111;
-        }
-
-        .option-card__icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            line-height: 1;
-        }
-
-        .option-card__name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .option-card__price {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .option-card__features {
-            list-style: none;
-            padding: 0;
-        }
-
-        .option-card__features li {
-            font-size: 0.78rem;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .option-card__features li::before {
-            content: '';
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            background: var(--accent-dark);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        /* ══════════════════════════════════════════
-           DIAGRAM IMAGE
-        ══════════════════════════════════════════ */
-        .diagram-block {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 28px 36px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .diagram-block h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 16px;
-        }
-
-        .diagram-block img {
-            width: 100%;
-            max-width: 580px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-        }
-
-        /* ══════════════════════════════════════════
-           PILL CHECKBOXES
-        ══════════════════════════════════════════ */
-        .pill-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .pill-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            border: 1.5px solid var(--border);
-            border-radius: 50px;
-            cursor: pointer;
-            transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
-            background: rgba(15, 23, 42, 0.6);
-            user-select: none;
-        }
-
-        .pill-item:hover {
-            border-color: var(--accent-dark);
-        }
-
-        .pill-item input[type="checkbox"] {
-            width: 17px;
-            height: 17px;
-            accent-color: var(--accent-dark);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .pill-item span {
-            font-size: 0.87rem;
-            font-weight: 500;
-            color: #e2e8f0;
-            line-height: 1.3;
-        }
-
-        /* Checked state — fluor fill, dark text for contrast */
-        .pill-item:has(input:checked) {
-            background: var(--accent);
-            border-color: var(--accent-dark);
-            box-shadow: 0 2px 8px rgba(27, 250, 87, 0.35);
-        }
-
-        .pill-item:has(input:checked) span {
-            color: #0f172a;
-            font-weight: 700;
-        }
-
-        /* ══════════════════════════════════════════
-           CONTACT FORM
-        ══════════════════════════════════════════ */
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.825rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 7px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-size: 0.97rem;
-            font-family: inherit;
-            background: rgba(15, 23, 42, 0.8);
-            color: var(--text-primary);
-            transition: border-color var(--transition), box-shadow var(--transition);
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(27, 250, 87, 0.15);
-        }
-
-        /* ══════════════════════════════════════════
-           INFO BOX — Condiciones comerciales
-        ══════════════════════════════════════════ */
-        .info-box {
-            background: rgba(10, 17, 32, 0.85);
-            border: 1px solid rgba(22, 201, 70, 0.4);
-            border-left: 3px solid var(--accent);
-            border-radius: var(--radius-sm);
-            padding: 20px 24px;
-            margin-bottom: 24px;
-        }
-
-        .info-box__title {
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .info-box p {
-            font-size: 0.875rem;
-            color: #e2e8f0;
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
-
-        .info-box p:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-box strong {
-            color: #ffffff;
-        }
-
-        /* ══════════════════════════════════════════
-           SUBMIT BUTTON
-        ══════════════════════════════════════════ */
-        .btn-submit {
-            background: var(--accent);
-            color: #0a2e14;
-            border: none;
-            padding: 16px 44px;
-            margin: 18px 0 0 0;
-            width: 100%;
-            justify-content: center;
-            font-size: 1.05rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-family: inherit;
-            box-shadow: 0 4px 16px rgba(27, 250, 87, 0.35);
-            letter-spacing: -0.01em;
-        }
-
-        .btn-submit:hover {
-            background: var(--accent-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(27, 250, 87, 0.45);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ══════════════════════════════════════════
-           SPINNER
-        ══════════════════════════════════════════ */
-        .spinner {
-            border: 3px solid rgba(0, 0, 0, 0.08);
-            border-top: 3px solid var(--accent-dark);
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            animation: spin 0.75s linear infinite;
-            margin: 18px auto;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        #loading-spinner {
-            text-align: center;
-            margin-top: 16px;
-            display: none;
-        }
-
-        #loading-spinner p {
-            color: var(--accent-dark);
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: 8px;
-        }
-
-        /* ══════════════════════════════════════════
-           STICKY BUDGET SIDEBAR
-        ══════════════════════════════════════════ */
-        .presupuesto-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 24px rgba(27, 250, 87, 0.15), var(--shadow-lg);
-            overflow: hidden;
-        }
-
-        .presupuesto-card__header {
-            background: var(--accent);
-            padding: 22px 24px;
-        }
-
-        .presupuesto-card__header h3 {
-            font-size: 0.85rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #0a1f10;
-            margin-bottom: 2px;
-        }
-
-        .presupuesto-card__header p {
-            font-size: 0.82rem;
-            color: #1a4a27;
-        }
-
-        .presupuesto-card__body {
-            padding: 24px;
-        }
-
-        .p-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 0.9rem;
-        }
-
-        .p-row:last-child {
-            border-bottom: none;
-        }
-
-        .p-row span:first-child {
-            color: var(--text-secondary);
-        }
-
-        .p-row .value,
-        .p-row span:last-child {
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .p-separator {
-            height: 1px;
-            background: var(--border);
-            margin: 16px 0;
-        }
-
-        /* IVA / subtotal rows — secondary */
-        .p-row.secondary {
-            opacity: 0.65;
-            font-size: 0.82rem;
-        }
-
-        /* Total */
-        .p-total {
-            margin-top: 16px;
-            padding: 18px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--accent-border);
-        }
-
-        .p-total__label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .p-total__amount {
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: var(--accent);
-            letter-spacing: -0.04em;
-            line-height: 1;
-        }
-
-        .p-total__amount #total {
-            font-size: inherit;
-            font-weight: inherit;
-            color: inherit;
-        }
-
-        .p-total__note {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-
-        .presupuesto-disclaimer {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-            margin: 12px 0 8px;
-            padding: 8px 10px;
-            border-left: 3px solid var(--accent, #6c63ff);
-            background: rgba(108,99,255,0.06);
-            border-radius: 0 4px 4px 0;
-        }
-
-        /* ══════════════════════════════════════════
-           RESPONSIVE
-        ══════════════════════════════════════════ */
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .right-col {
-                position: static;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .option-cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .pill-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .page-header {
-                padding: 28px 24px;
-            }
-
-            .card {
-                padding: 24px 20px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .pill-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -794,7 +107,7 @@
                                 </div>
                                 <div class="option-card__icon"></div>
                                 <div class="option-card__name">Landing Page</div>
-                                <div class="option-card__price">$200,000 ARS</div>
+                                <div class="option-card__price">$600,000 ARS</div>
                                 <ul class="option-card__features">
                                     <li>1 página de alta conversión</li>
                                     <li>Ideal para campañas y lanzamientos</li>
@@ -814,9 +127,10 @@
                                 </div>
                                 <div class="option-card__icon"></div>
                                 <div class="option-card__name">Sitio Simple</div>
-                                <div class="option-card__price">$250,000 ARS</div>
+                                <div class="option-card__price">$1,200,000 ARS</div>
                                 <ul class="option-card__features">
-                                    <li>3 a 5 páginas navegables</li>
+                                    <li>Arquitectura multi-página profesional</li>
+                                    <li>Secciones configuradas en el Paso 2</li>
                                     <li>Marca profesional completa</li>
                                     <li>Arquitectura responsive</li>
                                     <li>SEO semántico avanzado</li>
@@ -833,7 +147,7 @@
                                 </div>
                                 <div class="option-card__icon"></div>
                                 <div class="option-card__name">Portfolio</div>
-                                <div class="option-card__price">$350,000 ARS</div>
+                                <div class="option-card__price">$1,500,000 ARS</div>
                                 <ul class="option-card__features">
                                     <li>Galería de trabajos / proyectos</li>
                                     <li>Presentación visual premium</li>
@@ -852,7 +166,7 @@
                                 </div>
                                 <div class="option-card__icon"></div>
                                 <div class="option-card__name">E-Commerce</div>
-                                <div class="option-card__price">$600,000 ARS</div>
+                                <div class="option-card__price">$2,000,000 ARS</div>
                                 <ul class="option-card__features">
                                     <li>Tienda online completa</li>
                                     <li>Carrito + pasarela de pagos</li>
@@ -863,6 +177,8 @@
                             </div>
 
                         </div>
+
+                        <p class="cdcv-ref">📐 Valores calculados bajo el nomenclador oficial de la CDCV · Desarrollo HTML5/CSS3 exclusivo a medida · sin plantillas comerciales</p>
 
                         <div class="clarity-block">
                             <strong>📐 Sobre el Setup Profesional</strong>
@@ -887,7 +203,7 @@
                         <div class="form-group" style="margin-bottom: 12px;">
                             <textarea id="custom-project-desc" name="custom_project_desc"
                                 placeholder="Describí requisitos, usuarios y funcionalidades..."
-                                style="min-height: 120px;" oninput="updatePresupuesto()"></textarea>
+                                style="min-height: 120px;" oninput="updatePresupuesto()" maxlength="1000"></textarea>
                         </div>
                         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">
                             * Te contactaremos en máximo 24h hábiles para agendar la entrevista de descubrimiento.
@@ -904,8 +220,7 @@
                     <div class="card" id="step-2-card" style="transition: opacity 0.3s, filter 0.3s;">
                         <div class="card-header">
                             <h2><span class="step-badge">2</span>Secciones del Sitio</h2>
-                            <span class="price-tag">+$50,000 <small
-                                    style="font-size:0.8rem;font-weight:500;">c/u</small></span>
+                            <span class="price-tag">+$100,000 <small>c/u</small></span>
                             <p class="subtitle">Cada sección es una página o bloque con maquetación y diseño único y
                                 exclusivo.</p>
                         </div>
@@ -945,8 +260,7 @@
                     <div class="card" id="step-3-card" style="transition: opacity 0.3s, filter 0.3s;">
                         <div class="card-header">
                             <h2><span class="step-badge">3</span>Funcionalidades Premium</h2>
-                            <span class="price-tag">+$60,000 <small
-                                    style="font-size:0.8rem;font-weight:500;">c/u</small></span>
+                            <span class="price-tag">+$150,000 <small>c/u</small></span>
                             <p class="subtitle">Integraciones de alto nivel que elevan la experiencia del usuario.</p>
                         </div>
 
@@ -1012,12 +326,12 @@
 
                         <div class="form-group">
                             <label for="nombre">Nombre Completo *</label>
-                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" required>
+                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre y apellido" required maxlength="100">
                         </div>
 
                         <div class="form-group">
                             <label for="email">E-mail *</label>
-                            <input type="email" id="email" name="email" placeholder="tu@correo.com" required>
+                            <input type="email" id="email" name="email" placeholder="tu@correo.com" required maxlength="150">
                         </div>
 
                         <div class="form-group">
@@ -1041,25 +355,24 @@
                     </div>
 
                     <!-- CONDICIONES COMERCIALES -->
-                    <div class="info-box">
-                        <div class="info-box__title">📋 Condiciones Comerciales</div>
-                        <p>
-                            <strong>Infraestructura:</strong> Incluye primer año de Hosting (Plan Premium) y Dominio
-                            para los sitios detallados.
-                        </p>
-                        <p>
-                            <strong>Contenidos:</strong> El cliente provee textos, logos y fotos en alta calidad. No
-                            incluye redacción ni diseño de identidad. Si no dispone de material profesional, se deberá
-                            recurrir a un especialista en Diseño Gráfico o Copywriting (presupuestado por separado).
-                        </p>
-                        <p>
-                            <strong>Pago:</strong> 50% anticipado y 50% contra entrega.
-                        </p>
-                        <p style="color: #cbd5e1;">
-                            <strong style="color: #16c946;">Sistemas:</strong> Web Apps o ERPs se cotizan por separado
-                            debido a requerimientos de servidores VPS.
-                        </p>
-                    </div>
+                   <div class="info-box">
+    <div class="info-box__title">📋 Condiciones Comerciales</div>
+    <p>
+        <strong>Infraestructura:</strong> El precio NO incluye costo de hosting ni registro de dominio, los cuales se gestionan a nombre del cliente y corren por su cuenta.
+    </p>
+    <p>
+        <strong>Contenidos:</strong> El cliente provee textos, logos y fotos en formato digital y alta calidad. No incluye redacción, vectorización de marca ni diseño de identidad. Si no dispone de material profesional, se deberá recurrir a un especialista (presupuestado por separado).
+    </p>
+    <p>
+        <strong>Revisiones y Plazos:</strong> El presupuesto contempla hasta un máximo de dos (2) rondas de correcciones sobre la estructura acordada. El cliente dispone de un plazo máximo de 15 días corridos para entregar la totalidad del contenido tras el pago inicial; pasado este tiempo, el presupuesto queda sujeto a reajuste tarifario.
+    </p>
+    <p>
+        <strong>Pago y Entrega:</strong> 50% anticipado para iniciar el desarrollo y 50% contra entrega final y conformidad. Incluye una garantía técnica de 30 días post-entrega ante fallas de código. Modificaciones posteriores o soporte mensual se presupuestan de forma independiente.
+    </p>
+    <p style="color: #cbd5e1;">
+        <strong style="color: #16c946;">Sistemas:</strong> Web Apps o ERPs se cotizan de forma personalizada debido a requerimientos de infraestructura y servidores VPS específicos.
+    </p>
+</div>
 
 
 
@@ -1067,6 +380,16 @@
                         <div class="spinner"></div>
                         <p>Procesando cotización...</p>
                     </div>
+
+                    <input
+                        type="text"
+                        id="hp_website"
+                        name="hp_website"
+                        tabindex="-1"
+                        autocomplete="off"
+                        aria-hidden="true"
+                        style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"
+                    >
 
                 </form>
             </div><!-- /left-col -->
@@ -1097,6 +420,13 @@
                         </div>
 
                         <div class="p-separator"></div>
+
+                        <div class="transparencia-box">
+                          💡 <strong>Transparencia comercial:</strong> Valores calculados bajo
+                          nomenclador vigente de la CDCV para Cliente Tipo B (PyMEs), con adicional
+                          por desarrollo HTML5/CSS3 exclusivo a medida — sin plantillas ni
+                          plataformas cerradas.
+                        </div>
 
                         <!-- Secondary rows: kept for JS but visually subdued -->
                         <div class="p-row secondary" style="display:none;">

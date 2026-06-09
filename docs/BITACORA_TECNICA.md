@@ -517,3 +517,47 @@ La feature esta en `develop`, no en `main`. No se puede mergear hasta cerrar el 
 **Documento actualizado:** 12 de mayo de 2026
 **Auditor:** Claude Senior Architect
 **Status:** ✅ AUDITORIA 4 COMPLETADA — ecosistema SDD generado
+
+---
+
+## Refactor CSS — Extracción de estilos inline (09 junio 2026)
+
+**Tipo de evento:** Refactor de mantenibilidad — sin cambios de comportamiento
+
+### Contexto
+
+El archivo `presupuestador/index.html` contenía la totalidad de los estilos CSS como bloques `<style>` inline dentro del propio HTML. Esto dificultaba la lectura, edición y cacheo de los estilos.
+
+### Decisión
+
+Extraer todo el CSS a `presupuestador/css/style.css` y reemplazar los bloques `<style>` en `index.html` por una única línea:
+
+```html
+<link rel="stylesheet" href="./css/style.css">
+```
+
+### Motivo
+
+- **Mantenibilidad:** separar estructura (HTML) de presentación (CSS) facilita ediciones aisladas y reduce el ruido en diffs de Git.
+- **Caché del navegador:** un archivo `.css` externo es cacheado por el navegador entre navegaciones; el CSS inline se re-parsea con cada carga del HTML.
+
+### Trade-off aceptado
+
+El CSS externo agrega un request HTTP adicional en la primera carga. Este costo es mitigado por HTTP/2 (multiplexación) y por el caché del navegador en cargas subsecuentes, lo que lo hace irrelevante en la práctica para este proyecto.
+
+### Archivos afectados
+
+| Archivo | Cambio |
+| :--- | :--- |
+| `presupuestador/index.html` | Bloques `<style>` eliminados; agregado `<link rel="stylesheet" href="./css/style.css">` en línea 48 |
+| `presupuestador/css/style.css` | Archivo nuevo — contiene todos los estilos del formulario |
+
+### Invariante establecido
+
+A partir de este refactor, **no se agrega CSS inline en `index.html`**. Todo estilo nuevo va en `presupuestador/css/style.css`. No se crean archivos CSS adicionales sin discutirlo (un solo archivo por ahora).
+
+---
+
+**Documento actualizado:** 09 de junio de 2026
+**Responsable:** Leandro Gavegno
+**Status:** ✅ COMPLETADO — CSS externo validado en servidor local

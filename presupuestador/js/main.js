@@ -7,13 +7,13 @@ console.log('🚀 Generador de Presupuestos iniciado');
 // Configuración global
 const CONFIG = {
     PRESUPUESTO_BASE: {
-        landing: 200000,
-        simple: 250000,
-        portfolio: 350000,
-        ecommerce: 600000
+        landing: 600000,
+        simple: 1200000,
+        portfolio: 1500000,
+        ecommerce: 2000000
     },
-    PRECIO_SECCION: 50000,
-    PRECIO_FUNCIONALIDAD: 60000,
+    PRECIO_SECCION: 100000,
+    PRECIO_FUNCIONALIDAD: 150000,
     IVA: 0.21,
     TIPO_CAMBIO: 360
 };
@@ -58,12 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function saveToStorage() {
     localStorage.setItem('presupuesto_state', JSON.stringify(state));
+    localStorage.setItem('presupuesto_config_version', '2.0');
 }
 
 function loadFromStorage() {
+    const CONFIG_VERSION = '2.0'; // incrementar cuando cambien precios base
     const saved = localStorage.getItem('presupuesto_state');
-    if (saved) {
+    const savedVersion = localStorage.getItem('presupuesto_config_version');
+
+    if (saved && savedVersion === CONFIG_VERSION) {
         Object.assign(state, JSON.parse(saved));
-        console.log('✓ Estado restaurado');
+        console.log('✓ Estado restaurado (v' + CONFIG_VERSION + ')');
+    } else {
+        localStorage.removeItem('presupuesto_state');
+        localStorage.setItem('presupuesto_config_version', CONFIG_VERSION);
+        console.log('✓ Cache limpiado — nueva versión de CONFIG detectada');
     }
 }

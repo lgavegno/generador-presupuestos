@@ -218,7 +218,7 @@ Define the user interface structure, components, layout, interactions, and respo
 --border-focus: #16c946 (Green Focus Border)
 ```
 
-**Note:** All CSS is inline in `presupuestador/index.html` (~54KB). No external .css files.
+**Note:** CSS vive en `presupuestador/css/style.css` (741 líneas, archivo externo). `index.html` no contiene estilos inline.
 
 ---
 

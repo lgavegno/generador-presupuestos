@@ -23,7 +23,7 @@ Este proyecto sigue explícitamente tres metodologías:
 
 ### Clean Architecture — Separación de Capas
 ```
-Presentación (index.html) → UI, CSS inline, eventos
+Presentación (index.html) → UI, eventos | presupuestador/css/style.css → estilos
 Aplicación (main.js) → CONFIG, state, inicialización
 Dominio (calculator.js) → Lógica de negocio pura
 Infraestructura (email-handler.js, storage.js) → APIs externas

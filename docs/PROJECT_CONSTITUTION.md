@@ -59,7 +59,7 @@ Formulario web que calcula presupuestos de sitios web en ARS, los guarda en Goog
 
 ### Frontend
 - HTML5 (Vanilla)
-- CSS3 inline en `presupuestador/index.html`
+- CSS3 externo en `presupuestador/css/style.css`
 - JavaScript ES6+ (Vanilla, sin frameworks)
 - Modulos IIFE — sin ES Modules (constraint de ADR-001)
 

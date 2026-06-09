@@ -29,6 +29,7 @@ python -m http.server 8000
 
 | Archivo | Qué contiene | Cuándo leerlo |
 |---------|-------------|---------------|
+| `presupuestador/css/style.css` | Todos los estilos visuales del formulario | **Antes de tocar cualquier aspecto visual** |
 | `README.md` | Visión general, precios, payload webhook, troubleshooting | Siempre primero |
 | `docs/PROJECT_CONSTITUTION.md` | Scope, constraints, fases del proyecto, diagrama de flujo | Contexto de negocio |
 | `docs/API_SPEC.md` | Contrato exacto del webhook (payload, respuesta, schema Sheets) | **Antes de tocar email-handler.js o el backend** |
@@ -84,7 +85,7 @@ Form reset + resetPresupuesto()
 
 ---
 
-## Los 3 gotchas que rompen todo
+## Los 4 gotchas que rompen todo
 
 ### 1. `mode: 'no-cors'` hace que la respuesta sea siempre "exitosa" para el frontend
 
@@ -97,6 +98,10 @@ La deduplicación de la estructura dual fue completada el 19/04/2026 (ADR-003, R
 ### 3. El IVA se calcula pero NO se suma al total
 
 El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` final es igual al `subtotal` — el IVA **nunca se suma**. Esto es por diseño: el IVA se muestra como información desglosada. Si sumás IVA al total, sobreestimás el precio. Ver `calculator.js:87`: `const total = subtotal; // IVA NOT included in final total`.
+
+### 4. El CSS es externo — no inline
+
+Los estilos **no están en `index.html`**. El refactor de CSS fue ejecutado en junio 2026: todo el CSS fue extraído a `presupuestador/css/style.css` y cargado vía `<link rel="stylesheet" href="./css/style.css">` en `index.html:48`. No agregar estilos inline al HTML — van en el archivo CSS externo.
 
 ---
 
@@ -117,7 +122,8 @@ El presupuesto tiene un campo `iva` que es `subtotal * 0.21`, pero el `total` fi
 
 ### Lo que NO hacer
 - No agregar dependencias npm (no hay package.json, es por diseño)
-- No mover el CSS inline a archivos externos sin discutirlo antes
+- No agregar CSS inline en index.html — los estilos viven en `presupuestador/css/style.css`
+- No crear archivos CSS adicionales sin discutirlo (un solo archivo por ahora)
 - No cambiar `mode: 'no-cors'` a `mode: 'cors'` sin configurar headers en Google Apps Script
 
 ---

@@ -11,7 +11,9 @@
 ```
 generador-presupuestos/          (raiz del repositorio)
 ├── presupuestador/              (unica fuente de verdad del frontend)
-│   ├── index.html               (formulario completo — HTML + CSS inline ~1400 lineas)
+│   ├── index.html               (formulario completo — HTML + eventos)
+│   ├── css/
+│   │   └── style.css            (todos los estilos — 741 lineas, archivo externo)
 │   ├── sitio-web-vs-landing.png (imagen de referencia)
 │   └── js/
 │       ├── domain/
