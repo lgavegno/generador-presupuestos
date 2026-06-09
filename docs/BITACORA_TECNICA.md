@@ -468,3 +468,96 @@ El Presenter recibe siempre el `state` ya limpio (post-UseCase). Solo lee, nunca
 **Documento actualizado:** 12 de mayo de 2026
 **Auditor:** Claude Senior Architect
 **Status:** ✅ T005 COMPLETADA — Infrastructure layer implementada
+
+---
+
+## Auditoria 4 — Ecosistema SDD Completo (12 mayo 2026)
+
+**Tipo de evento:** Auditoria de documentacion — Fase 2 de SDD audit metodologico
+
+### Objetivo
+
+Generar el ecosistema SDD completo a partir de la auditoria del codigo real. Documentar brechas entre lo que existe y lo que esta especificado. Producir documentacion que refleje fielmente el estado actual del proyecto.
+
+### Hallazgos
+
+| Item | Estado encontrado | Accion |
+| :--- | :--- | :--- |
+| PROJECT_CONSTITUTION.md v1.0 | Diagrama de arch incorrecto (calculator.js como Domain), deliverables desactualizados, faltaba MOD-07 | Reescrito a v2.0 |
+| MOD-06-PROJECT-STRUCTURE.md v1.0 | Estructura obsoleta: /js/ raiz, tienda-nube.html, sin domain/application/infrastructure | Reescrito a v2.0 |
+| ADR-006 ausente | La decision de arquitectura hibrida no estaba documentada | Creado |
+| UC-04 ausente | El flujo principal de envio de cotizacion no tenia caso de uso formal | Creado |
+| UC-05 ausente | El modo custom no tenia caso de uso formal | Creado |
+| CA-06 sin implementacion en codigo | `ui-renderer.js` recibe `reasons` pero solo hace console.log | T011 agregado al plan |
+| UC-01.md, UC-02.md, UC-03.md (v1) | Supersedidos por versiones v2 con Clean Architecture pero no marcados | Documentado en MOD-06 |
+| plan.md: sin tarea para CA-06 implementation | Las fases 5-6 eran solo testing manual, no habia tarea de implementacion | T011-T012 agregados |
+
+### Archivos producidos en esta auditoria
+
+**Actualizados (updates):**
+- `docs/PROJECT_CONSTITUTION.md` → v2.0
+- `docs/modules/MOD-06-PROJECT-STRUCTURE.md` → v2.0
+- `docs/plans/feature-conditional-logic/plan.md` → T011, T012, Fase 5-6 reestructuradas
+
+**Creados (new):**
+- `docs/adr/ADR-006_clean-architecture-hibrida.md`
+- `docs/use-cases/UC-04-cotizacion-submit.md`
+- `docs/use-cases/UC-05-modo-custom.md`
+
+### DoD abierto al finalizar la auditoria
+
+El Sprint-Logic-Coherence tiene las tareas T001-T005 completadas pero el DoD no esta cerrado:
+- CA-06 (feedback visual en DOM) no esta implementado en `ui-renderer.js` — T011 pendiente.
+- T006-T010 (validacion manual) no ejecutados.
+
+La feature esta en `develop`, no en `main`. No se puede mergear hasta cerrar el DoD.
+
+---
+
+**Documento actualizado:** 12 de mayo de 2026
+**Auditor:** Claude Senior Architect
+**Status:** ✅ AUDITORIA 4 COMPLETADA — ecosistema SDD generado
+
+---
+
+## Refactor CSS — Extracción de estilos inline (09 junio 2026)
+
+**Tipo de evento:** Refactor de mantenibilidad — sin cambios de comportamiento
+
+### Contexto
+
+El archivo `presupuestador/index.html` contenía la totalidad de los estilos CSS como bloques `<style>` inline dentro del propio HTML. Esto dificultaba la lectura, edición y cacheo de los estilos.
+
+### Decisión
+
+Extraer todo el CSS a `presupuestador/css/style.css` y reemplazar los bloques `<style>` en `index.html` por una única línea:
+
+```html
+<link rel="stylesheet" href="./css/style.css">
+```
+
+### Motivo
+
+- **Mantenibilidad:** separar estructura (HTML) de presentación (CSS) facilita ediciones aisladas y reduce el ruido en diffs de Git.
+- **Caché del navegador:** un archivo `.css` externo es cacheado por el navegador entre navegaciones; el CSS inline se re-parsea con cada carga del HTML.
+
+### Trade-off aceptado
+
+El CSS externo agrega un request HTTP adicional en la primera carga. Este costo es mitigado por HTTP/2 (multiplexación) y por el caché del navegador en cargas subsecuentes, lo que lo hace irrelevante en la práctica para este proyecto.
+
+### Archivos afectados
+
+| Archivo | Cambio |
+| :--- | :--- |
+| `presupuestador/index.html` | Bloques `<style>` eliminados; agregado `<link rel="stylesheet" href="./css/style.css">` en línea 48 |
+| `presupuestador/css/style.css` | Archivo nuevo — contiene todos los estilos del formulario |
+
+### Invariante establecido
+
+A partir de este refactor, **no se agrega CSS inline en `index.html`**. Todo estilo nuevo va en `presupuestador/css/style.css`. No se crean archivos CSS adicionales sin discutirlo (un solo archivo por ahora).
+
+---
+
+**Documento actualizado:** 09 de junio de 2026
+**Responsable:** Leandro Gavegno
+**Status:** ✅ COMPLETADO — CSS externo validado en servidor local

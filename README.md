@@ -280,6 +280,8 @@ Content-Type: application/json
 generador-presupuestos/
 ├── presupuestador/
 │   ├── index.html                    # Formulario principal
+│   ├── css/
+│   │   └── style.css                 # Todos los estilos (741 líneas)
 │   └── js/
 │       ├── calculator.js             # Lógica de cálculos (raíz)
 │       ├── form-handler.js           # Validación de formulario
@@ -441,6 +443,6 @@ Monthly cost:       $0
 |-------|-----------|-------|
 | Frontend JS | 6 | Vanilla, no transpilation |
 | HTML | 2 | index.html (landing) + presupuestador/index.html (app) |
-| CSS | 0 external | All styles are inline in HTML files |
+| CSS | 1 external | presupuestador/css/style.css (741 líneas) |
 | Docs | 17 + 4 ADRs | SDD methodology |
 | Test coverage | N/A | No test runner configured; manual testing documented in CHANGELOG |

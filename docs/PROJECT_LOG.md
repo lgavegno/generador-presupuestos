@@ -23,7 +23,7 @@ Este proyecto sigue explícitamente tres metodologías:
 
 ### Clean Architecture — Separación de Capas
 ```
-Presentación (index.html) → UI, CSS inline, eventos
+Presentación (index.html) → UI, eventos | presupuestador/css/style.css → estilos
 Aplicación (main.js) → CONFIG, state, inicialización
 Dominio (calculator.js) → Lógica de negocio pura
 Infraestructura (email-handler.js, storage.js) → APIs externas
@@ -378,16 +378,52 @@ GitHub (LIVE)
 
 ---
 
-## PRÓXIMAS VERSIONES
+## Estado del Proyecto — develop branch (12 mayo 2026)
 
-### v1.2 (Planeado)
-- Google Apps Script completo + testing
-- Email notifications end-to-end
-- Dashboard de estadísticas en Sheets
-- Soporte multi-idioma (ES/EN)
+### Sprint activo: Sprint-Logic-Coherence
 
-### v2.0 (Planeado)
-- Integración Tienda Nube API
-- WordPress Prompt Generator
-- Dashboard de propietario (React)
-- Sistema de descuentos
+**Feature:** `feat/conditional-selection-logic` (mergeada en develop, pendiente de merge a main)
+**Commit:** `bd3bf10` — feat: implement conditional logic (Domain/App/Infra) using SDD
+
+| Tarea | Estado |
+| :--- | :--- |
+| T001 — Rama git | Completada |
+| T002 — Bitacora inicio | Completada |
+| T003 — ConstraintEngine.js (Domain) | Completada |
+| T004 — UpdateWebsiteTypeUseCase.js (Application) | Completada |
+| T005 — ui-renderer.js (Infrastructure) | Completada |
+| T006-T010 — Validacion manual CA-01 a CA-05 | Pendiente |
+| T011 — CA-06: feedback visual en DOM | Pendiente (nueva tarea, Auditoria 4) |
+| T012 — Validacion manual CA-06 | Pendiente |
+
+**Bloqueante para merge a main:** T011 (CA-06 feedback visual) debe completarse antes del merge.
+
+### Documentacion actualizada en Auditoria 4 (12 mayo 2026)
+
+- PROJECT_CONSTITUTION.md v1.0 → v2.0
+- MOD-06-PROJECT-STRUCTURE.md v1.0 → v2.0
+- ADR-006_clean-architecture-hibrida.md (nuevo)
+- UC-04-cotizacion-submit.md (nuevo)
+- UC-05-modo-custom.md (nuevo)
+- plan.md: T011-T012 agregados, Fases 5-6 reestructuradas
+
+---
+
+## Proximos Pasos (Roadmap)
+
+### Inmediato — cerrar DoD Sprint-Logic-Coherence
+- [ ] Implementar CA-06: feedback visual en `ui-renderer.js` (T011)
+- [ ] Ejecutar validacion manual T006-T012
+- [ ] Merge `develop` → `main` con tag de release
+
+### Corto plazo (sin refactor mayor)
+- [ ] Declarar `state.isCustom` en el shape inicial de `state` en `main.js`
+- [ ] Eliminar console.log() de debug de `calculator.js`
+
+### Mediano plazo
+- [ ] Reemplazar `mode: 'no-cors'` con CORS propio en GAS
+- [ ] Agregar honeypot field para reducir spam
+
+### Largo plazo
+- [ ] Migrar `calculator.js` a Clean Architecture si el dominio de precios crece
+- [ ] Considerar framework ligero (Alpine.js) si el formulario escala en complejidad

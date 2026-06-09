@@ -1,360 +1,250 @@
 # PROJECT CONSTITUTION - GENERADOR DE PRESUPUESTOS
 
-**Status:** ACTIVE  
-**Version:** 1.0  
-**Last Updated:** Marzo 2026  
-**Methodology:** SDD (Spec-Driven Development)  
+**Status:** ACTIVE
+**Version:** 2.0
+**Last Updated:** 2026-05-12
+**Methodology:** SDD (Spec-Driven Development) + Clean Architecture (hibrida)
 
 ---
 
-## 🎯 PROJECT OBJECTIVE
+## Objetivo del Proyecto
 
-Create a web-based quote/presupuesto generator that:
-1. Collects client requirements via interactive form
-2. Calculates pricing dynamically (ARS currency)
-3. Generates a detailed WordPress AI prompt
-4. Saves all data to Google Sheets automatically
-5. Sends automatic email notification to osvojag@gmail.com
-6. Requires ZERO backend infrastructure (Google-powered)
+Formulario web que calcula presupuestos de sitios web en ARS, los guarda en Google Sheets y notifica por email al propietario de Ongevag Studio.
 
 ---
 
-## 📊 PROJECT SCOPE
+## Scope
 
-### IN SCOPE ✓
-- Presupuestador with 11 form sections
-- Real-time price calculation
-- WordPress prompt generation
-- Google Sheets integration
-- Email notifications (via Apps Script)
+### En scope
+- Presupuestador con tipo de sitio, secciones y funcionalidades
+- Calculos de precios en tiempo real (ARS)
+- Modo Custom (Web Apps / SaaS — deriva a entrevista)
+- Logica condicional de seleccion (restricciones por tipo de sitio)
+- Google Sheets integration (via Google Apps Script webhook)
+- Notificaciones por email (Gmail / MailApp)
 - Responsive design (mobile/tablet/desktop)
-- GitHub Pages deployment
-- SDD documentation
+- Despliegue en GitHub Pages
 
-### OUT OF SCOPE ✗
-- CRM integration (future)
-- Payment processing (future)
-- PDF export (future)
-- Multi-language (future)
-- Advanced analytics (future)
-
----
-
-## 💰 PRICING STRUCTURE
-
-> **Nota (actualizado):** Los precios abajo reflejan los valores en producción (v2.2.0). Los valores originales de la especificación inicial eran más bajos y ya no aplican.
-
-**TIPO DE SITIO (Base):**
-- Landing Page: $200,000 ARS
-- Sitio Simple (3-5 pág): $250,000 ARS
-- Portfolio: $350,000 ARS
-- E-Commerce: $600,000 ARS
-
-**SECCIONES INCLUIDAS SIN COSTO:** cada tipo incluye secciones base (Landing/Simple: Hero; Portfolio: Hero+About; E-Commerce: Hero+About+Products)
-
-**SECCIONES ADICIONALES:** $50,000 ARS c/u
-**FUNCIONALIDADES:** $60,000 ARS c/u
-
-**IMPUESTOS:** 21% IVA (Argentina)
+### Fuera de scope
+- CRM integration
+- Procesamiento de pagos
+- Export PDF
+- Analiticas avanzadas
+- Tests automatizados
 
 ---
 
-## 🛠️ TECHNOLOGY STACK
+## Estructura de Precios
+
+**Tipo de Sitio (precio base):**
+| Tipo | Precio ARS |
+| :--- | ---: |
+| Landing Page | $200.000 |
+| Sitio Simple (3-5 pag) | $250.000 |
+| Portfolio | $350.000 |
+| E-Commerce | $600.000 |
+
+**Secciones incluidas sin costo adicional:**
+- Landing / Simple: Hero
+- Portfolio: Hero + Acerca de
+- E-Commerce: Hero + Acerca de + Productos
+
+**Secciones adicionales:** $50.000 ARS c/u
+**Funcionalidades:** $60.000 ARS c/u
+**IVA:** 21% (informativo — nunca sumado al total)
+
+---
+
+## Stack Tecnologico
 
 ### Frontend
 - HTML5 (Vanilla)
-- CSS3 (Vanilla, no preprocessors)
-- JavaScript ES6+ (Vanilla, no frameworks)
+- CSS3 externo en `presupuestador/css/style.css`
+- JavaScript ES6+ (Vanilla, sin frameworks)
+- Modulos IIFE — sin ES Modules (constraint de ADR-001)
 
 ### Backend
-- Google Apps Script (No server needed)
-- Google Sheets (Database)
-- Google MailApp (Email)
+- Google Apps Script (serverless, sin infraestructura propia)
+- Google Sheets (storage)
+- Gmail / MailApp (notificaciones)
 
 ### Hosting
-- GitHub Pages (Frontend)
-- Google Cloud (Backend/Email)
-
-### Version Control
-- Git (GitHub)
-- SDD methodology (MOD + PLAN files)
+- GitHub Pages (frontend)
+- Google Cloud (backend GAS)
 
 ### Zero Dependencies
-- No npm packages
-- No build tools
-- No frameworks
-- No CDN required
-- Works offline after load
+- Sin npm, sin package.json, sin build step
+- Sin frameworks JavaScript
+- Sin CDN (salvo Google Fonts)
+- Servidor de desarrollo: `python -m http.server 8000`
 
 ---
 
-## 📈 SUCCESS METRICS
+## Arquitectura de Capas
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| Setup Time | < 10 min | PENDING |
-| Form Completion Rate | > 80% | PENDING |
-| Email Delivery | 100% | PENDING |
-| Email Time | < 5 sec | PENDING |
-| Presupuesto Accuracy | 100% | PENDING |
-| Uptime | > 99% | PENDING |
-| Page Load | < 2 sec | PENDING |
-| Cost/Month | $0 USD | PENDING |
+El sistema usa **Clean Architecture parcial** (ver ADR-006). Los modulos de logica condicional siguen separacion estricta de capas; los modulos legacy coexisten con acceso directo a `state` y al DOM.
 
----
+```
+presupuestador/js/
+├── domain/
+│   └── ConstraintEngine.js     [DOMAIN] Logica de negocio pura. Sin DOM, sin state.
+│                                         Funcion pura testeable de forma aislada.
+├── application/
+│   └── UpdateWebsiteTypeUseCase.js  [APPLICATION] Orquestacion: Domain → state → Presenter.
+│                                                   Unico punto que limpia state.features.
+├── infrastructure/
+│   └── ui-renderer.js          [INFRASTRUCTURE / PRESENTER] Traduce state a DOM.
+│                                                              No contiene logica de negocio.
+│
+├── main.js         [LEGACY] CONFIG, state global, DOMContentLoaded, storage.
+├── calculator.js   [LEGACY] updatePresupuesto(), updateUI(), resetPresupuesto().
+├── form-handler.js [LEGACY] collectFormData(), validateForm(), submitForm().
+├── email-handler.js [LEGACY] sendToGoogleSheets(), fetch no-cors.
+├── storage.js      [STUB] Sin implementacion activa.
+└── ui-updater.js   [STUB] Sin implementacion activa.
+```
 
-## 📋 DELIVERABLES
-
-- [x] Project Constitution
-- [x] MOD-01 through MOD-06 (Specifications)
-- [x] PLAN-001, PLAN-002 (Implementation plans)
-- [x] SETUP guides (Practical instructions)
-- [ ] Frontend code (HTML/CSS/JS)
-- [ ] Google Sheets setup
-- [ ] Apps Script deployment
-- [ ] GitHub Pages deployment
-- [ ] Testing & QA
-- [ ] Production launch
-
----
-
-## 🎯 PROJECT PHASES
-
-### PHASE 1: Foundation (Day 1)
-- Documentación SDD completa
-- Google Sheets setup
-- Apps Script code
-- Webhook deployment
-
-### PHASE 2: Frontend (Day 2)
-- HTML structure
-- CSS styling
-- JavaScript logic
-- Form handling
-
-### PHASE 3: Integration (Day 3)
-- Connect frontend to webhook
-- End-to-end testing
-- Production deployment
-
-### PHASE 4: Optimization (Week 2)
-- Performance tuning
-- Analytics setup
-- Monitoring
+**Invariantes de arquitectura:**
+1. `domain/` no puede acceder a `state` ni al DOM.
+2. El UseCase es el unico que modifica `state.features` en el flujo de restricciones.
+3. El Presenter solo lee `state` — nunca escribe.
+4. Logica de negocio pura va en `domain/`. Los calculos de precios (legacy) estan en `calculator.js` — candidato a migrar si el dominio crece.
 
 ---
 
-## 🔒 CONSTRAINTS
+## Modulos SDD
 
-- Must use Google (free tier)
-- Must work on GitHub Pages
-- Must not require backend server
-- Must be WCAG accessible
-- Must be mobile-responsive
-- Must have SDD documentation
-
----
-
-## 📞 TEAM
-
-- **Product Owner:** Leo (OmniStock)
-- **Developer:** Leo
-- **QA:** Manual testing
-- **Deployment:** GitHub Pages + Google
+| MOD | Modulo | Proposito | Status |
+| :--- | :--- | :--- | :--- |
+| MOD-01 | Requirements | Requerimientos funcionales y acceptance criteria | Activo |
+| MOD-02 | Data Structure | Schema de datos, CONFIG, state, contratos | Activo |
+| MOD-03 | UI Architecture | Componentes DOM, estilos, paleta visual | Activo |
+| MOD-04 | Email System | Integracion de notificaciones email | Activo |
+| MOD-05 | Google Sheets Integration | Backend GAS, schema Sheets | Activo |
+| MOD-06 | Project Structure | Arquitectura de carpetas, capas, deployment | Activo |
+| MOD-07 | Conditional Logic | Logica condicional y restricciones de seleccion | Activo (v2 — Clean Arch) |
 
 ---
 
-## 📅 TIMELINE
+## Casos de Uso Documentados
 
-- **Week 1:** Setup & Foundation
-- **Week 2:** Development & Testing
-- **Week 3:** Deployment & Launch
-- **Ongoing:** Monitoring & Optimization
-
----
-
-## 🚀 LAUNCH CHECKLIST
-
-- [ ] All MOD files approved
-- [ ] All PLAN files approved
-- [ ] Google Sheets configured
-- [ ] Apps Script deployed
-- [ ] Frontend developed
-- [ ] Integration tested
-- [ ] End-to-end tested
-- [ ] Documentation complete
-- [ ] GitHub repo ready
-- [ ] GitHub Pages enabled
-- [ ] Domain configured (if custom)
-- [ ] Monitoring active
-- [ ] Ready for production
+| ID | Caso de Uso | Flujo |
+| :--- | :--- | :--- |
+| UC-01 | Restriccion de seleccion por tipo de sitio | Constraint Engine → disabled checkbox |
+| UC-02 | Limpieza de state al cambiar tipo de sitio | E-Commerce → otro tipo → auto-desmarque |
+| UC-03 | Feedback visual por restriccion activa | Mensaje inline por feature bloqueada |
+| UC-04 | Envio de cotizacion | Submit → validate → POST → Sheets + email |
+| UC-05 | Activacion de modo custom | Textarea custom → "A Medida" display |
 
 ---
 
-**Next Document:** MOD-01-REQUIREMENTS.md
+## Architecture Decision Records
+
+| ADR | Titulo | Estado |
+| :--- | :--- | :--- |
+| ADR-001 | Vanilla JS sin framework | Aceptado |
+| ADR-002 | Google Apps Script como backend | Aceptado |
+| ADR-003 | Estructura dual /js/ resuelta | Resuelto (Opcion B ejecutada) |
+| ADR-004 | ARS como moneda unica | Aceptado |
+| ADR-005 | Clarificacion terminologia "Previsualizacion Estimada" | Aceptado |
+| ADR-006 | Clean Architecture hibrida | Aceptado |
 
 ---
 
-## 🔄 FLUJO DE DATOS END-TO-END
-
-Diagrama completo del ciclo de vida de una cotización:
+## Flujo de Datos End-to-End
 
 ```
 Usuario (navegador)
         |
         | Abre presupuestador/index.html
         v
-+-----------------------------------------------+
-|  STEP 1: Selección de tipo de sitio           |
-|  <select id="tipo_sitio">                     |
-|  → onchange: updatePresupuesto()              |
-|  → auto-marca secciones incluidas             |
-+-----------------------------------------------+
-        |
-        v
-+-----------------------------------------------+
-|  STEP 2: Selección de secciones/features      |
-|  <input type="checkbox" name="sections">      |
-|  → onchange: updatePresupuesto()              |
-|  → Secciones incluidas en base: gratis        |
-|  → Secciones extra: $50k c/u                 |
-|  → Features: $60k c/u                        |
-+-----------------------------------------------+
-        |
-        | [Modo Custom: si escribe en textarea  |
-        |  custom-project-desc, resetToCustomMode()]
-        v
-+-----------------------------------------------+
-|  calculator.js: updatePresupuesto()           |
-|  subtotal = base + secExtra*50k + feat*60k    |
-|  iva = subtotal * 0.21 (informativo, no suma) |
-|  total = subtotal                             |
-|  → updateUI() (actualiza DOM)                |
-|  → saveToStorage() (localStorage)            |
-+-----------------------------------------------+
-        |
-        v
-+-----------------------------------------------+
-|  STEP 3: Datos de contacto                   |
-|  nombre* | email* | telefono | observaciones  |
-+-----------------------------------------------+
-        |
-        | Click "Enviar Cotización"
-        v
-+-----------------------------------------------+
-|  form-handler.js: submitForm()               |
-|  → validateForm()                            |
-|    - nombre (required)                        |
-|    - email (required, regex)                  |
-|    - tipo_sitio (required si no es custom)   |
-|  → collectFormData()                         |
-|    - mapea ['hero'] → ['Inicio/Hero']        |
-|    - si custom: presupuesto = {ceros}         |
-|    - asunto diferente por modo               |
-+-----------------------------------------------+
-        |
-        | fetch(GOOGLE_SCRIPT_URL, { mode: 'no-cors' })
-        | POST JSON
-        v
-+-----------------------------------------------+
-|  Google Apps Script: doPost(e)               |
-|  → JSON.parse(e.postData.contents)           |
-|  → generateSubmissionId()  (SUB-YYYYMM-XXXX) |
-|  → appendRow() en hoja SUBMISSIONS (cols A-Q)|
-|  → MailApp.sendEmail() a propietario         |
-|  → logEvent() en hoja LOGS                  |
-|  → return {success, submission_id}           |
-+-----------------------------------------------+
-        |               |
-        v               v
-+-------------+  +------------------+
-| Google      |  | Gmail            |
-| Sheets      |  | Notificación al  |
-| SUBMISSIONS |  | propietario      |
-| LOGS        |  | (< 5 segundos)   |
-+-------------+  +------------------+
-        |
-        | (respuesta opaca por no-cors)
-        v
-+-----------------------------------------------+
-|  Frontend: showSuccess() / showError()        |
-|  → form.reset()                              |
-|  → resetPresupuesto()                        |
-+-----------------------------------------------+
+[STEP 1] Seleccion de tipo de sitio (#tipo_sitio)
+  → UpdateWebsiteTypeUseCase.execute(newType)
+    → ConstraintEngine.validateConstraints()  [DOMAIN]
+    → state.features limpiado atomicamente   [APPLICATION]
+    → UIRenderer.renderConstraints()          [INFRASTRUCTURE]
+    → updatePresupuesto()                     [LEGACY]
+
+[STEP 2] Secciones / Funcionalidades (checkboxes)
+  → onchange: updatePresupuesto()             [LEGACY]
+  → subtotal = base + seccionesExtra*50k + features*60k
+  → iva = subtotal * 0.21 (informativo)
+  → total = subtotal (IVA nunca sumado)
+  → updateUI() + saveToStorage()
+
+[MODO CUSTOM - alternativo]
+  → input/focus en #custom-project-desc
+    → resetToCustomMode()
+    → state.isCustom = true, tipo = null
+    → UI: "A Medida" / "Solicitar Entrevista"
+
+[STEP 3] Datos de contacto (nombre*, email*, telefono, observaciones)
+
+[SUBMIT] Click en boton
+  → validateForm()
+  → collectFormData()  [mapeo tecnico → legible]
+  → fetch(GOOGLE_SCRIPT_URL, { mode: 'no-cors' })
+  → POST JSON a Google Apps Script
+  → GAS: appendRow() + MailApp.sendEmail()
+  → Frontend: showSuccess() / showError()
+  → form.reset() + resetPresupuesto()
 ```
 
-### Notas clave del flujo
+### Notas criticas del flujo
 
-- **Modo Custom** se activa cuando el campo `#custom-project-desc` tiene texto. Deshabilita secciones y funcionalidades, muestra "A Medida" en el total, cambia el botón a "Solicitar Entrevista" y asigna `tipo_sitio = "WEB APP / CUSTOM"` automáticamente.
-- **`mode: 'no-cors'`** en el fetch hace que la respuesta del servidor sea opaca. El frontend no puede distinguir si el backend retornó éxito o error. El único canal de debug del backend es la hoja **LOGS** en Google Sheets.
-- **IVA nunca se suma al total.** Se calcula y muestra como desglose informativo. El `total` que ve el cliente = `subtotal` sin IVA.
+- `mode: 'no-cors'` hace la respuesta siempre opaca. El frontend no puede detectar errores del backend. Debug: hoja LOGS en Google Sheets.
+- IVA nunca se suma al total. Es desglose informativo unicamente.
+- El modo custom y el modo estandar son mutuamente excluyentes. La fuente de verdad en runtime es el contenido del textarea.
 
 ---
 
-## 📐 Metodología de Desarrollo
+## Metricas de Exito
 
-### SDD — Specification-Driven Development
-
-Cada módulo del sistema tiene una especificación en `/docs/MOD-XX-nombre.md` que define requerimientos, contratos de datos y criterios de aceptación **antes** de escribir código. Los MODs son la fuente de verdad del diseño.
-
-| MOD | Módulo | Propósito | Status |
-|-----|--------|-----------|--------|
-| MOD-01 | Requirements | Requerimientos funcionales y acceptance criteria | ✅ |
-| MOD-02 | Data Structure | Schema de datos y contratos | ✅ |
-| MOD-03 | UI Architecture | Componentes, estilos y paleta visual | ✅ |
-| MOD-04 | Email System | Integración de notificaciones | ✅ |
-| MOD-05 | Google Sheets | Integración con backend GAS | ✅ |
-| MOD-06 | Project Structure | Arquitectura de carpetas y capas | ✅ |
-
-### Clean Architecture — Capas del Sistema
-
-```
-┌──────────────────────────────┐
-│  Presentación                │  ← index.html
-│  (Interfaz, CSS, eventos)    │     presupuestador/index.html
-├──────────────────────────────┤
-│  Aplicación                  │  ← main.js
-│  (CONFIG, state, init)       │     Orquestación de capas
-├──────────────────────────────┤
-│  Dominio                     │  ← calculator.js
-│  (Lógica de negocio pura)    │     updatePresupuesto()
-│  (Precios, cálculos)         │     resetPresupuesto()
-├──────────────────────────────┤
-│  Infraestructura             │  ← email-handler.js
-│  (APIs externas)             │     form-handler.js
-│  (Google Apps Script)        │     storage.js
-│  (localStorage)              │
-└──────────────────────────────┘
-```
-
-**Ventajas:**
-- ✅ Lógica de negocio independiente de UI
-- ✅ Fácil de testear (lógica pura en `calculator.js`)
-- ✅ Bajo acoplamiento entre módulos
-- ✅ Fácil migrar o cambiar backend
-
-### Scrum-inspired
-
-- **Ramas:** Trabajo en feature branches con patrón `feature/descripcion`
-- **Merges:** A develop vía PR o merge explícito con `--no-ff`
-- **Releases:** main recibe solo versiones estables (tags semánticos)
-- **Documentación:** ADRs registran decisiones arquitecturales irreversibles
-
-| Tipo de rama | Patrón | Origen | Destino |
-|-------------|--------|--------|---------|
-| Desarrollo | `feature/descripcion` | develop | develop (PR + review) |
-| Bugfix | `fix/descripcion` | develop | develop |
-| Release | `release/x.y.z` | develop | main (tag vx.y.z) |
-| Hotfix | `hotfix/descripcion` | main | main + develop |
+| Metrica | Objetivo | Estado |
+| :--- | :--- | :--- |
+| Tiempo de setup | < 10 min | Completado |
+| Entrega de email | 100% | En produccion |
+| Tiempo de email | < 5 seg | En produccion |
+| Precision de presupuesto | 100% | Verificado |
+| Costo mensual | $0 USD | Mantenido |
+| Carga de pagina | < 2 seg | Verificado |
 
 ---
 
-## 📚 Decisiones Arquitecturales (ADRs)
+## Entregables
 
-Decisiones irreversibles o costosas de cambiar están documentadas en `/docs/adr/`:
+- [x] Project Constitution (este documento)
+- [x] MOD-01 a MOD-07 (especificaciones de modulos)
+- [x] ADR-001 a ADR-006 (decisiones arquitecturales)
+- [x] UC-01 a UC-05 (casos de uso documentados)
+- [x] API_SPEC.md (contrato del webhook)
+- [x] BITACORA_TECNICA.md (log de decisiones tecnicas)
+- [x] CLAUDE.md (guia de navegacion para IAs)
+- [x] Frontend (HTML/CSS/JS) — en produccion
+- [x] Google Apps Script — desplegado
+- [x] GitHub Pages — activo
+- [ ] Tests automatizados — fuera de scope (sin test runner)
+- [ ] CA-06: Feedback visual por restriccion activa — DoD abierto
 
-1. **ADR-001:** Vanilla JS (sin frameworks) — Costo $0/mes, despliegue simple
-2. **ADR-002:** Google Apps Script backend — Serverless, email + storage incluido
-3. **ADR-003:** Estructura dual /js/ + /presupuestador/js — Legado, a resolver
-4. **ADR-004:** Moneda única ARS — Mercado local, evita confusión
+---
 
+## Deuda Tecnica Activa
+
+| Item | Severidad | Estado |
+| :--- | :--- | :--- |
+| CA-06: feedback visual por restriccion sin implementar en ui-renderer.js | Alta | Abierto |
+| GOOGLE_SCRIPT_URL hardcodeada en email-handler.js | Baja | Aceptado |
+| state.isCustom no declarado en shape inicial de state | Media | Aceptado |
+| console.log() de debug en produccion (calculator.js) | Baja | Aceptado |
+| storage.js y ui-updater.js son stubs vacios | Baja | Aceptado |
+
+---
+
+## Equipo
+
+- **Product Owner / Developer / QA:** Leo (Ongevag Studio)
+- **Deployment:** GitHub Pages + Google Apps Script
+
+---
+
+**Siguiente documento:** docs/modules/MOD-01-REQUIREMENTS.md

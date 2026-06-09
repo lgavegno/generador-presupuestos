@@ -33,8 +33,13 @@ function collectFormData() {
     const seccionesLegibles = state.sections.map(s => SECCION_LABELS[s] || s);
     const funcionalidadesLegibles = state.features.map(f => FEATURE_LABELS[f] || f);
 
-    const nombreVal = document.getElementById('nombre')?.value || '';
-    const customDesc = document.getElementById('custom-project-desc')?.value.trim() || '';
+    const nombreRaw = document.getElementById('nombre')?.value.trim() || '';
+    const emailRaw = document.getElementById('email')?.value.trim() || '';
+    const customDescRaw = document.getElementById('custom-project-desc')?.value.trim() || '';
+
+    const nombreVal = nombreRaw.substring(0, 100);
+    const emailVal = emailRaw.substring(0, 150);
+    const customDesc = customDescRaw.substring(0, 1000);
     const isCustom = customDesc.length > 0;
 
     const asuntoFinal = isCustom
@@ -62,7 +67,7 @@ function collectFormData() {
         is_custom: isCustom,
         customDescription: customDesc,  // ✅ CamelCase requerido para backend
         nombre: nombreVal,
-        email: document.getElementById('email')?.value || '',
+        email: emailVal,
         telefono: document.getElementById('telefono')?.value || '',
         tipo_sitio: tipoSitio,
         secciones_elegidas: seccionesLegibles,
@@ -79,34 +84,62 @@ function isValidEmail(email) {
 }
 
 function validateForm() {
-    const nombre = document.getElementById('nombre')?.value.trim();
-    const email = document.getElementById('email')?.value.trim();
+    let valid = true;
+
+    // Limpiar errores previos
+    document.querySelectorAll('.field-error').forEach(el => el.remove());
+    document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+
+    const nombre = document.getElementById('nombre');
+    const email = document.getElementById('email');
     const customDesc = document.getElementById('custom-project-desc')?.value.trim() || '';
     const isCustom = customDesc.length > 0;
-    const tipo = document.getElementById('tipo_sitio')?.value;
+    const tipo = document.getElementById('tipo_sitio');
 
-    if (!nombre) {
-        showError('Por favor ingresa tu nombre');
+    // SEC-01: Honeypot
+    const honeypot = document.getElementById('hp_website')?.value;
+    if (honeypot) return false;
+
+    // SEC-01: Throttle
+    const lastSubmit = parseInt(sessionStorage.getItem('last_submit_ts') || '0');
+    if (Date.now() - lastSubmit < 30000) {
+        showError('Esperá unos segundos antes de volver a enviar.');
         return false;
     }
 
-    if (!email) {
-        showError('Por favor ingresa tu email');
-        return false;
+    if (!nombre?.value.trim()) {
+        showFieldError(nombre, 'Ingresá tu nombre y apellido');
+        valid = false;
     }
 
-    if (!isValidEmail(email)) {
-        showError('Por favor ingresa un email válido');
-        return false;
+    if (!email?.value.trim()) {
+        showFieldError(email, 'Ingresá tu email');
+        valid = false;
+    } else if (!isValidEmail(email.value.trim())) {
+        showFieldError(email, 'El formato del email no es válido');
+        valid = false;
     }
 
-    // Solo validar tipo_sitio si NO es un proyecto custom
-    if (!isCustom && !tipo) {
-        showError('Por favor selecciona un tipo de sitio');
-        return false;
+    if (!isCustom && !tipo?.value) {
+        showFieldError(tipo, 'Seleccioná un tipo de sitio');
+        valid = false;
     }
 
-    return true;
+    return valid;
+}
+
+function showFieldError(inputEl, message) {
+    if (!inputEl) return;
+    inputEl.classList.add('input-error');
+    const err = document.createElement('span');
+    err.className = 'field-error';
+    err.setAttribute('role', 'alert');
+    err.textContent = message;
+    inputEl.insertAdjacentElement('afterend', err);
+    inputEl.addEventListener('input', () => {
+        err.remove();
+        inputEl.classList.remove('input-error');
+    }, { once: true });
 }
 
 async function submitForm() {
@@ -126,6 +159,7 @@ async function submitForm() {
         } else {
             showSuccess('✅ Cotización enviada con éxito. Revisá tu casilla de correo.');
         }
+        sessionStorage.setItem('last_submit_ts', Date.now().toString());
     }
 
     showLoadingIndicator(false);
