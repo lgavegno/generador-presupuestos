@@ -5,7 +5,7 @@ Copia y pega el siguiente código en tu proyecto de Google Apps Script:
 ```javascript
 function sendAdminEmail(data, submissionId, presupuesto) {
   // Se define la lista de destinatarios corregida (separados por coma)
-  const recipients = "ongevag@gmail.com, lgavegno@gmail.com";
+  const recipients = "ongevag@gmail.com";
   
   const subject = "Nueva Cotización - " + (data.nombre || "Sin Nombre");
   
@@ -65,7 +65,7 @@ PRESUPUESTO ESTIMADO:
 Total: $${presupuesto.total || 0} ARS
 ~USD: $${presupuesto.totalUSD || 0}
 
-Vigencia: 7 días
+Vigencia: 15 días
 
 Próximos pasos:
 1. Revisamos tu presupuesto
@@ -73,7 +73,7 @@ Próximos pasos:
 3. Iniciamos el proyecto
 
 Saludos,
-Ongevag Studio
+ONGEVAG 
   `;
   
   GmailApp.sendEmail(data.email, subject, body);
